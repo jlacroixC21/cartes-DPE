@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Carte DPE - Bourg-la-Reine</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css"/>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.5.3/MarkerCluster.css"/>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.5.3/MarkerCluster.Default.css"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.5.3/leaflet.markercluster.min.js"></script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&display=swap');
+*{margin:0;padding:0;box-sizing:border-box}body{font-family:"DM Sans",sans-serif;background:#0a0f1a;color:#e8e6e1;height:100vh;display:flex;flex-direction:column}
+header{background:linear-gradient(135deg,#1a2744,#0d1b2a);padding:8px 16px;border-bottom:1px solid rgba(255,255,255,.08);flex-shrink:0;z-index:1000}
+.hdr-top{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:6px}.hl{display:flex;align-items:center;gap:10px}
+.logo{width:32px;height:32px;background:linear-gradient(135deg,#e07c4f,#d4a574);border-radius:7px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;color:#0d1b2a}
+h1{font-size:15px;font-weight:700;color:#f0ece6}h1 span{color:#e07c4f}.sub{font-size:9px;color:rgba(255,255,255,.4);text-transform:uppercase;letter-spacing:1.5px}
+.st{display:flex;gap:10px;font-size:10px;color:rgba(255,255,255,.5);align-items:center;flex-wrap:wrap}.sv{font-weight:700;color:#e07c4f}.pw{color:#e13d2e}
+.tabs{display:flex;gap:0;margin-top:6px;border-bottom:2px solid rgba(255,255,255,.06)}.tab{background:none;border:none;color:rgba(255,255,255,.45);padding:5px 12px;font-size:11px;font-family:inherit;cursor:pointer;font-weight:600;border-bottom:2px solid transparent;margin-bottom:-2px;transition:all .2s}.tab:hover{color:rgba(255,255,255,.7)}.tab.ac{color:#e07c4f;border-bottom-color:#e07c4f}
+.filter-bar{display:none;padding:6px 0 2px;flex-wrap:wrap;gap:4px;align-items:center}.filter-bar.visible{display:flex}
+.fl-label{font-size:9px;color:rgba(255,255,255,.35);text-transform:uppercase;letter-spacing:1px;margin-right:4px}
+.fb{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);color:#c8c4be;padding:4px 9px;border-radius:4px;font-size:10px;font-family:inherit;cursor:pointer;transition:all .2s;font-weight:600}.fb:hover{background:rgba(255,255,255,.12)}.fb.ac{border-color:var(--c);color:var(--c);background:var(--bg)}
+.date-group{display:flex;align-items:center;gap:6px;flex-wrap:wrap}.date-input{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);color:#e8e6e1;padding:4px 8px;border-radius:4px;font-size:11px;font-family:inherit;outline:none}.date-input:focus{border-color:#e07c4f}
+.date-apply{background:#e07c4f;border:none;color:#0d1b2a;padding:4px 12px;border-radius:4px;font-size:10px;font-family:inherit;cursor:pointer;font-weight:700}.date-reset{background:none;border:1px solid rgba(255,255,255,.2);color:rgba(255,255,255,.5);padding:4px 10px;border-radius:4px;font-size:10px;font-family:inherit;cursor:pointer}
+.dq,.sp,.tb{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);color:rgba(255,255,255,.5);padding:3px 8px;border-radius:3px;font-size:9px;font-family:inherit;cursor:pointer;transition:all .15s}.dq:hover,.dq.ac,.sp:hover,.sp.ac,.tb:hover,.tb.ac{border-color:#e07c4f;color:#e07c4f;background:rgba(224,124,79,.1)}
+.tb{padding:5px 12px;font-size:11px;display:flex;align-items:center;gap:5px}.tb .ico{font-size:14px}
+.surf-group{display:flex;align-items:center;gap:8px;flex-wrap:wrap;width:100%}.range-wrap{display:flex;align-items:center;gap:8px;flex:1;min-width:200px;max-width:500px}
+.range-wrap input[type=range]{flex:1;accent-color:#e07c4f;height:4px;cursor:pointer;-webkit-appearance:none;appearance:none;background:rgba(255,255,255,.15);border-radius:2px;outline:none}
+.range-wrap input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:16px;height:16px;border-radius:50%;background:#e07c4f;border:2px solid #fff;cursor:pointer;box-shadow:0 1px 4px rgba(0,0,0,.4)}
+.range-val{font-size:12px;color:#e07c4f;font-weight:700;min-width:40px;text-align:center}
+#map{flex:1;width:100%}
+.leaflet-control-zoom a{background:#1a2744!important;color:#e8e6e1!important;border-color:rgba(255,255,255,.1)!important}.leaflet-control-attribution{background:rgba(13,27,42,.85)!important;color:rgba(255,255,255,.4)!important;font-size:9px!important}
+.dp{font-family:"DM Sans",sans-serif;min-width:210px}.dp .db{display:inline-block;width:26px;height:26px;border-radius:5px;text-align:center;line-height:26px;font-weight:700;font-size:13px;color:#fff;margin-right:5px;vertical-align:middle}.dp .tl{font-weight:700;font-size:13px;vertical-align:middle}.dp .ad{font-size:11px;color:#555;margin:5px 0 3px}.dp .ir{font-size:10px;color:#666;line-height:1.7}.dp .ir b{color:#333}
+.dp .dt-badge{display:inline-block;background:#f0f4ff;border:1px solid #c5cfe0;color:#3a5a8c;padding:1px 6px;border-radius:3px;font-size:9px;font-weight:600;margin-top:4px}.dp .loc-info{background:#f8f9fa;border-radius:4px;padding:4px 6px;margin-top:4px;font-size:10px;color:#444}.dp .loc-info span{color:#888;font-size:9px}
+.pb{background:rgba(220,53,69,.15);border:1px solid rgba(220,53,69,.4);color:#dc3545;padding:1px 5px;border-radius:3px;font-size:8px;font-weight:700;margin-left:3px;vertical-align:middle}
+.lg{position:absolute;bottom:24px;right:10px;background:rgba(13,27,42,.92);backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,.1);border-radius:9px;padding:8px 12px;z-index:1000;font-size:10px}.lg-t{font-weight:700;color:#f0ece6;margin-bottom:4px;font-size:11px}.lg-i{display:flex;align-items:center;gap:5px;margin:2px 0;color:rgba(255,255,255,.7)}.lg-d{width:10px;height:10px;border-radius:50%;border:1px solid rgba(255,255,255,.2)}
+.tsw{position:absolute;top:80px;left:10px;z-index:1000;display:flex;flex-direction:column;gap:3px}.ts{background:rgba(26,39,68,.92);border:1px solid rgba(255,255,255,.1);color:#c8c4be;padding:5px 10px;border-radius:5px;font-size:10px;font-family:inherit;cursor:pointer}.ts.ac{border-color:#e07c4f;color:#e07c4f}
+@media(max-width:600px){header{padding:6px 10px}h1{font-size:13px}.sub,.st{display:none}}
+</style>
+</head>
+<body>
+<header>
+<div class="hdr-top"><div class="hl"><div class="logo">DPE</div><div>
+<h1>Bourg-la-Reine <span>&middot;</span> Carte DPE</h1>
+<div class="sub">6 diagnostics - 24/04/2026 09h32 - Source ADEME</div>
+</div></div>
+<div class="st">Affiches: <span class="sv" id="cnt">6</span> &middot; <span class="pw" id="pw">1 passoires F/G</span></div></div>
+<div class="tabs"><button class="tab ac" data-tab="dpe">Etiquette DPE</button><button class="tab" data-tab="date">Date du DPE</button><button class="tab" data-tab="surf">Surface</button><button class="tab" data-tab="type">Type de bien</button></div>
+<div class="filter-bar visible" id="bar-dpe"><div id="fl" style="display:flex;gap:3px;flex-wrap:wrap">
+<button class="fb ac" style="--c:#e07c4f;--bg:rgba(224,124,79,.15)" data-d="all">Tous</button>
+<button class="fb" style="--c:#009c5b;--bg:rgba(0,156,91,.12)" data-d="A">A <small>(0)</small></button>
+<button class="fb" style="--c:#51b550;--bg:rgba(81,181,80,.12)" data-d="B">B <small>(0)</small></button>
+<button class="fb" style="--c:#edd613;--bg:rgba(237,214,19,.12)" data-d="C">C <small>(1)</small></button>
+<button class="fb" style="--c:#f0b41a;--bg:rgba(240,180,26,.12)" data-d="D">D <small>(2)</small></button>
+<button class="fb" style="--c:#ef8023;--bg:rgba(239,128,35,.12)" data-d="E">E <small>(2)</small></button>
+<button class="fb" style="--c:#e13d2e;--bg:rgba(225,61,46,.12)" data-d="F">F <small>(1)</small></button>
+<button class="fb" style="--c:#b4161a;--bg:rgba(180,22,26,.12)" data-d="G">G <small>(0)</small></button>
+</div></div>
+<div class="filter-bar" id="bar-date"><span class="fl-label">Periode :</span><div class="date-group"><label style="font-size:10px;color:rgba(255,255,255,.4)">Du</label><input type="date" class="date-input" id="dt-from" value="2021-07-01"><label style="font-size:10px;color:rgba(255,255,255,.4)">au</label><input type="date" class="date-input" id="dt-to" value="2026-12-31"><button class="date-apply" id="dt-apply">Filtrer</button><button class="date-reset" id="dt-reset">Reinit.</button></div>
+<div style="display:flex;gap:3px;flex-wrap:wrap;margin-left:6px" id="dq"><button class="dq" data-from="2026-01-01" data-to="2026-12-31">2026</button><button class="dq" data-from="2025-01-01" data-to="2025-12-31">2025</button><button class="dq" data-from="2024-01-01" data-to="2024-12-31">2024</button><button class="dq" data-from="2023-01-01" data-to="2023-12-31">2023</button><button class="dq" data-from="2022-01-01" data-to="2022-12-31">2022</button><button class="dq" data-from="2021-07-01" data-to="2021-12-31">2021</button><button class="dq" data-from="2025-10-01" data-to="2026-12-31">6 derniers mois</button><button class="dq" data-from="2025-04-01" data-to="2026-12-31">12 derniers mois</button></div></div>
+<div class="filter-bar" id="bar-surf"><div class="surf-group"><span class="fl-label">Surface :</span><div class="range-wrap"><span class="range-val" id="surf-min-val">0</span><input type="range" id="surf-min" min="0" max="300" value="0" step="5"><span style="color:rgba(255,255,255,.3);font-size:10px">a</span><input type="range" id="surf-max" min="0" max="300" value="300" step="5"><span class="range-val" id="surf-max-val">300+</span><span style="font-size:10px;color:rgba(255,255,255,.3)">m2</span></div><button class="date-apply" id="surf-apply">Filtrer</button><button class="date-reset" id="surf-reset">Reinit.</button></div>
+<div style="display:flex;gap:3px;flex-wrap:wrap;margin-top:4px" id="sp"><button class="sp" data-min="0" data-max="20">Studios &lt;20</button><button class="sp" data-min="20" data-max="40">T1/T2 20-40</button><button class="sp" data-min="40" data-max="60">T2/T3 40-60</button><button class="sp" data-min="60" data-max="80">T3/T4 60-80</button><button class="sp" data-min="80" data-max="100">T4/T5 80-100</button><button class="sp" data-min="100" data-max="150">Grands 100-150</button><button class="sp" data-min="150" data-max="300">150+ m2</button></div></div>
+<div class="filter-bar" id="bar-type"><span class="fl-label">Type :</span><div style="display:flex;gap:6px;flex-wrap:wrap" id="tfl">
+<button class="tb ac" data-type="all"><span class="ico">&#127960;</span> Tous <small>(6)</small></button>
+<button class="tb" data-type="appartement"><span class="ico">&#127970;</span> Appartements <small>(5)</small></button>
+<button class="tb" data-type="maison"><span class="ico">&#127968;</span> Maisons <small>(0)</small></button>
+<button class="tb" data-type="immeuble"><span class="ico">&#127959;</span> Immeubles <small>(1)</small></button>
+</div></div>
+</header>
+<div id="map"></div>
+<div class="tsw" id="tsw"><button class="ts ac" data-t="streets">Rues</button><button class="ts" data-t="sat">Satellite</button></div>
+<div class="lg"><div class="lg-t">Etiquette DPE</div>
+<div class="lg-i"><div class="lg-d" style="background:#009c5b"></div>A (&le;70)</div>
+<div class="lg-i"><div class="lg-d" style="background:#51b550"></div>B (71-110)</div>
+<div class="lg-i"><div class="lg-d" style="background:#edd613"></div>C (111-180)</div>
+<div class="lg-i"><div class="lg-d" style="background:#f0b41a"></div>D (181-250)</div>
+<div class="lg-i"><div class="lg-d" style="background:#ef8023"></div>E (251-330)</div>
+<div class="lg-i"><div class="lg-d" style="background:#e13d2e"></div>F (331-420) <span class="pb">PASSOIRE</span></div>
+<div class="lg-i"><div class="lg-d" style="background:#b4161a"></div>G (&gt;420) <span class="pb">PASSOIRE</span></div>
+</div>
+<script>
+var D=[{"la":48.783078,"lo":2.311655,"d":"D","g":"D","a":"17 Rue Pierre Loti 92340 Bourg-la-Reine","c":"Bourg-la-Reine","s":56.5,"t":"appartement","co":122.3,"gv":36.8,"p":"1948-1974","dt":"17/04/2026","et":"Etage 1","po":"A Gauche"},{"la":48.779014,"lo":2.320869,"d":"E","g":"E","a":"31 Rue Ravon 92340 Bourg-la-Reine","c":"Bourg-la-Reine","s":26.7,"t":"appartement","co":296.0,"gv":64.0,"p":"1948-1974","dt":"17/04/2026","et":"RDC","po":"Bat. 6; Etage RDC; Porte Droite"},{"la":48.783453,"lo":2.321504,"d":"E","g":"D","a":"10 Avenue du Panorama 92340 Bourg-la-Reine","c":"Bourg-la-Reine","s":75.1,"t":"appartement","co":264.0,"gv":47.0,"p":"1948-1974","dt":"17/04/2026","et":"RDC","po":"Bat H"},{"la":48.779112,"lo":2.313607,"d":"D","g":"D","a":"75 Boulevard du Maréchal Joffre 92340 Bourg-la-Reine","c":"Bourg-la-Reine","s":60.3,"t":"appartement","co":147.0,"gv":31.0,"p":"1948-1974","dt":"18/04/2026","et":"RDC","po":"Etage 2; Porte Gauche"},{"la":48.774965,"lo":2.318785,"d":"F","g":"F","a":"33 Avenue du Petit Chambord 92340 Bourg-la-Reine","c":"Bourg-la-Reine","s":null,"t":"immeuble","co":339.0,"gv":71.0,"p":"1948-1974","dt":"20/04/2026","et":"","po":""},{"la":48.778557,"lo":2.315012,"d":"C","g":"A","a":"109 Avenue du Général Leclerc 92340 Bourg-la-Reine","c":"Bourg-la-Reine","s":46.2,"t":"appartement","co":126.0,"gv":4.0,"p":"1989-2000","dt":"20/04/2026","et":"RDC","po":"Etage 3ème"}];
+var COL={A:'#009c5b',B:'#51b550',C:'#edd613',D:'#f0b41a',E:'#ef8023',F:'#e13d2e',G:'#b4161a','?':'#888'};
+var map=L.map('map',{center:[48.7807,2.3153],zoom:15});
+var tiles={streets:L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{attribution:'OSM',maxZoom:19}),sat:L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',{attribution:'Esri',maxZoom:19})};
+tiles.streets.addTo(map);var curTile='streets';
+document.getElementById('tsw').addEventListener('click',function(e){if(!e.target.classList.contains('ts'))return;map.removeLayer(tiles[curTile]);curTile=e.target.dataset.t;tiles[curTile].addTo(map);document.querySelectorAll('.ts').forEach(function(b){b.classList.remove('ac')});e.target.classList.add('ac')});
+var cl=L.markerClusterGroup({maxClusterRadius:45,disableClusteringAtZoom:18,showCoverageOnHover:false,chunkedLoading:true,
+iconCreateFunction:function(c){var ms=c.getAllChildMarkers();var ct={A:0,B:0,C:0,D:0,E:0,F:0,G:0};
+ms.forEach(function(m){var d=m.options.dpe;if(ct[d]!==undefined)ct[d]++});
+var dom='A',mx=0;['G','F','E','D','C','B','A'].forEach(function(k){if(ct[k]>mx){mx=ct[k];dom=k}});
+var col=COL[dom];var nn=ms.length;var sz=nn<30?34:nn<100?40:nn<500?48:54;
+return L.divIcon({html:'<div style="background:'+col+';width:'+sz+'px;height:'+sz+'px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:'+(sz<40?11:13)+'px;border:2px solid rgba(255,255,255,.6);box-shadow:0 2px 8px rgba(0,0,0,.4)">'+nn+'</div>',className:'',iconSize:[sz,sz]})}});
+var am=[];var curDPE='all';var curDateFrom=0;var curDateTo=99999999;var curSurfMin=0;var curSurfMax=9999;var curType='all';
+function mkIc(d){var c=COL[d]||'#888';return L.divIcon({className:'',html:'<div style="width:12px;height:12px;background:'+c+';border:2px solid #fff;border-radius:50%;box-shadow:0 1px 4px rgba(0,0,0,.4)"></div>',iconSize:[12,12],iconAnchor:[6,6]})}
+function esc(s){var d=document.createElement('div');d.textContent=s||'';return d.innerHTML}
+function parseD(s){if(!s)return 0;var p=s.split('/');return parseInt(p[2]+p[1]+p[0],10)}
+function dateToInt(s){return s?parseInt(s.replace(/-/g,''),10):0}
+D.forEach(function(r){
+var m=L.marker([r.la,r.lo],{icon:mkIc(r.d),dpe:r.d,dtInt:parseD(r.dt),surf:r.s||0,btype:r.t});
+var ip=r.d==='F'||r.d==='G';
+var pt=ip?'<span class="pb">PASSOIRE THERMIQUE</span>':'';
+var sf=r.s?r.s+' m2':'N/C';
+var co=r.co?r.co+' kWh/m2/an':'N/C';
+var ge=r.gv?r.gv+' kgCO2/m2/an':'N/C';
+var locH='';
+if(r.et||r.po){var p=[];if(r.et)p.push('<b>'+esc(r.et)+'</b>');if(r.po)p.push(esc(r.po));locH='<div class="loc-info"><span>Localisation:</span> '+p.join(' - ')+'</div>'}
+var dtH=r.dt?'<div class="dt-badge">DPE du '+esc(r.dt)+'</div>':'';
+m.bindPopup('<div class="dp"><span class="db" style="background:'+COL[r.d]+'">'+r.d+'</span><span class="tl">DPE '+r.d+'</span> '+pt+'<div class="ad">'+esc(r.a)+'</div><div class="ir"><b>Commune:</b> '+esc(r.c)+'<br><b>Type:</b> '+esc(r.t)+'<br><b>Surface:</b> '+sf+'<br><b>Conso:</b> '+co+'<br><b>GES:</b> '+ge+'<br><b>Periode:</b> '+(r.p||'N/C')+'</div>'+locH+dtH+'</div>');
+am.push(m)});
+function applyFilters(){cl.clearLayers();var nn=0;var nFG=0;am.forEach(function(m){var ok1=(curDPE==='all'||m.options.dpe===curDPE);var ok2=(m.options.dtInt>=curDateFrom&&m.options.dtInt<=curDateTo);var ok3=(m.options.surf===0||(m.options.surf>=curSurfMin&&m.options.surf<=curSurfMax));var ok4=(curType==='all'||m.options.btype===curType);if(ok1&&ok2&&ok3&&ok4){cl.addLayer(m);nn++;if(m.options.dpe==='F'||m.options.dpe==='G')nFG++}});document.getElementById('cnt').textContent=nn.toLocaleString('fr-FR');document.getElementById('pw').textContent=nFG+' passoires F/G'}
+document.querySelectorAll('.tab').forEach(function(t){t.addEventListener('click',function(){document.querySelectorAll('.tab').forEach(function(x){x.classList.remove('ac')});t.classList.add('ac');document.querySelectorAll('.filter-bar').forEach(function(b){b.classList.remove('visible')});document.getElementById('bar-'+t.dataset.tab).classList.add('visible')})});
+document.getElementById('fl').addEventListener('click',function(e){var btn=e.target.closest('.fb');if(!btn)return;document.querySelectorAll('#fl .fb').forEach(function(b){b.classList.remove('ac')});btn.classList.add('ac');curDPE=btn.dataset.d;applyFilters()});
+document.getElementById('dt-apply').addEventListener('click',function(){document.querySelectorAll('.dq').forEach(function(b){b.classList.remove('ac')});curDateFrom=dateToInt(document.getElementById('dt-from').value)||0;curDateTo=dateToInt(document.getElementById('dt-to').value)||99999999;applyFilters()});
+document.getElementById('dt-reset').addEventListener('click',function(){document.getElementById('dt-from').value='2021-07-01';document.getElementById('dt-to').value='2026-12-31';document.querySelectorAll('.dq').forEach(function(b){b.classList.remove('ac')});curDateFrom=0;curDateTo=99999999;applyFilters()});
+document.getElementById('dq').addEventListener('click',function(e){var btn=e.target.closest('.dq');if(!btn)return;document.querySelectorAll('.dq').forEach(function(b){b.classList.remove('ac')});btn.classList.add('ac');document.getElementById('dt-from').value=btn.dataset.from;document.getElementById('dt-to').value=btn.dataset.to;curDateFrom=dateToInt(btn.dataset.from);curDateTo=dateToInt(btn.dataset.to);applyFilters()});
+var sMin=document.getElementById('surf-min');var sMax=document.getElementById('surf-max');var sMinV=document.getElementById('surf-min-val');var sMaxV=document.getElementById('surf-max-val');
+function updateSurfLabels(){sMinV.textContent=sMin.value;sMaxV.textContent=parseInt(sMax.value)>=300?'300+':sMax.value}
+sMin.addEventListener('input',function(){if(parseInt(sMin.value)>parseInt(sMax.value))sMax.value=sMin.value;updateSurfLabels()});
+sMax.addEventListener('input',function(){if(parseInt(sMax.value)<parseInt(sMin.value))sMin.value=sMax.value;updateSurfLabels()});
+document.getElementById('surf-apply').addEventListener('click',function(){document.querySelectorAll('.sp').forEach(function(b){b.classList.remove('ac')});curSurfMin=parseInt(sMin.value);curSurfMax=parseInt(sMax.value)>=300?9999:parseInt(sMax.value);applyFilters()});
+document.getElementById('surf-reset').addEventListener('click',function(){sMin.value=0;sMax.value=300;updateSurfLabels();document.querySelectorAll('.sp').forEach(function(b){b.classList.remove('ac')});curSurfMin=0;curSurfMax=9999;applyFilters()});
+document.getElementById('sp').addEventListener('click',function(e){var btn=e.target.closest('.sp');if(!btn)return;document.querySelectorAll('.sp').forEach(function(b){b.classList.remove('ac')});btn.classList.add('ac');var mn=parseInt(btn.dataset.min);var mx=parseInt(btn.dataset.max);sMin.value=mn;sMax.value=mx;updateSurfLabels();curSurfMin=mn;curSurfMax=mx>=300?9999:mx;applyFilters()});
+document.getElementById('tfl').addEventListener('click',function(e){var btn=e.target.closest('.tb');if(!btn)return;document.querySelectorAll('#tfl .tb').forEach(function(b){b.classList.remove('ac')});btn.classList.add('ac');curType=btn.dataset.type;applyFilters()});
+applyFilters();map.addLayer(cl);
+</script>
+</body></html>
