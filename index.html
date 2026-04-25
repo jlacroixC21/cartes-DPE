@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#0a0f1a">
+<link rel="manifest" href="manifest.json">
+<title>Cartes DPE</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&display=swap');
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'DM Sans',sans-serif;background:#0a0f1a;color:#e8e6e1;min-height:100vh;padding:0}
+header{background:linear-gradient(135deg,#1a2744,#0d1b2a);padding:20px 16px;text-align:center;border-bottom:1px solid rgba(255,255,255,.08)}
+.logo{width:48px;height:48px;background:linear-gradient(135deg,#e07c4f,#d4a574);border-radius:12px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:20px;color:#0d1b2a;margin:0 auto 10px}
+h1{font-size:20px;font-weight:700;color:#f0ece6}
+h1 span{color:#e07c4f}
+.sub{font-size:10px;color:rgba(255,255,255,.4);text-transform:uppercase;letter-spacing:2px;margin-top:4px}
+.cards{padding:16px;display:flex;flex-direction:column;gap:10px;max-width:500px;margin:0 auto}
+a.card{display:flex;align-items:center;gap:14px;background:linear-gradient(135deg,rgba(26,39,68,.8),rgba(13,27,42,.9));border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:16px;text-decoration:none;color:#e8e6e1;transition:all .2s}
+a.card:hover,a.card:active{border-color:#e07c4f;background:linear-gradient(135deg,rgba(26,39,68,.95),rgba(13,27,42,.95));transform:scale(1.02)}
+.card-icon{width:44px;height:44px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0}
+.card-info{flex:1}
+.card-ville{font-size:15px;font-weight:700;color:#f0ece6}
+.card-dept{font-size:11px;color:rgba(255,255,255,.4);margin-top:2px}
+.card-arrow{color:rgba(255,255,255,.2);font-size:18px}
+.footer{text-align:center;padding:20px;font-size:9px;color:rgba(255,255,255,.2)}
+</style>
+</head>
+<body>
+<header>
+<div class="logo">DPE</div>
+<h1>Cartes <span>DPE</span></h1>
+<div class="sub">Diagnostics de performance energetique</div>
+</header>
+<div class="cards">
+<a class="card" href="carte-dpe-meudon.html">
+<div class="card-icon" style="background:rgba(224,124,79,.15)">&#127968;</div>
+<div class="card-info"><div class="card-ville">Meudon</div><div class="card-dept">Hauts-de-Seine (92)</div></div>
+<div class="card-arrow">&#8250;</div>
+</a>
+<a class="card" href="carte-dpe-boulogne-billancourt.html">
+<div class="card-icon" style="background:rgba(0,156,91,.15)">&#127970;</div>
+<div class="card-info"><div class="card-ville">Boulogne-Billancourt</div><div class="card-dept">Hauts-de-Seine (92)</div></div>
+<div class="card-arrow">&#8250;</div>
+</a>
+<a class="card" href="carte-dpe-neuilly-sur-seine.html">
+<div class="card-icon" style="background:rgba(81,181,80,.15)">&#127970;</div>
+<div class="card-info"><div class="card-ville">Neuilly-sur-Seine</div><div class="card-dept">Hauts-de-Seine (92)</div></div>
+<div class="card-arrow">&#8250;</div>
+</a>
+<a class="card" href="carte-dpe-montrouge.html">
+<div class="card-icon" style="background:rgba(240,180,26,.15)">&#127970;</div>
+<div class="card-info"><div class="card-ville">Montrouge</div><div class="card-dept">Hauts-de-Seine (92)</div></div>
+<div class="card-arrow">&#8250;</div>
+</a>
+<a class="card" href="carte-dpe-colombes.html">
+<div class="card-icon" style="background:rgba(225,61,46,.15)">&#127968;</div>
+<div class="card-info"><div class="card-ville">Colombes</div><div class="card-dept">Hauts-de-Seine (92)</div></div>
+<div class="card-arrow">&#8250;</div>
+</a>
+<a class="card" href="carte-dpe-bourg-la-reine.html">
+<div class="card-icon" style="background:rgba(180,22,26,.15)">&#127970;</div>
+<div class="card-info"><div class="card-ville">Bourg-la-Reine</div><div class="card-dept">Hauts-de-Seine (92)</div></div>
+<div class="card-arrow">&#8250;</div>
+</a>
+<a class="card" href="carte-dpe-levallois-perret.html">
+<div class="card-icon" style="background:rgba(239,128,35,.15)">&#127970;</div>
+<div class="card-info"><div class="card-ville">Levallois-Perret</div><div class="card-dept">Hauts-de-Seine (92)</div></div>
+<div class="card-arrow">&#8250;</div>
+</a>
+</div>
+<div class="footer">Source ADEME Open Data &mdash; Mis a jour quotidiennement</div>
+</body>
+</html>
