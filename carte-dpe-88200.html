@@ -2,7 +2,7 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>Carte DPE - Neuilly-sur-Seine</title>
+<title>Carte DPE - 88200</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css"/>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.5.3/MarkerCluster.css"/>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.5.3/MarkerCluster.Default.css"/>
@@ -53,10 +53,10 @@ h1{font-size:15px;font-weight:700;color:#f0ece6}h1 span{color:#e07c4f}.sub{font-
 </style></head><body>
 <header>
 <div class="hdr-top"><div class="hl"><div class="logo">DPE</div><div>
-<h1>Neuilly-sur-Seine <span>&middot;</span> Carte DPE</h1>
-<div class="sub">14 diagnostics - 05/05/2026 15h50 - Source ADEME</div>
+<h1>88200 <span>&middot;</span> Carte DPE</h1>
+<div class="sub">2 diagnostics - 05/05/2026 15h50 - Source ADEME</div>
 </div></div>
-<div class="st">Affiches: <span class="sv" id="cnt">14</span> &middot; <span class="pw" id="pw">3 passoires F/G</span></div></div>
+<div class="st">Affiches: <span class="sv" id="cnt">2</span> &middot; <span class="pw" id="pw">1 passoires F/G</span></div></div>
 <div class="view-tabs"><button class="vtab ac" id="vtab-carte">&#127758; Carte</button><button class="vtab" id="vtab-liste">&#128203; Liste</button></div>
 <div class="tabs"><button class="tab ac" data-tab="dpe">Etiquette DPE</button><button class="tab" data-tab="date">Date du DPE</button><button class="tab" data-tab="surf">Surface</button><button class="tab" data-tab="type">Type de bien</button></div>
 <div class="filter-bar visible" id="bar-dpe"><div id="fl" style="display:flex;gap:3px;flex-wrap:wrap">
@@ -64,16 +64,16 @@ h1{font-size:15px;font-weight:700;color:#f0ece6}h1 span{color:#e07c4f}.sub{font-
 <button class="fb" style="--c:#009c5b;--bg:rgba(0,156,91,.12)" data-d="A">A <small>(0)</small></button>
 <button class="fb" style="--c:#51b550;--bg:rgba(81,181,80,.12)" data-d="B">B <small>(0)</small></button>
 <button class="fb" style="--c:#edd613;--bg:rgba(237,214,19,.12)" data-d="C">C <small>(0)</small></button>
-<button class="fb" style="--c:#f0b41a;--bg:rgba(240,180,26,.12)" data-d="D">D <small>(9)</small></button>
-<button class="fb" style="--c:#ef8023;--bg:rgba(239,128,35,.12)" data-d="E">E <small>(2)</small></button>
-<button class="fb" style="--c:#e13d2e;--bg:rgba(225,61,46,.12)" data-d="F">F <small>(3)</small></button>
+<button class="fb" style="--c:#f0b41a;--bg:rgba(240,180,26,.12)" data-d="D">D <small>(1)</small></button>
+<button class="fb" style="--c:#ef8023;--bg:rgba(239,128,35,.12)" data-d="E">E <small>(0)</small></button>
+<button class="fb" style="--c:#e13d2e;--bg:rgba(225,61,46,.12)" data-d="F">F <small>(1)</small></button>
 <button class="fb" style="--c:#b4161a;--bg:rgba(180,22,26,.12)" data-d="G">G <small>(0)</small></button>
 </div></div>
 <div class="filter-bar" id="bar-date"><span class="fl-label">Periode :</span><div class="date-group"><label style="font-size:10px;color:rgba(255,255,255,.4)">Du</label><input type="date" class="date-input" id="dt-from" value="2021-07-01"><label style="font-size:10px;color:rgba(255,255,255,.4)">au</label><input type="date" class="date-input" id="dt-to" value="2026-12-31"><button class="date-apply" id="dt-apply">Filtrer</button><button class="date-reset" id="dt-reset">Reinit.</button></div><div style="display:flex;gap:3px;flex-wrap:wrap;margin-left:6px" id="dq"><button class="dq" data-from="2026-01-01" data-to="2026-12-31">2026</button><button class="dq" data-from="2025-01-01" data-to="2025-12-31">2025</button><button class="dq" data-from="2024-01-01" data-to="2024-12-31">2024</button><button class="dq" data-from="2023-01-01" data-to="2023-12-31">2023</button><button class="dq" data-from="2022-01-01" data-to="2022-12-31">2022</button><button class="dq" data-from="2021-07-01" data-to="2021-12-31">2021</button><button class="dq" data-from="2025-10-01" data-to="2026-12-31">6 derniers mois</button><button class="dq" data-from="2025-04-01" data-to="2026-12-31">12 derniers mois</button></div></div>
 <div class="filter-bar" id="bar-surf"><div class="surf-group"><span class="fl-label">Surface :</span><div class="range-wrap"><span class="range-val" id="surf-min-val">0</span><input type="range" id="surf-min" min="0" max="300" value="0" step="5"><span style="color:rgba(255,255,255,.3);font-size:10px">a</span><input type="range" id="surf-max" min="0" max="300" value="300" step="5"><span class="range-val" id="surf-max-val">300+</span><span style="font-size:10px;color:rgba(255,255,255,.3)">m2</span></div><button class="date-apply" id="surf-apply">Filtrer</button><button class="date-reset" id="surf-reset">Reinit.</button></div><div style="display:flex;gap:3px;flex-wrap:wrap;margin-top:4px" id="sp"><button class="sp" data-min="0" data-max="20">Studios &lt;20</button><button class="sp" data-min="20" data-max="40">T1/T2 20-40</button><button class="sp" data-min="40" data-max="60">T2/T3 40-60</button><button class="sp" data-min="60" data-max="80">T3/T4 60-80</button><button class="sp" data-min="80" data-max="100">T4/T5 80-100</button><button class="sp" data-min="100" data-max="150">Grands 100-150</button><button class="sp" data-min="150" data-max="300">150+ m2</button></div></div>
 <div class="filter-bar" id="bar-type"><span class="fl-label">Type :</span><div style="display:flex;gap:6px;flex-wrap:wrap" id="tfl">
-<button class="tb ac" data-type="all"><span class="ico">&#127960;</span> Tous <small>(14)</small></button>
-<button class="tb" data-type="appartement"><span class="ico">&#127970;</span> Appartements <small>(14)</small></button>
+<button class="tb ac" data-type="all"><span class="ico">&#127960;</span> Tous <small>(2)</small></button>
+<button class="tb" data-type="appartement"><span class="ico">&#127970;</span> Appartements <small>(2)</small></button>
 <button class="tb" data-type="maison"><span class="ico">&#127968;</span> Maisons <small>(0)</small></button>
 <button class="tb" data-type="immeuble"><span class="ico">&#127959;</span> Immeubles <small>(0)</small></button>
 </div></div></header>
@@ -90,9 +90,9 @@ h1{font-size:15px;font-weight:700;color:#f0ece6}h1 span{color:#e07c4f}.sub{font-
 <div class="lg-i"><div class="lg-d" style="background:#b4161a"></div>G (&gt;420) <span class="pb">PASSOIRE</span></div>
 </div>
 <script>
-var D=[{"la":48.881699,"lo":2.275551,"d":"D","g":"C","a":"10 Rue de l'Ecole de Mars 92200 Neuilly-sur-Seine","c":"Neuilly-sur-Seine","s":9.0,"t":"appartement","co":432.0,"gv":16.0,"p":"avant 1948","dt":"25/04/2026","et":"RDC","po":"Etage 6"},{"la":48.884601,"lo":2.25838,"d":"D","g":"B","a":"2 Rue Charcot 92200 Neuilly-sur-Seine","c":"Neuilly-sur-Seine","s":24.6,"t":"appartement","co":238.0,"gv":9.0,"p":"avant 1948","dt":"25/04/2026","et":"RDC","po":"Etage 2"},{"la":48.884754,"lo":2.255799,"d":"D","g":"D","a":"9bis Rue Casimir Pinel 92200 Neuilly-sur-Seine","c":"Neuilly-sur-Seine","s":9.7,"t":"appartement","co":432.0,"gv":52.0,"p":"avant 1948","dt":"25/04/2026","et":"RDC","po":"Etage : 7ème"},{"la":48.890132,"lo":2.264238,"d":"E","g":"B","a":"11 Boulevard de la Saussaye 92200 Neuilly-sur-Seine","c":"Neuilly-sur-Seine","s":87.1,"t":"appartement","co":259.3,"gv":10.2,"p":"1978-1982","dt":"27/04/2026","et":"Etage 2","po":""},{"la":48.882321,"lo":2.255091,"d":"D","g":"C","a":"2 Rue Victor Daix 92200 Neuilly-sur-Seine","c":"Neuilly-sur-Seine","s":98.0,"t":"appartement","co":197.0,"gv":27.0,"p":"1948-1974","dt":"27/04/2026","et":"RDC","po":"4 ETAGE"},{"la":48.886235,"lo":2.268672,"d":"D","g":"D","a":"24 Boulevard d'Argenson 92200 Neuilly-sur-Seine","c":"Neuilly-sur-Seine","s":75.7,"t":"appartement","co":165.0,"gv":36.0,"p":"1948-1974","dt":"27/04/2026","et":"RDC","po":"Esc. B; Etage 1"},{"la":48.880137,"lo":2.267341,"d":"F","g":"C","a":"78 Rue Charles Laffitte 92200 Neuilly-sur-Seine","c":"Neuilly-sur-Seine","s":48.9,"t":"appartement","co":385.0,"gv":26.0,"p":"avant 1948","dt":"27/04/2026","et":"RDC","po":"5ème étage"},{"la":48.883784,"lo":2.262458,"d":"F","g":"F","a":"177 Avenue Charles de Gaulle 92200 Neuilly-sur-Seine","c":"Neuilly-sur-Seine","s":49.2,"t":"appartement","co":396.0,"gv":87.0,"p":"avant 1948","dt":"27/04/2026","et":"RDC","po":"Etage 7; Porte Droite"},{"la":48.881629,"lo":2.280534,"d":"F","g":"E","a":"29 Avenue du Roule 92200 Neuilly-sur-Seine","c":"Neuilly-sur-Seine","s":48.3,"t":"appartement","co":333.0,"gv":63.0,"p":"avant 1948","dt":"27/04/2026","et":"RDC","po":"Etage 3; Porte FACE"},{"la":48.884638,"lo":2.256151,"d":"D","g":"D","a":"9 Rue Casimir Pinel 92200 Neuilly-sur-Seine","c":"Neuilly-sur-Seine","s":145.6,"t":"appartement","co":226.0,"gv":42.0,"p":"avant 1948","dt":"27/04/2026","et":"RDC","po":"Etage 2; Porte Gauche"},{"la":48.886279,"lo":2.258214,"d":"D","g":"B","a":"3 Villa Blaise Pascal 92200 Neuilly-sur-Seine","c":"Neuilly-sur-Seine","s":19.9,"t":"appartement","co":297.0,"gv":11.0,"p":"avant 1948","dt":"27/04/2026","et":"RDC","po":"Rez-de-chaussée sur cour"},{"la":48.882801,"lo":2.273088,"d":"D","g":"B","a":"25 Rue d'Orléans 92200 Neuilly-sur-Seine","c":"Neuilly-sur-Seine","s":49.0,"t":"appartement","co":190.0,"gv":7.0,"p":"avant 1948","dt":"27/04/2026","et":"RDC","po":"Etage 6; Porte 10"},{"la":48.888043,"lo":2.263,"d":"D","g":"D","a":"53 Avenue Sainte-foy 92200 Neuilly-sur-Seine","c":"Neuilly-sur-Seine","s":110.4,"t":"appartement","co":199.0,"gv":43.0,"p":"avant 1948","dt":"27/04/2026","et":"RDC","po":"Etage : 1er"},{"la":48.888886,"lo":2.274189,"d":"E","g":"E","a":"120 Boulevard Bineau 92200 Neuilly-sur-Seine","c":"Neuilly-sur-Seine","s":48.2,"t":"appartement","co":178.0,"gv":51.0,"p":"1948-1974","dt":"27/04/2026","et":"RDC","po":"Etage 2"}];
+var D=[{"la":48.018137,"lo":6.588173,"d":"F","g":"F","a":"6 Rue Suchet 88200 Remiremont","c":"Remiremont","s":112.0,"t":"appartement","co":348.2,"gv":76.8,"p":"avant 1948","dt":"27/04/2026","et":"Etage 1","po":""},{"la":48.00046,"lo":6.641201,"d":"D","g":"B","a":"300 Rue de Pont 88200 Dommartin-lès-Remiremont","c":"Dommartin-lès-Remiremont","s":49.4,"t":"appartement","co":186.2,"gv":7.0,"p":"1948-1974","dt":"27/04/2026","et":"Etage 2","po":""}];
 var COL={A:'#009c5b',B:'#51b550',C:'#edd613',D:'#f0b41a',E:'#ef8023',F:'#e13d2e',G:'#b4161a','?':'#888'};
-var map=L.map('map',{center:[48.8844,2.2685],zoom:15});
+var map=L.map('map',{center:[48.0163,6.5906],zoom:14});
 var tiles={streets:L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{attribution:'OSM',maxZoom:19}),sat:L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',{attribution:'Esri',maxZoom:19})};
 tiles.streets.addTo(map);var curTile='streets';
 document.getElementById('tsw').addEventListener('click',function(e){if(!e.target.classList.contains('ts'))return;map.removeLayer(tiles[curTile]);curTile=e.target.dataset.t;tiles[curTile].addTo(map);document.querySelectorAll('.ts').forEach(function(b){b.classList.remove('ac')});e.target.classList.add('ac')});
