@@ -2,7 +2,7 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>Carte DPE - Levallois-Perret</title>
+<title>Carte DPE - DPE Jarny</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css"/>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.5.3/MarkerCluster.css"/>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.5.3/MarkerCluster.Default.css"/>
@@ -53,29 +53,29 @@ h1{font-size:15px;font-weight:700;color:#f0ece6}h1 span{color:#e07c4f}.sub{font-
 </style></head><body>
 <header>
 <div class="hdr-top"><div class="hl"><div class="logo">DPE</div><div>
-<h1>Levallois-Perret <span>&middot;</span> Carte DPE</h1>
-<div class="sub">15 diagnostics - 06/05/2026 11h31 - Source ADEME</div>
+<h1>DPE Jarny <span>&middot;</span> Carte DPE</h1>
+<div class="sub">2 diagnostics - 06/05/2026 11h31 - Source ADEME</div>
 </div></div>
-<div class="st">Affiches: <span class="sv" id="cnt">15</span> &middot; <span class="pw" id="pw">2 passoires F/G</span></div></div>
+<div class="st">Affiches: <span class="sv" id="cnt">2</span> &middot; <span class="pw" id="pw">0 passoires F/G</span></div></div>
 <div class="view-tabs"><button class="vtab ac" id="vtab-carte">&#127758; Carte</button><button class="vtab" id="vtab-liste">&#128203; Liste</button></div>
 <div class="tabs"><button class="tab ac" data-tab="dpe">Etiquette DPE</button><button class="tab" data-tab="date">Date du DPE</button><button class="tab" data-tab="surf">Surface</button><button class="tab" data-tab="type">Type de bien</button></div>
 <div class="filter-bar visible" id="bar-dpe"><div id="fl" style="display:flex;gap:3px;flex-wrap:wrap">
 <button class="fb ac" style="--c:#e07c4f;--bg:rgba(224,124,79,.15)" data-d="all">Tous</button>
 <button class="fb" style="--c:#009c5b;--bg:rgba(0,156,91,.12)" data-d="A">A <small>(0)</small></button>
-<button class="fb" style="--c:#51b550;--bg:rgba(81,181,80,.12)" data-d="B">B <small>(1)</small></button>
-<button class="fb" style="--c:#edd613;--bg:rgba(237,214,19,.12)" data-d="C">C <small>(2)</small></button>
-<button class="fb" style="--c:#f0b41a;--bg:rgba(240,180,26,.12)" data-d="D">D <small>(6)</small></button>
-<button class="fb" style="--c:#ef8023;--bg:rgba(239,128,35,.12)" data-d="E">E <small>(4)</small></button>
-<button class="fb" style="--c:#e13d2e;--bg:rgba(225,61,46,.12)" data-d="F">F <small>(2)</small></button>
+<button class="fb" style="--c:#51b550;--bg:rgba(81,181,80,.12)" data-d="B">B <small>(0)</small></button>
+<button class="fb" style="--c:#edd613;--bg:rgba(237,214,19,.12)" data-d="C">C <small>(0)</small></button>
+<button class="fb" style="--c:#f0b41a;--bg:rgba(240,180,26,.12)" data-d="D">D <small>(2)</small></button>
+<button class="fb" style="--c:#ef8023;--bg:rgba(239,128,35,.12)" data-d="E">E <small>(0)</small></button>
+<button class="fb" style="--c:#e13d2e;--bg:rgba(225,61,46,.12)" data-d="F">F <small>(0)</small></button>
 <button class="fb" style="--c:#b4161a;--bg:rgba(180,22,26,.12)" data-d="G">G <small>(0)</small></button>
 </div></div>
 <div class="filter-bar" id="bar-date"><span class="fl-label">Periode :</span><div class="date-group"><label style="font-size:10px;color:rgba(255,255,255,.4)">Du</label><input type="date" class="date-input" id="dt-from" value="2021-07-01"><label style="font-size:10px;color:rgba(255,255,255,.4)">au</label><input type="date" class="date-input" id="dt-to" value="2026-12-31"><button class="date-apply" id="dt-apply">Filtrer</button><button class="date-reset" id="dt-reset">Reinit.</button></div><div style="display:flex;gap:3px;flex-wrap:wrap;margin-left:6px" id="dq"><button class="dq" data-from="2026-01-01" data-to="2026-12-31">2026</button><button class="dq" data-from="2025-01-01" data-to="2025-12-31">2025</button><button class="dq" data-from="2024-01-01" data-to="2024-12-31">2024</button><button class="dq" data-from="2023-01-01" data-to="2023-12-31">2023</button><button class="dq" data-from="2022-01-01" data-to="2022-12-31">2022</button><button class="dq" data-from="2021-07-01" data-to="2021-12-31">2021</button><button class="dq" data-from="2025-10-01" data-to="2026-12-31">6 derniers mois</button><button class="dq" data-from="2025-04-01" data-to="2026-12-31">12 derniers mois</button></div></div>
 <div class="filter-bar" id="bar-surf"><div class="surf-group"><span class="fl-label">Surface :</span><div class="range-wrap"><span class="range-val" id="surf-min-val">0</span><input type="range" id="surf-min" min="0" max="300" value="0" step="5"><span style="color:rgba(255,255,255,.3);font-size:10px">a</span><input type="range" id="surf-max" min="0" max="300" value="300" step="5"><span class="range-val" id="surf-max-val">300+</span><span style="font-size:10px;color:rgba(255,255,255,.3)">m2</span></div><button class="date-apply" id="surf-apply">Filtrer</button><button class="date-reset" id="surf-reset">Reinit.</button></div><div style="display:flex;gap:3px;flex-wrap:wrap;margin-top:4px" id="sp"><button class="sp" data-min="0" data-max="20">Studios &lt;20</button><button class="sp" data-min="20" data-max="40">T1/T2 20-40</button><button class="sp" data-min="40" data-max="60">T2/T3 40-60</button><button class="sp" data-min="60" data-max="80">T3/T4 60-80</button><button class="sp" data-min="80" data-max="100">T4/T5 80-100</button><button class="sp" data-min="100" data-max="150">Grands 100-150</button><button class="sp" data-min="150" data-max="300">150+ m2</button></div></div>
 <div class="filter-bar" id="bar-type"><span class="fl-label">Type :</span><div style="display:flex;gap:6px;flex-wrap:wrap" id="tfl">
-<button class="tb ac" data-type="all"><span class="ico">&#127960;</span> Tous <small>(15)</small></button>
-<button class="tb" data-type="appartement"><span class="ico">&#127970;</span> Appartements <small>(12)</small></button>
-<button class="tb" data-type="maison"><span class="ico">&#127968;</span> Maisons <small>(0)</small></button>
-<button class="tb" data-type="immeuble"><span class="ico">&#127959;</span> Immeubles <small>(3)</small></button>
+<button class="tb ac" data-type="all"><span class="ico">&#127960;</span> Tous <small>(2)</small></button>
+<button class="tb" data-type="appartement"><span class="ico">&#127970;</span> Appartements <small>(0)</small></button>
+<button class="tb" data-type="maison"><span class="ico">&#127968;</span> Maisons <small>(2)</small></button>
+<button class="tb" data-type="immeuble"><span class="ico">&#127959;</span> Immeubles <small>(0)</small></button>
 </div></div></header>
 <div id="map"></div>
 <div id="list-view"><input type="text" class="list-search" id="list-search" placeholder="Rechercher une adresse..."><div class="list-count" id="list-count"></div><div id="list-items"></div></div>
@@ -90,9 +90,9 @@ h1{font-size:15px;font-weight:700;color:#f0ece6}h1 span{color:#e07c4f}.sub{font-
 <div class="lg-i"><div class="lg-d" style="background:#b4161a"></div>G (&gt;420) <span class="pb">PASSOIRE</span></div>
 </div>
 <script>
-var D=[{"la":48.899479,"lo":2.288011,"d":"D","g":"B","a":"19 Rue Collange 92300 Levallois-Perret","c":"Levallois-Perret","s":26.2,"t":"appartement","co":244.0,"gv":9.0,"p":"avant 1948","dt":"26/04/2026","et":"RDC","po":"RDC droite"},{"la":48.89191,"lo":2.284047,"d":"F","g":"F","a":"47 Rue Voltaire 92300 Levallois-Perret","c":"Levallois-Perret","s":18.9,"t":"appartement","co":455.0,"gv":99.0,"p":"avant 1948","dt":"26/04/2026","et":"RDC","po":"Etage RDC ; Porte 1 Gauche"},{"la":48.896644,"lo":2.291351,"d":"D","g":"B","a":"42 Rue Marjolin 92300 Levallois-Perret","c":"Levallois-Perret","s":29.7,"t":"appartement","co":207.0,"gv":7.0,"p":"avant 1948","dt":"26/04/2026","et":"RDC","po":"Etage : Rdc Gauche"},{"la":48.899479,"lo":2.288011,"d":"D","g":"B","a":"19 Rue Collange 92300 Levallois-Perret","c":"Levallois-Perret","s":13.2,"t":"appartement","co":351.0,"gv":13.0,"p":"avant 1948","dt":"26/04/2026","et":"RDC","po":"6ème étage D/G"},{"la":48.899479,"lo":2.288011,"d":"D","g":"B","a":"19 Rue Collange 92300 Levallois-Perret","c":"Levallois-Perret","s":13.2,"t":"appartement","co":356.0,"gv":13.0,"p":"avant 1948","dt":"26/04/2026","et":"RDC","po":"6ème étage D/G"},{"la":48.894725,"lo":2.299305,"d":"C","g":"C","a":"7 Rue Jules Verne 92300 Levallois-Perret","c":"Levallois-Perret","s":93.3,"t":"appartement","co":128.0,"gv":24.0,"p":"2013-2021","dt":"27/04/2026","et":"RDC","po":"Etage 6; Porte D61"},{"la":48.891441,"lo":2.287072,"d":"F","g":"D","a":"42 Rue Carnot 92300 Levallois-Perret","c":"Levallois-Perret","s":null,"t":"immeuble","co":354.5,"gv":32.1,"p":"avant 1948","dt":"27/04/2026","et":"","po":""},{"la":48.900113,"lo":2.284344,"d":"C","g":"C","a":"3 Rue Charles Deutschmann 92300 Levallois-Perret","c":"Levallois-Perret","s":155.7,"t":"appartement","co":121.0,"gv":21.0,"p":"1989-2000","dt":"27/04/2026","et":"RDC","po":"5ème et 6ème étages, Appartement"},{"la":48.896933,"lo":2.28854,"d":"B","g":"A","a":"73 Rue Paul Vaillant Couturier 92300 Levallois-Perret","c":"Levallois-Perret","s":143.6,"t":"appartement","co":101.0,"gv":3.0,"p":"1989-2000","dt":"27/04/2026","et":"Etage 3","po":"AU FOND"},{"la":48.893576,"lo":2.293861,"d":"E","g":"B","a":"131 Rue Louis Rouquier 92300 Levallois-Perret","c":"Levallois-Perret","s":80.1,"t":"appartement","co":266.0,"gv":10.0,"p":"avant 1948","dt":"27/04/2026","et":"RDC","po":"Etage 3; Porte droite"},{"la":48.890993,"lo":2.285859,"d":"D","g":"D","a":"65 Rue Anatole France 92300 Levallois-Perret","c":"Levallois-Perret","s":null,"t":"immeuble","co":191.0,"gv":38.0,"p":"avant 1948","dt":"27/04/2026","et":"RDC","po":""},{"la":48.895864,"lo":2.295437,"d":"E","g":"E","a":"5 Rue Bellanger 92300 Levallois-Perret","c":"Levallois-Perret","s":51.8,"t":"appartement","co":229.6,"gv":51.3,"p":"avant 1948","dt":"27/04/2026","et":"Etage 3","po":""},{"la":48.893576,"lo":2.282954,"d":"E","g":"B","a":"58 Rue Kléber 92300 Levallois-Perret","c":"Levallois-Perret","s":26.7,"t":"appartement","co":278.1,"gv":10.7,"p":"avant 1948","dt":"27/04/2026","et":"Etage 3","po":"Gauche gauche"},{"la":48.892217,"lo":2.283221,"d":"E","g":"E","a":"88 Rue Marius Aufan 92300 Levallois-Perret","c":"Levallois-Perret","s":48.9,"t":"appartement","co":296.0,"gv":65.0,"p":"1978-1982","dt":"27/04/2026","et":"RDC","po":"Etage : RDC ;"},{"la":48.89223,"lo":2.288083,"d":"D","g":"D","a":"70 Rue Aristide Briand 92300 Levallois-Perret","c":"Levallois-Perret","s":null,"t":"immeuble","co":185.0,"gv":30.0,"p":"1948-1974","dt":"27/04/2026","et":"RDC","po":"Bâtiment 70 rue Aristide Bria"}];
+var D=[{"la":49.157488,"lo":5.86941,"d":"D","g":"B","a":"13 Rue Jacques Duclos 54800 Jarny","c":"Jarny","s":113.6,"t":"maison","co":247.0,"gv":10.0,"p":"1978-1982","dt":"27/04/2026","et":"RDC","po":""},{"la":49.275297,"lo":5.869073,"d":"D","g":"D","a":"1 Rue En Fournirue 54150 Anoux","c":"Anoux","s":141.3,"t":"maison","co":179.0,"gv":31.0,"p":"avant 1948","dt":"27/04/2026","et":"RDC","po":"Maison"}];
 var COL={A:'#009c5b',B:'#51b550',C:'#edd613',D:'#f0b41a',E:'#ef8023',F:'#e13d2e',G:'#b4161a','?':'#888'};
-var map=L.map('map',{center:[48.8938,2.2882],zoom:15});
+var map=L.map('map',{center:[49.16,5.88],zoom:12});
 var tiles={streets:L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{attribution:'OSM',maxZoom:19}),sat:L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',{attribution:'Esri',maxZoom:19})};
 tiles.streets.addTo(map);var curTile='streets';
 document.getElementById('tsw').addEventListener('click',function(e){if(!e.target.classList.contains('ts'))return;map.removeLayer(tiles[curTile]);curTile=e.target.dataset.t;tiles[curTile].addTo(map);document.querySelectorAll('.ts').forEach(function(b){b.classList.remove('ac')});e.target.classList.add('ac')});
