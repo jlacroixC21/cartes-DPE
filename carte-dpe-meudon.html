@@ -54,7 +54,7 @@ h1{font-size:15px;font-weight:700;color:#f0ece6}h1 span{color:#e07c4f}.sub{font-
 <header>
 <div class="hdr-top"><div class="hl"><div class="logo">DPE</div><div>
 <h1>Meudon <span>&middot;</span> Carte DPE</h1>
-<div class="sub">9 diagnostics - 18/05/2026 16h12 - Source ADEME</div>
+<div class="sub">9 diagnostics - 18/05/2026 16h17 - Source ADEME</div>
 </div></div>
 <div class="st">Affiches: <span class="sv" id="cnt">9</span> &middot; <span class="pw" id="pw">3 passoires F/G</span></div></div>
 <div class="view-tabs"><button class="vtab ac" id="vtab-carte">&#127758; Carte</button><button class="vtab" id="vtab-liste">&#128203; Liste</button></div>
@@ -121,7 +121,7 @@ var lbcSurf=r.s?"&square="+surfMin+"-"+surfMax:"";
 var lbcUrl="https://www.leboncoin.fr/recherche?text="+lbcQ+"&category=9"+lbcType+lbcSurf;
 var slType=r.t==="maison"?"&type=2":"&type=1";
 var slSurf=r.s?"&surfacemin="+surfMin+"&surfacemax="+surfMax:"";
-var biUrl="https://www.bienici.com/recherche/achat/"+encodeURIComponent(r.c)+"?surface-min="+surfMin+"&surface-max="+surfMax;
+var biUrl="https://www.bienici.com/recherche/achat/"+encodeURIComponent(r.t+" "+r.c)+"?surface-min="+surfMin+"&surface-max="+surfMax+"&energyClassification="+r.d;
 var gmUrl="https://www.google.com/maps/search/"+encodeURIComponent(r.a+" "+r.c);
 var lbcBtn='<div style="margin-top:6px"><a href="'+lbcUrl+'" target="_blank" style="display:inline-block;background:#FF6E14;color:#fff;padding:4px 10px;border-radius:4px;font-size:10px;font-weight:700;text-decoration:none;margin-right:4px">LeBonCoin</a><a href="'+biUrl+'" target="_blank" style="display:inline-block;background:#2CB5A0;color:#fff;padding:4px 10px;border-radius:4px;font-size:10px;font-weight:700;text-decoration:none;margin-right:4px">Bienici</a><a href="'+gmUrl+'" target="_blank" style="display:inline-block;background:#4285F4;color:#fff;padding:4px 10px;border-radius:4px;font-size:10px;font-weight:700;text-decoration:none">Google Maps</a></div>';
 m.bindPopup('<div class="dp"><span class="db" style="background:'+COL[r.d]+'">'+r.d+'</span><span class="tl">DPE '+r.d+'</span> '+pt+'<div class="ad">'+esc(r.a)+'</div><div class="ir"><b>Commune:</b> '+esc(r.c)+'<br><b>Type:</b> '+esc(r.t)+'<br><b>Surface:</b> '+sf+'<br><b>Conso:</b> '+co+'<br><b>GES:</b> '+ge+'<br><b>Periode:</b> '+(r.p||'N/C')+'</div>'+locH+dtH+lbcBtn+'</div>');
