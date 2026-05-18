@@ -54,7 +54,7 @@ h1{font-size:15px;font-weight:700;color:#f0ece6}h1 span{color:#e07c4f}.sub{font-
 <header>
 <div class="hdr-top"><div class="hl"><div class="logo">DPE</div><div>
 <h1>Colombes <span>&middot;</span> Carte DPE</h1>
-<div class="sub">18 diagnostics - 18/05/2026 09h14 - Source ADEME</div>
+<div class="sub">18 diagnostics - 18/05/2026 16h12 - Source ADEME</div>
 </div></div>
 <div class="st">Affiches: <span class="sv" id="cnt">18</span> &middot; <span class="pw" id="pw">7 passoires F/G</span></div></div>
 <div class="view-tabs"><button class="vtab ac" id="vtab-carte">&#127758; Carte</button><button class="vtab" id="vtab-liste">&#128203; Liste</button></div>
@@ -114,15 +114,16 @@ var sf=r.s?r.s+' m2':'N/C';var co=r.co?r.co+' kWh/m2/an':'N/C';var ge=r.gv?r.gv+
 var locH='';if(r.et||r.po){var p=[];if(r.et)p.push('<b>'+esc(r.et)+'</b>');if(r.po)p.push(esc(r.po));locH='<div class="loc-info"><span>Localisation:</span> '+p.join(' - ')+'</div>'}
 var dtH=r.dt?'<div class="dt-badge">DPE du '+esc(r.dt)+'</div>':'';
 var lbcQ=encodeURIComponent(r.t+" DPE "+r.d+" "+r.c);
-var surfMin=r.s?Math.max(0,Math.floor(r.s*0.85)):0;
-var surfMax=r.s?Math.ceil(r.s*1.15):0;
+var surfMin=r.s?Math.max(0,Math.floor(r.s-3)):0;
+var surfMax=r.s?Math.ceil(r.s+3):0;
 var lbcType=r.t==="maison"?"&real_estate_type=1":"&real_estate_type=2";
 var lbcSurf=r.s?"&square="+surfMin+"-"+surfMax:"";
 var lbcUrl="https://www.leboncoin.fr/recherche?text="+lbcQ+"&category=9"+lbcType+lbcSurf;
 var slType=r.t==="maison"?"&type=2":"&type=1";
 var slSurf=r.s?"&surfacemin="+surfMin+"&surfacemax="+surfMax:"";
+var biUrl="https://www.bienici.com/recherche/achat/"+encodeURIComponent(r.c)+"?surface-min="+surfMin+"&surface-max="+surfMax;
 var gmUrl="https://www.google.com/maps/search/"+encodeURIComponent(r.a+" "+r.c);
-var lbcBtn='<div style="margin-top:6px"><a href="'+lbcUrl+'" target="_blank" style="display:inline-block;background:#FF6E14;color:#fff;padding:4px 10px;border-radius:4px;font-size:10px;font-weight:700;text-decoration:none;margin-right:4px">LeBonCoin</a><a href="'+gmUrl+'" target="_blank" style="display:inline-block;background:#4285F4;color:#fff;padding:4px 10px;border-radius:4px;font-size:10px;font-weight:700;text-decoration:none">Google Maps</a></div>';
+var lbcBtn='<div style="margin-top:6px"><a href="'+lbcUrl+'" target="_blank" style="display:inline-block;background:#FF6E14;color:#fff;padding:4px 10px;border-radius:4px;font-size:10px;font-weight:700;text-decoration:none;margin-right:4px">LeBonCoin</a><a href="'+biUrl+'" target="_blank" style="display:inline-block;background:#2CB5A0;color:#fff;padding:4px 10px;border-radius:4px;font-size:10px;font-weight:700;text-decoration:none;margin-right:4px">Bienici</a><a href="'+gmUrl+'" target="_blank" style="display:inline-block;background:#4285F4;color:#fff;padding:4px 10px;border-radius:4px;font-size:10px;font-weight:700;text-decoration:none">Google Maps</a></div>';
 m.bindPopup('<div class="dp"><span class="db" style="background:'+COL[r.d]+'">'+r.d+'</span><span class="tl">DPE '+r.d+'</span> '+pt+'<div class="ad">'+esc(r.a)+'</div><div class="ir"><b>Commune:</b> '+esc(r.c)+'<br><b>Type:</b> '+esc(r.t)+'<br><b>Surface:</b> '+sf+'<br><b>Conso:</b> '+co+'<br><b>GES:</b> '+ge+'<br><b>Periode:</b> '+(r.p||'N/C')+'</div>'+locH+dtH+lbcBtn+'</div>');
 am.push(m)});
 function getFiltered(){var res=[];D.forEach(function(r,idx){var ok1=(curDPE==='all'||r.d===curDPE);var dtInt=parseD(r.dt);var ok2=(dtInt>=curDateFrom&&dtInt<=curDateTo);var sv=r.s||0;var ok3=(sv===0||(sv>=curSurfMin&&sv<=curSurfMax));var ok4=(curType==='all'||r.t===curType);var ok5=(!searchText||r.a.toLowerCase().indexOf(searchText)>=0);if(ok1&&ok2&&ok3&&ok4&&ok5)res.push({r:r,idx:idx})});return res}
