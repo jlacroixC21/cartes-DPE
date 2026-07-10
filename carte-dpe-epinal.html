@@ -43,6 +43,7 @@ h1{font-size:15px;font-weight:700;color:#f0ece6}h1 span{color:#e07c4f}.sub{font-
 .list-count{padding:8px 16px;font-size:10px;color:rgba(255,255,255,.3);text-transform:uppercase;letter-spacing:1px;border-bottom:1px solid rgba(255,255,255,.06)}
 .list-search{width:100%;padding:10px 16px;background:#0d1117;border:none;border-bottom:1px solid rgba(255,255,255,.1);color:#e8e6e1;font-size:13px;font-family:inherit;outline:none}
 .list-search::placeholder{color:rgba(255,255,255,.25)}.list-search:focus{border-bottom-color:#e07c4f}
+.list-toolbar{display:flex;align-items:center;gap:0}.list-toolbar .list-search{flex:1}.export-btn{background:#e07c4f;border:none;color:#0d1b2a;padding:10px 16px;font-size:11px;font-family:inherit;cursor:pointer;font-weight:700;border-bottom:1px solid rgba(255,255,255,.1);white-space:nowrap}
 .leaflet-control-zoom a{background:#1a2744!important;color:#e8e6e1!important;border-color:rgba(255,255,255,.1)!important}.leaflet-control-attribution{background:rgba(13,27,42,.85)!important;color:rgba(255,255,255,.4)!important;font-size:9px!important}
 .dp{font-family:"DM Sans",sans-serif;min-width:210px}.dp .db{display:inline-block;width:26px;height:26px;border-radius:5px;text-align:center;line-height:26px;font-weight:700;font-size:13px;color:#fff;margin-right:5px;vertical-align:middle}.dp .tl{font-weight:700;font-size:13px;vertical-align:middle}.dp .ad{font-size:11px;color:#555;margin:5px 0 3px}.dp .ir{font-size:10px;color:#666;line-height:1.7}.dp .ir b{color:#333}
 .dp .dt-badge{display:inline-block;background:#f0f4ff;border:1px solid #c5cfe0;color:#3a5a8c;padding:1px 6px;border-radius:3px;font-size:9px;font-weight:600;margin-top:4px}.dp .loc-info{background:#f8f9fa;border-radius:4px;padding:4px 6px;margin-top:4px;font-size:10px;color:#444}.dp .loc-info span{color:#888;font-size:9px}
@@ -54,7 +55,7 @@ h1{font-size:15px;font-weight:700;color:#f0ece6}h1 span{color:#e07c4f}.sub{font-
 <header>
 <div class="hdr-top"><div class="hl"><div class="logo">DPE</div><div>
 <h1>Epinal <span>&middot;</span> Carte DPE</h1>
-<div class="sub">101 diagnostics - 10/07/2026 09h01 - Source ADEME</div>
+<div class="sub">101 diagnostics - 10/07/2026 12h07 - Source ADEME</div>
 </div></div>
 <div class="st">Affiches: <span class="sv" id="cnt">101</span> &middot; <span class="pw" id="pw">5 passoires F/G</span></div></div>
 <div class="view-tabs"><button class="vtab ac" id="vtab-carte">&#127758; Carte</button><button class="vtab" id="vtab-liste">&#128203; Liste</button></div>
@@ -78,7 +79,7 @@ h1{font-size:15px;font-weight:700;color:#f0ece6}h1 span{color:#e07c4f}.sub{font-
 <button class="tb" data-type="immeuble"><span class="ico">&#127959;</span> Immeubles <small>(14)</small></button>
 </div></div></header>
 <div id="map"></div>
-<div id="list-view"><input type="text" class="list-search" id="list-search" placeholder="Rechercher une adresse..."><div class="list-count" id="list-count"></div><div id="list-items"></div></div>
+<div id="list-view"><div class="list-toolbar"><input type="text" class="list-search" id="list-search" placeholder="Rechercher une adresse..."><button class="export-btn" id="export-btn">Exporter Excel</button></div><div class="list-count" id="list-count"></div><div id="list-items"></div></div>
 <div class="tsw" id="tsw"><button class="ts ac" data-t="streets">Rues</button><button class="ts" data-t="sat">Satellite</button></div>
 <div class="lg" id="lg"><div class="lg-t">Etiquette DPE</div>
 <div class="lg-i"><div class="lg-d" style="background:#009c5b"></div>A (&le;70)</div>
@@ -145,5 +146,13 @@ document.getElementById('surf-apply').addEventListener('click',function(){docume
 document.getElementById('surf-reset').addEventListener('click',function(){sMin.value=0;sMax.value=300;updateSurfLabels();document.querySelectorAll('.sp').forEach(function(b){b.classList.remove('ac')});curSurfMin=0;curSurfMax=9999;applyFilters()});
 document.getElementById('sp').addEventListener('click',function(e){var btn=e.target.closest('.sp');if(!btn)return;document.querySelectorAll('.sp').forEach(function(b){b.classList.remove('ac')});btn.classList.add('ac');var mn=parseInt(btn.dataset.min);var mx=parseInt(btn.dataset.max);sMin.value=mn;sMax.value=mx;updateSurfLabels();curSurfMin=mn;curSurfMax=mx>=300?9999:mx;applyFilters()});
 document.getElementById('tfl').addEventListener('click',function(e){var btn=e.target.closest('.tb');if(!btn)return;document.querySelectorAll('#tfl .tb').forEach(function(b){b.classList.remove('ac')});btn.classList.add('ac');curType=btn.dataset.type;applyFilters()});
+document.getElementById('export-btn').addEventListener('click',function(){
+var filtered=getFiltered();
+var csv='\uFEFFAdresse;Commune;Type;DPE;GES;Surface m2;Conso kWh/m2/an;GES kgCO2/m2/an;Periode;Date DPE;Etage;Porte\n';
+filtered.forEach(function(item){var r=item.r;
+csv+=r.a+';'+r.c+';'+r.t+';'+r.d+';'+r.g+';'+(r.s||'')+';'+(r.co||'')+';'+(r.gv||'')+';'+r.p+';'+r.dt+';'+r.et+';'+r.po+'\n'});
+var blob=new Blob([csv],{type:'text/csv;charset=utf-8;'});
+var url=URL.createObjectURL(blob);
+var a=document.createElement('a');a.href=url;a.download='export-dpe.csv';a.click()});
 applyFilters();map.addLayer(cl);
 </script></body></html>
