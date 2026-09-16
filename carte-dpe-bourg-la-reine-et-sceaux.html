@@ -80,7 +80,7 @@ h1{font-size:15px;font-weight:700;color:#f0ece6}h1 span{color:#e07c4f}.sub{font-
 <header>
 <div class="hdr-top"><div class="hl"><div class="logo">DPE</div><div>
 <h1>Bourg-la-Reine et Sceaux <span>&middot;</span> Carte DPE</h1>
-<div class="sub">577 diagnostics - 16/09/2026 18h35 - Source ADEME</div>
+<div class="sub">577 diagnostics - 16/09/2026 18h44 - Source ADEME</div>
 </div></div>
 <div class="st">Affiches: <span class="sv" id="cnt">577</span> &middot; <span class="pw" id="pw">15 passoires F/G</span></div></div>
 <div class="view-tabs"><button class="vtab ac" id="vtab-carte">&#127758; Carte</button><button class="vtab" id="vtab-liste">&#128203; Liste</button><button class="vtab" id="vtab-ann">&#127991; Annonces</button></div>
@@ -120,6 +120,7 @@ h1{font-size:15px;font-weight:700;color:#f0ece6}h1 span{color:#e07c4f}.sub{font-
 <select id="an-dpe"><option value="">DPE ?</option><option>A</option><option>B</option><option>C</option><option>D</option><option>E</option><option>F</option><option>G</option></select>
 <input type="number" id="an-conso" placeholder="Conso kWh/m2/an" style="width:140px">
 <select id="an-gesl"><option value="">GES ?</option><option>A</option><option>B</option><option>C</option><option>D</option><option>E</option><option>F</option><option>G</option></select>
+<input type="number" id="an-etage" placeholder="Etage" style="width:80px">
 <input type="number" id="an-ges" placeholder="GES" style="width:85px">
 <input type="text" id="an-prix" placeholder="Prix" style="width:110px">
 <button class="ann-btn" id="an-add">Ajouter</button>
@@ -200,6 +201,15 @@ var annMk = [];
 function annLoad(){ try{ var s = localStorage.getItem(ANN_KEY); ANN = s ? JSON.parse(s) : []; }catch(e){ ANN = []; } }
 function annSave(){ try{ localStorage.setItem(ANN_KEY, JSON.stringify(ANN)); }catch(e){} }
 
+// Extrait le numero d etage depuis le libelle ADEME ("RDC", "Etage 3"...)
+function etgNum(s){
+  if(!s) return null;
+  var v = String(s).toLowerCase();
+  if(v.indexOf('rdc') >= 0) return 0;
+  var m = v.match(/(\d+)/);
+  return m ? parseInt(m[1]) : null;
+}
+
 function nrm(s){ if(!s) return ''; return s.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9]+/g,' ').trim(); }
 
 // Cherche TOUS les DPE ADEME compatibles avec les infos de l'annonce.
@@ -211,6 +221,10 @@ function annCandidats(a){
     if(a.type && r.t && r.t !== a.type) return;
     if(a.dpe && r.d && r.d !== a.dpe) return;
     if(a.gesl && r.g && r.g !== a.gesl) return;
+    if(a.etage !== '' && a.etage !== undefined && r.et){
+      var en = etgNum(r.et);
+      if(en !== null && en !== parseInt(a.etage)) return;
+    }
 
     var sc = 0;
     var ec = null;
@@ -218,9 +232,10 @@ function annCandidats(a){
     // Surface : tolerance 2 m2, mais plus l ecart est faible plus le score monte
     if(a.surf && r.s){
       ec = Math.abs(r.s - a.surf);
-      if(ec > 2) return;
+      if(ec > 3) return;
       if(ec <= 0.3){ sc += 5; }
       else if(ec <= 1){ sc += 3; }
+      else if(ec <= 2){ sc += 2; }
       else { sc += 1; }
     }
 
@@ -244,6 +259,7 @@ function annCandidats(a){
 
     if(a.dpe && r.d){ sc += 2; }
     if(a.gesl && r.g){ sc += 3; }
+    if(a.etage !== '' && a.etage !== undefined && r.et && etgNum(r.et) !== null){ sc += 5; }
     if(a.type && r.t){ sc += 1; }
 
     res.push({ idx: idx, ecart: (ec === null ? 99 : ec), sc: sc });
@@ -371,6 +387,7 @@ function renderAnn(){
       if(r.d) inf.push('DPE ' + esc(r.d));
       if(r.t) inf.push(esc(r.t));
       if(r.co) inf.push(r.co + ' kWh/m2/an');
+      if(r.et) inf.push(esc(r.et));
       if(r.g) inf.push('GES ' + esc(r.g));
       if(r.gv) inf.push(r.gv + ' kgCO2');
       if(r.dt) inf.push('diagnostic du ' + esc(r.dt));
@@ -406,6 +423,7 @@ document.getElementById('an-add').addEventListener('click', function(){
     conso: parseFloat(document.getElementById('an-conso').value) || 0,
     ges: parseFloat(document.getElementById('an-ges').value) || 0,
     gesl: document.getElementById('an-gesl').value,
+    etage: document.getElementById('an-etage').value,
     prix: document.getElementById('an-prix').value.trim(),
     cd: [],
     ch: -1
@@ -429,6 +447,7 @@ document.getElementById('an-add').addEventListener('click', function(){
   document.getElementById('an-conso').value = '';
   document.getElementById('an-ges').value = '';
   document.getElementById('an-gesl').value = '';
+  document.getElementById('an-etage').value = '';
   if(a.cd.length === 1){
     msg.style.color = '#3ddc8c';
     msg.textContent = 'Une seule adresse correspond : ' + D[a.cd[0].idx].a;
