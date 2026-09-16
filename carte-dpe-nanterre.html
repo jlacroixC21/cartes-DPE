@@ -80,7 +80,7 @@ h1{font-size:15px;font-weight:700;color:#f0ece6}h1 span{color:#e07c4f}.sub{font-
 <header>
 <div class="hdr-top"><div class="hl"><div class="logo">DPE</div><div>
 <h1>Nanterre <span>&middot;</span> Carte DPE</h1>
-<div class="sub">1235 diagnostics - 16/09/2026 09h44 - Source ADEME</div>
+<div class="sub">1235 diagnostics - 16/09/2026 18h34 - Source ADEME</div>
 </div></div>
 <div class="st">Affiches: <span class="sv" id="cnt">1235</span> &middot; <span class="pw" id="pw">11 passoires F/G</span></div></div>
 <div class="view-tabs"><button class="vtab ac" id="vtab-carte">&#127758; Carte</button><button class="vtab" id="vtab-liste">&#128203; Liste</button><button class="vtab" id="vtab-ann">&#127991; Annonces</button></div>
@@ -119,6 +119,7 @@ h1{font-size:15px;font-weight:700;color:#f0ece6}h1 span{color:#e07c4f}.sub{font-
 <input type="number" id="an-surf" placeholder="Surface m2" style="width:110px">
 <select id="an-dpe"><option value="">DPE ?</option><option>A</option><option>B</option><option>C</option><option>D</option><option>E</option><option>F</option><option>G</option></select>
 <input type="number" id="an-conso" placeholder="Conso kWh/m2/an" style="width:140px">
+<select id="an-gesl"><option value="">GES ?</option><option>A</option><option>B</option><option>C</option><option>D</option><option>E</option><option>F</option><option>G</option></select>
 <input type="number" id="an-ges" placeholder="GES" style="width:85px">
 <input type="text" id="an-prix" placeholder="Prix" style="width:110px">
 <button class="ann-btn" id="an-add">Ajouter</button>
@@ -209,6 +210,7 @@ function annCandidats(a){
     if(a.com && nrm(r.c) !== nrm(a.com)) return;
     if(a.type && r.t && r.t !== a.type) return;
     if(a.dpe && r.d && r.d !== a.dpe) return;
+    if(a.gesl && r.g && r.g !== a.gesl) return;
 
     var sc = 0;
     var ec = null;
@@ -241,6 +243,7 @@ function annCandidats(a){
     }
 
     if(a.dpe && r.d){ sc += 2; }
+    if(a.gesl && r.g){ sc += 3; }
     if(a.type && r.t){ sc += 1; }
 
     res.push({ idx: idx, ecart: (ec === null ? 99 : ec), sc: sc });
@@ -260,7 +263,7 @@ function annNiveau(sc){
   return { txt: 'POSSIBLE', col: 'rgba(255,255,255,.45)', bg: 'rgba(255,255,255,.08)' };
 }
 
-function svUrl(la, lo){ return 'https://www.google.com/maps/@?api=1&map_action=pano&viewpoint=' + la + ',' + lo; }
+function svUrl(la, lo){ return 'https://maps.google.com/maps?q=&layer=c&cbll=' + la + ',' + lo + '&cbp=12,0,0,0,0'; }
 function gmUrl2(txt){ return 'https://www.google.com/maps/search/' + encodeURIComponent(txt); }
 
 function annIcon(confirme){
@@ -305,9 +308,10 @@ function annDraw(){
       if(r.d) dt.push('DPE ' + esc(r.d));
       if(a.prix) dt.push(esc(a.prix));
       if(dt.length){ ht += '<div style="font-size:11px;margin-bottom:6px">' + dt.join(' &middot; ') + '</div>'; }
-      ht += '<a href="' + svUrl(r.la, r.lo) + '" target="_blank" style="display:inline-block;background:#4285F4;color:#fff;padding:4px 10px;border-radius:4px;font-size:10px;font-weight:700;text-decoration:none;margin-right:5px">Street View</a>';
+      ht += '<a href="' + svUrl(r.la, r.lo) + '" target="_blank" rel="noopener" style="display:inline-block;background:#4285F4;color:#fff;padding:4px 10px;border-radius:4px;font-size:10px;font-weight:700;text-decoration:none;margin-right:5px">Street View</a>';
+      ht += '<a href="' + gmUrl2(r.a + ' ' + r.c) + '" target="_blank" rel="noopener" style="display:inline-block;background:#5a6b7d;color:#fff;padding:4px 10px;border-radius:4px;font-size:10px;font-weight:700;text-decoration:none;margin-right:5px">Plan</a>';
       if(a.url){
-        ht += '<a href="' + a.url + '" target="_blank" style="display:inline-block;background:#C8102E;color:#fff;padding:4px 10px;border-radius:4px;font-size:10px;font-weight:700;text-decoration:none">Voir l&rsquo;annonce</a>';
+        ht += '<a href="' + a.url + '" target="_blank" rel="noopener" style="display:inline-block;background:#C8102E;color:#fff;padding:4px 10px;border-radius:4px;font-size:10px;font-weight:700;text-decoration:none">Voir l&rsquo;annonce</a>';
       }
       ht += '</div>';
       mk.bindPopup(ht);
@@ -348,7 +352,7 @@ function renderAnn(){
     }
 
     html += '<div class="ann-act" style="margin-top:7px">';
-    if(a.url){ html += '<a href="' + a.url + '" target="_blank">Voir l&rsquo;annonce</a>'; }
+    if(a.url){ html += '<a href="' + a.url + '" target="_blank" rel="noopener">Voir l&rsquo;annonce</a>'; }
     html += '<button class="ann-del" data-del="' + i + '">Supprimer</button>';
     html += '</div>';
 
@@ -367,6 +371,7 @@ function renderAnn(){
       if(r.d) inf.push('DPE ' + esc(r.d));
       if(r.t) inf.push(esc(r.t));
       if(r.co) inf.push(r.co + ' kWh/m2/an');
+      if(r.g) inf.push('GES ' + esc(r.g));
       if(r.gv) inf.push(r.gv + ' kgCO2');
       if(r.dt) inf.push('diagnostic du ' + esc(r.dt));
       html += '<div class="cd">' + inf.join(' &middot; ') + '</div>';
@@ -375,8 +380,8 @@ function renderAnn(){
         html += '<div style="margin-top:4px"><span class="ann-tag" style="background:' + nv.bg + ';color:' + nv.col + '">' + nv.txt + '</span></div>';
       }
       html += '<div class="cl">';
-      html += '<a href="' + svUrl(r.la, r.lo) + '" target="_blank">Street View</a>';
-      html += '<a href="' + gmUrl2(r.a + ' ' + r.c) + '" target="_blank">Plan</a>';
+      html += '<a href="' + svUrl(r.la, r.lo) + '" target="_blank" rel="noopener">Street View</a>';
+      html += '<a href="' + gmUrl2(r.a + ' ' + r.c) + '" target="_blank" rel="noopener">Plan</a>';
       html += '<a href="#" data-go="' + i + '" data-pt="' + cd.idx + '">Sur la carte</a>';
       if(a.ch !== cd.idx){
         html += '<button class="cand-ok" data-ok="' + i + '" data-idx="' + cd.idx + '">C&rsquo;est ce bien</button>';
@@ -400,6 +405,7 @@ document.getElementById('an-add').addEventListener('click', function(){
     dpe: document.getElementById('an-dpe').value,
     conso: parseFloat(document.getElementById('an-conso').value) || 0,
     ges: parseFloat(document.getElementById('an-ges').value) || 0,
+    gesl: document.getElementById('an-gesl').value,
     prix: document.getElementById('an-prix').value.trim(),
     cd: [],
     ch: -1
@@ -422,6 +428,7 @@ document.getElementById('an-add').addEventListener('click', function(){
   document.getElementById('an-dpe').value = '';
   document.getElementById('an-conso').value = '';
   document.getElementById('an-ges').value = '';
+  document.getElementById('an-gesl').value = '';
   if(a.cd.length === 1){
     msg.style.color = '#3ddc8c';
     msg.textContent = 'Une seule adresse correspond : ' + D[a.cd[0].idx].a;
