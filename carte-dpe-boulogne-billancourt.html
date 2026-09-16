@@ -73,7 +73,7 @@ h1{font-size:15px;font-weight:700;color:#f0ece6}h1 span{color:#e07c4f}.sub{font-
 <header>
 <div class="hdr-top"><div class="hl"><div class="logo">DPE</div><div>
 <h1>Boulogne-Billancourt <span>&middot;</span> Carte DPE</h1>
-<div class="sub">1950 diagnostics - 16/09/2026 07h38 - Source ADEME</div>
+<div class="sub">1950 diagnostics - 16/09/2026 07h48 - Source ADEME</div>
 </div></div>
 <div class="st">Affiches: <span class="sv" id="cnt">1950</span> &middot; <span class="pw" id="pw">39 passoires F/G</span></div></div>
 <div class="view-tabs"><button class="vtab ac" id="vtab-carte">&#127758; Carte</button><button class="vtab" id="vtab-liste">&#128203; Liste</button><button class="vtab" id="vtab-ann">&#127991; Annonces</button></div>
@@ -208,6 +208,7 @@ var dt=[];if(a.type)dt.push(esc(a.type));if(a.surf)dt.push(a.surf+' m2');if(a.dp
 if(dt.length){ht+='<div style="font-size:11px;margin-bottom:6px">'+dt.join(' &middot; ')+'</div>'}
 if(a.mi>=0){ht+='<div style="font-size:10px;background:#e8f7ee;color:#0a7d43;padding:3px 6px;border-radius:3px;margin-bottom:6px">Rapproche d\u2019un DPE ADEME</div>'}
 if(a.url){ht+='<a href="'+a.url+'" target="_blank" style="display:inline-block;background:#C8102E;color:#fff;padding:4px 10px;border-radius:4px;font-size:10px;font-weight:700;text-decoration:none">Voir l\u2019annonce</a>'}
+if(a.la){ht+='<a href="https://www.google.com/maps/@?api=1&map_action=pano&viewpoint='+a.la+','+a.lo+'" target="_blank" style="display:inline-block;background:#4285F4;color:#fff;padding:4px 10px;border-radius:4px;font-size:10px;font-weight:700;text-decoration:none;margin-left:5px">Street View</a>'}
 ht+='</div>';mk.bindPopup(ht);annLayer.addLayer(mk);annMk.push(mk)});
 if(!map.hasLayer(annLayer)){map.addLayer(annLayer)}}
 function renderAnn(){var c=document.getElementById('ann-list');
@@ -221,6 +222,7 @@ if(a.mi>=0){html+='<span class="ann-tag ann-ok">RAPPROCHE D UN DPE</span>'}else{
 if(!a.la){html+='<span class="ann-tag ann-no">NON LOCALISEE</span>'}
 html+='<div class="ann-act" style="margin-top:7px">';
 if(a.url){html+='<a href="'+a.url+'" target="_blank">Voir l\u2019annonce</a>'}
+if(a.la){html+='<a href="https://www.google.com/maps/@?api=1&map_action=pano&viewpoint='+a.la+','+a.lo+'" target="_blank">Street View</a>'}
 if(a.la){html+='<a href="#" data-go="'+i+'">Voir sur la carte</a>'}
 html+='<button class="ann-del" data-del="'+i+'">Supprimer</button>';
 html+='</div></div>'});c.innerHTML=html}
