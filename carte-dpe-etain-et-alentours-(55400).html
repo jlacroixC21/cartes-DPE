@@ -33,6 +33,24 @@ h1{font-size:15px;font-weight:700;color:#f0ece6}h1 span{color:#e07c4f}.sub{font-
 .range-val{font-size:12px;color:#e07c4f;font-weight:700;min-width:40px;text-align:center}
 #map{flex:1;width:100%}
 #list-view{flex:1;width:100%;overflow-y:auto;display:none;background:#0d1117}
+#ann-view{flex:1;width:100%;overflow-y:auto;display:none;background:#0d1117;padding:14px}
+.ann-form{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);border-radius:6px;padding:14px;margin-bottom:16px;max-width:760px}
+.ann-form h3{margin:0 0 10px;font-size:13px;color:#e07c4f;font-weight:700}
+.ann-row{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:8px}
+.ann-form input,.ann-form select{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.15);color:#e8e6e1;padding:7px 9px;border-radius:4px;font-size:12px;font-family:inherit}
+.ann-form input:focus,.ann-form select:focus{outline:none;border-color:#e07c4f}
+.ann-form input::placeholder{color:rgba(255,255,255,.3)}
+.ann-btn{background:#e07c4f;border:none;color:#fff;padding:8px 18px;border-radius:4px;font-size:12px;font-weight:700;font-family:inherit;cursor:pointer}
+.ann-btn:hover{background:#c96a40}.ann-btn:disabled{opacity:.5;cursor:default}
+.ann-msg{font-size:11px;margin-top:8px;min-height:15px}
+.ann-item{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);border-left:3px solid #fff;border-radius:5px;padding:10px 12px;margin-bottom:8px;max-width:760px}
+.ann-item .at{font-size:13px;font-weight:700;color:#e8e6e1;margin-bottom:3px}
+.ann-item .ad{font-size:11px;color:rgba(255,255,255,.5);margin-bottom:6px}
+.ann-tag{display:inline-block;font-size:9px;font-weight:700;padding:2px 7px;border-radius:3px;margin-right:5px}
+.ann-ok{background:rgba(0,156,91,.2);color:#3ddc8c}.ann-no{background:rgba(255,255,255,.08);color:rgba(255,255,255,.45)}
+.ann-act a{color:#e07c4f;font-size:11px;text-decoration:none;margin-right:12px}.ann-act a:hover{text-decoration:underline}
+.ann-del{background:none;border:none;color:rgba(255,255,255,.35);font-size:11px;cursor:pointer;font-family:inherit;padding:0}
+.ann-del:hover{color:#e13d2e}
 .list-item{display:flex;align-items:center;gap:10px;padding:10px 16px;border-bottom:1px solid rgba(255,255,255,.06);cursor:pointer;transition:background .15s}
 .list-item:hover{background:rgba(255,255,255,.04)}
 .list-dpe{width:32px;height:32px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;color:#fff;flex-shrink:0}
@@ -55,10 +73,10 @@ h1{font-size:15px;font-weight:700;color:#f0ece6}h1 span{color:#e07c4f}.sub{font-
 <header>
 <div class="hdr-top"><div class="hl"><div class="logo">DPE</div><div>
 <h1>Etain et alentours (55400) <span>&middot;</span> Carte DPE</h1>
-<div class="sub">15 diagnostics - 16/09/2026 07h21 - Source ADEME</div>
+<div class="sub">15 diagnostics - 16/09/2026 07h37 - Source ADEME</div>
 </div></div>
 <div class="st">Affiches: <span class="sv" id="cnt">15</span> &middot; <span class="pw" id="pw">1 passoires F/G</span></div></div>
-<div class="view-tabs"><button class="vtab ac" id="vtab-carte">&#127758; Carte</button><button class="vtab" id="vtab-liste">&#128203; Liste</button></div>
+<div class="view-tabs"><button class="vtab ac" id="vtab-carte">&#127758; Carte</button><button class="vtab" id="vtab-liste">&#128203; Liste</button><button class="vtab" id="vtab-ann">&#127991; Annonces</button></div>
 <div class="tabs"><button class="tab ac" data-tab="dpe">Etiquette DPE</button><button class="tab" data-tab="date">Date du DPE</button><button class="tab" data-tab="surf">Surface</button><button class="tab" data-tab="type">Type de bien</button></div>
 <div class="filter-bar visible" id="bar-dpe"><div id="fl" style="display:flex;gap:3px;flex-wrap:wrap">
 <button class="fb ac" style="--c:#e07c4f;--bg:rgba(224,124,79,.15)" data-d="all">Tous</button>
@@ -80,6 +98,25 @@ h1{font-size:15px;font-weight:700;color:#f0ece6}h1 span{color:#e07c4f}.sub{font-
 <button class="tb" data-type="immeuble"><span class="ico">&#127959;</span> Immeubles <small>(0)</small></button>
 </div></div></header>
 <div id="map"></div>
+<div id="ann-view">
+<div class="ann-form">
+<h3>Ajouter une annonce reperee</h3>
+<div class="ann-row">
+<input type="text" id="an-url" placeholder="Lien de l'annonce (https://...)" style="flex:1;min-width:260px">
+</div><div class="ann-row">
+<input type="text" id="an-adr" placeholder="Adresse (ex: 12 rue Victor Hugo)" style="flex:1;min-width:200px">
+<input type="text" id="an-com" placeholder="Commune" style="width:150px">
+</div><div class="ann-row">
+<select id="an-type"><option value="appartement">Appartement</option><option value="maison">Maison</option><option value="immeuble">Immeuble</option></select>
+<input type="number" id="an-surf" placeholder="Surface m2" style="width:110px">
+<select id="an-dpe"><option value="">DPE ?</option><option>A</option><option>B</option><option>C</option><option>D</option><option>E</option><option>F</option><option>G</option></select>
+<input type="text" id="an-prix" placeholder="Prix" style="width:110px">
+<button class="ann-btn" id="an-add">Ajouter</button>
+</div>
+<div class="ann-msg" id="an-msg"></div>
+</div>
+<div id="ann-list"></div>
+</div>
 <div id="list-view"><div class="list-toolbar"><input type="text" class="list-search" id="list-search" placeholder="Rechercher une adresse..."><button class="export-btn" id="export-btn">Exporter Excel</button></div><div class="list-count" id="list-count"></div><div id="list-items"></div></div>
 <div class="tsw" id="tsw"><button class="ts ac" data-t="streets">Rues</button><button class="ts" data-t="sat">Satellite</button></div>
 <div class="lg" id="lg"><div class="lg-t">Etiquette DPE</div>
@@ -95,6 +132,8 @@ h1{font-size:15px;font-weight:700;color:#f0ece6}h1 span{color:#e07c4f}.sub{font-
 <script>
 var D=[{"la":49.779782,"lo":4.692254,"d":"F","g":"F","a":"47 Boulevard Lucien Pierquin 08000 Warcq","c":"Warcq","cp":"08000","s":93.4,"t":"maison","co":387.0,"gv":86.0,"p":"avant 1948","dt":"19/08/2026","et":"RDC","po":"","cb":"DIA-DMS02-2608-010","o":0},{"la":49.785406,"lo":4.679997,"d":"B","g":"A","a":"120 Boulevard Lucien Pierquin 08000 Warcq","c":"Warcq","cp":"08000","s":105.3,"t":"maison","co":79.0,"gv":3.0,"p":"1948-1974","dt":"25/08/2026","et":"RDC","po":"","cb":"BRA2026/2489","o":0},{"la":49.778369,"lo":4.695187,"d":"C","g":"A","a":"15 Boulevard Lucien Pierquin 08000 Warcq","c":"Warcq","cp":"08000","s":131.0,"t":"maison","co":136.0,"gv":5.0,"p":"1948-1974","dt":"27/08/2026","et":"RDC","po":"","cb":"270826.1718","o":0},{"la":49.233275,"lo":5.60495,"d":"B","g":"A","a":"2 Rue de la Mormounerie 55400 Foameix-Ornel","c":"Foameix-Ornel","cp":"55400","s":214.5,"t":"maison","co":100.0,"gv":3.0,"p":"avant 1948","dt":"03/04/2026","et":"RDC","po":"","cb":"26/IMO/0836","o":1},{"la":49.76954,"lo":4.680582,"d":"D","g":"D","a":"11 Rue des Ferronniers 08000 Warcq","c":"Warcq","cp":"08000","s":86.3,"t":"maison","co":226.0,"gv":45.0,"p":"avant 1948","dt":"07/04/2026","et":"RDC","po":"","cb":"20263946","o":1},{"la":49.777267,"lo":4.688944,"d":"C","g":"C","a":"51 Promenade des Bertholet 08000 Warcq","c":"Warcq","cp":"08000","s":90.7,"t":"maison","co":143.0,"gv":25.0,"p":"1975-1977","dt":"13/04/2026","et":"RDC","po":"","cb":"BBD 26-0089 VELY","o":1},{"la":49.232817,"lo":5.607541,"d":"E","g":"E","a":"2 Route d'Etain 55400 Foameix-Ornel","c":"Foameix-Ornel","cp":"55400","s":89.5,"t":"maison","co":264.0,"gv":68.0,"p":"1948-1974","dt":"21/04/2026","et":"RDC","po":"","cb":"26/04/0191","o":1},{"la":49.179395,"lo":5.497655,"d":"D","g":"B","a":"1 Rue du Chateau 55400 Eix","c":"Eix","cp":"55400","s":58.8,"t":"appartement","co":192.0,"gv":7.0,"p":"avant 1948","dt":"29/04/2026","et":"RDC","po":"","cb":"","o":1},{"la":49.171008,"lo":5.7102,"d":"D","g":"B","a":"25 Rue d'Etain 55400 Buzy-Darmont","c":"Buzy-Darmont","cp":"55400","s":82.1,"t":"appartement","co":207.0,"gv":8.0,"p":"avant 1948","dt":"05/05/2026","et":"RDC","po":"1er (au dessus bar restaurant)","cb":"Dossier 6665 Collignon appartement dessus restaurant","o":1},{"la":49.171008,"lo":5.7102,"d":"D","g":"B","a":"25 Rue d'Etain 55400 Buzy-Darmont","c":"Buzy-Darmont","cp":"55400","s":70.9,"t":"appartement","co":180.0,"gv":7.0,"p":"avant 1948","dt":"06/05/2026","et":"RDC","po":"1er","cb":"Dossier 6665 Collignon appartement 4","o":1},{"la":49.171008,"lo":5.7102,"d":"F","g":"C","a":"25 Rue d'Etain 55400 Buzy-Darmont","c":"Buzy-Darmont","cp":"55400","s":83.7,"t":"appartement","co":330.0,"gv":13.0,"p":"avant 1948","dt":"20/05/2026","et":"RDC","po":"Maison en 2ème corps de bâtiment; Etage RDC; Porte 1","cb":"6665 - COLLIGNON-REMOIVILLE - Maison RDC PORTE 1","o":1},{"la":49.785218,"lo":4.68058,"d":"E","g":"E","a":"108 Boulevard Lucien Pierquin 08000 Warcq","c":"Warcq","cp":"08000","s":81.0,"t":"maison","co":273.0,"gv":60.0,"p":"1948-1974","dt":"27/05/2026","et":"RDC","po":"","cb":"20264077","o":1},{"la":49.170456,"lo":5.708049,"d":"F","g":"F","a":"8 Rue des Holles 55400 Buzy-Darmont","c":"Buzy-Darmont","cp":"55400","s":68.9,"t":"maison","co":292.0,"gv":76.0,"p":"avant 1948","dt":"10/06/2026","et":"","po":"","cb":"","o":1},{"la":49.167401,"lo":5.715071,"d":"D","g":"B","a":"37 Rue du Paquis 55400 Buzy-Darmont","c":"Buzy-Darmont","cp":"55400","s":103.8,"t":"maison","co":182.0,"gv":7.0,"p":"avant 1948","dt":"17/06/2026","et":"RDC","po":"","cb":"6897 - SCI Du Cheval Blanc - REMOIVILLE","o":1},{"la":49.777059,"lo":4.69628,"d":"D","g":"B","a":"12 Lotissement Parc Fostier 08000 Warcq","c":"Warcq","cp":"08000","s":93.9,"t":"maison","co":215.0,"gv":8.0,"p":"1989-2000","dt":"18/06/2026","et":"RDC","po":"","cb":"20264132","o":1}];
 var COL={A:'#009c5b',B:'#51b550',C:'#edd613',D:'#f0b41a',E:'#ef8023',F:'#e13d2e',G:'#b4161a','?':'#888'};
+var SLUG="etain-et-alentours-(55400)";
+var COMMUNE_DEF="Warcq";
 var CODES_PAP={"Vanves": "g43274", "Malakoff": "g43281", "Boulogne-Billancourt": "g43267", "Colombes": "g43300"};
 var map=L.map('map',{center:[49.213,5.639],zoom:13});
 var tiles={streets:L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}',{attribution:'Esri',maxZoom:19}),sat:L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',{attribution:'Esri',maxZoom:19})};
@@ -140,12 +179,73 @@ lbcBtn+='<div style="margin-top:4px"><span style="font-size:9px;color:#888;margi
 if(papUrl){lbcBtn+='<div style="margin-top:4px"><span style="font-size:9px;color:#888;margin-right:4px">Particuliers :</span><a href="'+papUrl+'" target="_blank" style="display:inline-block;background:#C8102E;color:#fff;padding:3px 8px;border-radius:4px;font-size:10px;font-weight:700;text-decoration:none;margin-right:4px">PAP Vente</a></div>'}
 m.bindPopup('<div class="dp"><span class="db" style="background:'+COL[r.d]+'">'+r.d+'</span><span class="tl">DPE '+r.d+'</span> '+pt+'<div class="ad">'+esc(r.a)+'</div><div class="ir"><b>Commune:</b> '+esc(r.c)+'<br><b>Type:</b> '+esc(r.t)+'<br><b>Surface:</b> '+sf+'<br><b>Conso:</b> '+co+'<br><b>GES:</b> '+ge+'<br><b>Periode:</b> '+(r.p||'N/C')+'</div>'+locH+dtH+lbcBtn+'</div>');
 am.push(m)});
+var ANN_KEY='annonces_'+SLUG;
+var ANN=[];var annLayer=L.layerGroup();var annMk=[];
+function annLoad(){try{var s=localStorage.getItem(ANN_KEY);ANN=s?JSON.parse(s):[]}catch(e){ANN=[]}}
+function annSave(){try{localStorage.setItem(ANN_KEY,JSON.stringify(ANN))}catch(e){}}
+function nrm(s){if(!s)return '';return s.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9]+/g,' ').trim()}
+function annMatch(a){var best=-1;var bestScore=-1;
+D.forEach(function(r,idx){if(nrm(r.c)!==nrm(a.com))return;
+var sc=0;
+if(a.surf&&r.s){var d=Math.abs(r.s-a.surf);if(d>2)return;sc+=3;if(d<=0.5){sc+=1}}
+if(a.dpe&&r.d){if(r.d!==a.dpe)return;sc+=3}
+if(a.type&&r.t){if(r.t!==a.type)return;sc+=2}
+if(sc>bestScore){bestScore=sc;best=idx}});
+return{idx:best,score:bestScore}}
+function annGeo(a,cb){var q=encodeURIComponent((a.adr||'')+' '+(a.com||''));
+fetch('https://api-adresse.data.gouv.fr/search/?limit=1&q='+q).then(function(rs){return rs.json()}).then(function(j){
+if(j&&j.features&&j.features.length){cb(j.features[0].geometry.coordinates[1],j.features[0].geometry.coordinates[0])}else{cb(null,null)}
+}).catch(function(){cb(null,null)})}
+function annIcon(){return L.divIcon({className:'',html:'<div style="width:15px;height:15px;border-radius:50%;background:#fff;border:3px solid #333;box-shadow:0 0 6px rgba(0,0,0,.6)"></div>',iconSize:[15,15],iconAnchor:[7,7]})}
+function annDraw(){annLayer.clearLayers();annMk=[];
+ANN.forEach(function(a,i){if(!a.la||!a.lo)return;
+var mk=L.marker([a.la,a.lo],{icon:annIcon(),zIndexOffset:900});
+var ht='<div style="font-family:system-ui;min-width:190px">';
+ht+='<div style="font-weight:700;font-size:13px;margin-bottom:4px">Annonce particulier</div>';
+ht+='<div style="font-size:12px;margin-bottom:2px">'+esc(a.adr||'')+'</div>';
+ht+='<div style="font-size:11px;color:#666;margin-bottom:6px">'+esc(a.com||'')+'</div>';
+var dt=[];if(a.type)dt.push(esc(a.type));if(a.surf)dt.push(a.surf+' m2');if(a.dpe)dt.push('DPE '+esc(a.dpe));if(a.prix)dt.push(esc(a.prix));
+if(dt.length){ht+='<div style="font-size:11px;margin-bottom:6px">'+dt.join(' &middot; ')+'</div>'}
+if(a.mi>=0){ht+='<div style="font-size:10px;background:#e8f7ee;color:#0a7d43;padding:3px 6px;border-radius:3px;margin-bottom:6px">Rapproche d\u2019un DPE ADEME</div>'}
+if(a.url){ht+='<a href="'+a.url+'" target="_blank" style="display:inline-block;background:#C8102E;color:#fff;padding:4px 10px;border-radius:4px;font-size:10px;font-weight:700;text-decoration:none">Voir l\u2019annonce</a>'}
+ht+='</div>';mk.bindPopup(ht);annLayer.addLayer(mk);annMk.push(mk)});
+if(!map.hasLayer(annLayer)){map.addLayer(annLayer)}}
+function renderAnn(){var c=document.getElementById('ann-list');
+if(!ANN.length){c.innerHTML='<div style="color:rgba(255,255,255,.4);font-size:12px">Aucune annonce enregistree. Ajoutez-en une ci-dessus : elle apparaitra en point blanc sur la carte.</div>';return}
+var html='';ANN.forEach(function(a,i){
+html+='<div class="ann-item">';
+html+='<div class="at">'+esc(a.adr||'Annonce')+'</div>';
+var dt=[];if(a.com)dt.push(esc(a.com));if(a.type)dt.push(esc(a.type));if(a.surf)dt.push(a.surf+' m2');if(a.dpe)dt.push('DPE '+esc(a.dpe));if(a.prix)dt.push(esc(a.prix));
+html+='<div class="ad">'+dt.join(' &middot; ')+'</div>';
+if(a.mi>=0){html+='<span class="ann-tag ann-ok">RAPPROCHE D UN DPE</span>'}else{html+='<span class="ann-tag ann-no">PAS DE DPE CORRESPONDANT</span>'}
+if(!a.la){html+='<span class="ann-tag ann-no">NON LOCALISEE</span>'}
+html+='<div class="ann-act" style="margin-top:7px">';
+if(a.url){html+='<a href="'+a.url+'" target="_blank">Voir l\u2019annonce</a>'}
+if(a.la){html+='<a href="#" data-go="'+i+'">Voir sur la carte</a>'}
+html+='<button class="ann-del" data-del="'+i+'">Supprimer</button>';
+html+='</div></div>'});c.innerHTML=html}
+document.getElementById('an-add').addEventListener('click',function(){
+var msg=document.getElementById('an-msg');
+var a={url:document.getElementById('an-url').value.trim(),adr:document.getElementById('an-adr').value.trim(),com:document.getElementById('an-com').value.trim(),type:document.getElementById('an-type').value,surf:parseFloat(document.getElementById('an-surf').value)||0,dpe:document.getElementById('an-dpe').value,prix:document.getElementById('an-prix').value.trim(),la:null,lo:null,mi:-1};
+if(!a.adr&&!a.url){msg.style.color='#e13d2e';msg.textContent='Indiquez au moins une adresse ou un lien.';return}
+if(!a.com){a.com=COMMUNE_DEF}
+var m=annMatch(a);a.mi=m.idx;
+msg.style.color='rgba(255,255,255,.5)';msg.textContent='Recherche en cours...';
+function fin(){ANN.push(a);annSave();annDraw();renderAnn();
+document.getElementById('an-url').value='';document.getElementById('an-adr').value='';document.getElementById('an-surf').value='';document.getElementById('an-prix').value='';document.getElementById('an-dpe').value='';
+msg.style.color='#3ddc8c';msg.textContent=a.mi>=0?'Annonce ajoutee et rapprochee d un DPE ADEME.':(a.la?'Annonce ajoutee (aucun DPE correspondant).':'Annonce ajoutee mais adresse non localisee.')}
+if(a.mi>=0){a.la=D[a.mi].la;a.lo=D[a.mi].lo;fin()}else if(a.adr){annGeo(a,function(la,lo){a.la=la;a.lo=lo;fin()})}else{fin()}});
+document.getElementById('ann-list').addEventListener('click',function(e){
+var d=e.target.closest('[data-del]');if(d){var i=parseInt(d.dataset.del);ANN.splice(i,1);annSave();annDraw();renderAnn();return}
+var g=e.target.closest('[data-go]');if(g){e.preventDefault();var j=parseInt(g.dataset.go);var a=ANN[j];document.getElementById('vtab-carte').click();map.setView([a.la,a.lo],18);setTimeout(function(){if(annMk[j]){annMk[j].openPopup()}},400)}});
+annLoad();annDraw();
 function getFiltered(){var res=[];D.forEach(function(r,idx){var ok1;if(curDPE==='OLD'){ok1=(r.o===1)}else{ok1=(!r.o)&&(curDPE==='all'||r.d===curDPE)}var dtInt=parseD(r.dt);var ok2=(dtInt>=curDateFrom&&dtInt<=curDateTo);var sv=r.s||0;var ok3=(sv===0||(sv>=curSurfMin&&sv<=curSurfMax));var ok4=(curType==='all'||r.t===curType);var ok5=(!searchText||r.a.toLowerCase().indexOf(searchText)>=0);if(ok1&&ok2&&ok3&&ok4&&ok5)res.push({r:r,idx:idx})});res.sort(function(a,b){return parseD(b.r.dt)-parseD(a.r.dt)});return res}
 function applyFilters(){cl.clearLayers();var filtered=getFiltered();var nn=0;var nFG=0;filtered.forEach(function(item){cl.addLayer(am[item.idx]);nn++;if(item.r.d==='F'||item.r.d==='G')nFG++});document.getElementById('cnt').textContent=nn.toLocaleString('fr-FR');document.getElementById('pw').textContent=nFG+' passoires F/G';updateList(filtered)}
 function updateList(filtered){var container=document.getElementById('list-items');var countEl=document.getElementById('list-count');countEl.textContent=filtered.length+' resultats';var html='';var max=500;var shown=Math.min(filtered.length,max);for(var i=0;i<shown;i++){var r=filtered[i].r;var idx=filtered[i].idx;var ip=r.d==='F'||r.d==='G';var passTag=ip?'<span class="list-passoire">PASSOIRE</span>':'';var sf=r.s?r.s+' m2':'';var typeLabel=r.t==='appartement'?'Appt':r.t==='maison'?'Maison':r.t==='immeuble'?'Immeuble':'';var etInfo=r.et?(r.et+' '):'';var cbInfo=r.cb?('<div class="list-details" style="color:rgba(255,255,255,.55)">Ref. bat. : '+esc(r.cb)+'</div>'):'';html+='<div class="list-item" data-idx="'+idx+'">';html+='<div class="list-dpe" style="background:'+(r.o?'#8e44ad':COL[r.d])+'">'+r.d+'</div>';html+='<div class="list-info"><div class="list-addr">'+esc(r.a)+passTag+'</div>';html+='<div class="list-details">'+typeLabel+' '+etInfo+(r.co?r.co+' kWh/m2/an':'')+'</div>'+cbInfo+'</div>';html+='<div class="list-right">';if(sf)html+='<div class="list-surf">'+sf+'</div>';if(r.dt)html+='<div class="list-date">'+r.dt+'</div>';html+='</div></div>'}if(filtered.length>max)html+='<div class="list-count">Affichage limite a '+max+' sur '+filtered.length+'</div>';container.innerHTML=html}
 document.getElementById('list-items').addEventListener('click',function(e){var item=e.target.closest('.list-item');if(!item)return;var idx=parseInt(item.dataset.idx);var r=D[idx];document.getElementById('vtab-carte').click();map.setView([r.la,r.lo],18);setTimeout(function(){am[idx].openPopup()},500)});
-document.getElementById('vtab-carte').addEventListener('click',function(){document.getElementById('vtab-carte').classList.add('ac');document.getElementById('vtab-liste').classList.remove('ac');document.getElementById('map').style.display='block';document.getElementById('list-view').style.display='none';document.getElementById('tsw').style.display='flex';document.getElementById('lg').style.display='block';map.invalidateSize()});
-document.getElementById('vtab-liste').addEventListener('click',function(){document.getElementById('vtab-liste').classList.add('ac');document.getElementById('vtab-carte').classList.remove('ac');document.getElementById('map').style.display='none';document.getElementById('list-view').style.display='block';document.getElementById('tsw').style.display='none';document.getElementById('lg').style.display='none';applyFilters()});
+document.getElementById('vtab-carte').addEventListener('click',function(){document.getElementById('vtab-carte').classList.add('ac');document.getElementById('vtab-liste').classList.remove('ac');document.getElementById('vtab-ann').classList.remove('ac');document.getElementById('map').style.display='block';document.getElementById('list-view').style.display='none';document.getElementById('ann-view').style.display='none';document.getElementById('tsw').style.display='flex';document.getElementById('lg').style.display='block';map.invalidateSize()});
+document.getElementById('vtab-liste').addEventListener('click',function(){document.getElementById('vtab-liste').classList.add('ac');document.getElementById('vtab-carte').classList.remove('ac');document.getElementById('vtab-ann').classList.remove('ac');document.getElementById('map').style.display='none';document.getElementById('list-view').style.display='block';document.getElementById('ann-view').style.display='none';document.getElementById('tsw').style.display='none';document.getElementById('lg').style.display='none';applyFilters()});
+document.getElementById('vtab-ann').addEventListener('click',function(){document.getElementById('vtab-ann').classList.add('ac');document.getElementById('vtab-carte').classList.remove('ac');document.getElementById('vtab-liste').classList.remove('ac');document.getElementById('map').style.display='none';document.getElementById('list-view').style.display='none';document.getElementById('ann-view').style.display='block';document.getElementById('tsw').style.display='none';document.getElementById('lg').style.display='none';renderAnn()});
 document.getElementById('list-search').addEventListener('input',function(e){searchText=e.target.value.toLowerCase();applyFilters()});
 document.querySelectorAll('.tab').forEach(function(t){t.addEventListener('click',function(){document.querySelectorAll('.tab').forEach(function(x){x.classList.remove('ac')});t.classList.add('ac');document.querySelectorAll('.filter-bar').forEach(function(b){b.classList.remove('visible')});document.getElementById('bar-'+t.dataset.tab).classList.add('visible')})});
 document.getElementById('fl').addEventListener('click',function(e){var btn=e.target.closest('.fb');if(!btn)return;document.querySelectorAll('#fl .fb').forEach(function(b){b.classList.remove('ac')});btn.classList.add('ac');curDPE=btn.dataset.d;applyFilters()});
