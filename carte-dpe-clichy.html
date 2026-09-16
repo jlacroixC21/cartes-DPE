@@ -80,7 +80,7 @@ h1{font-size:15px;font-weight:700;color:#f0ece6}h1 span{color:#e07c4f}.sub{font-
 <header>
 <div class="hdr-top"><div class="hl"><div class="logo">DPE</div><div>
 <h1>Clichy <span>&middot;</span> Carte DPE</h1>
-<div class="sub">828 diagnostics - 16/09/2026 07h59 - Source ADEME</div>
+<div class="sub">828 diagnostics - 16/09/2026 09h43 - Source ADEME</div>
 </div></div>
 <div class="st">Affiches: <span class="sv" id="cnt">828</span> &middot; <span class="pw" id="pw">27 passoires F/G</span></div></div>
 <div class="view-tabs"><button class="vtab ac" id="vtab-carte">&#127758; Carte</button><button class="vtab" id="vtab-liste">&#128203; Liste</button><button class="vtab" id="vtab-ann">&#127991; Annonces</button></div>
@@ -118,6 +118,8 @@ h1{font-size:15px;font-weight:700;color:#f0ece6}h1 span{color:#e07c4f}.sub{font-
 <select id="an-type"><option value="appartement">Appartement</option><option value="maison">Maison</option><option value="immeuble">Immeuble</option></select>
 <input type="number" id="an-surf" placeholder="Surface m2" style="width:110px">
 <select id="an-dpe"><option value="">DPE ?</option><option>A</option><option>B</option><option>C</option><option>D</option><option>E</option><option>F</option><option>G</option></select>
+<input type="number" id="an-conso" placeholder="Conso kWh/m2/an" style="width:140px">
+<input type="number" id="an-ges" placeholder="GES" style="width:85px">
 <input type="text" id="an-prix" placeholder="Prix" style="width:110px">
 <button class="ann-btn" id="an-add">Ajouter</button>
 </div>
@@ -207,16 +209,55 @@ function annCandidats(a){
     if(a.com && nrm(r.c) !== nrm(a.com)) return;
     if(a.type && r.t && r.t !== a.type) return;
     if(a.dpe && r.d && r.d !== a.dpe) return;
+
+    var sc = 0;
     var ec = null;
+
+    // Surface : tolerance 2 m2, mais plus l ecart est faible plus le score monte
     if(a.surf && r.s){
       ec = Math.abs(r.s - a.surf);
       if(ec > 2) return;
+      if(ec <= 0.3){ sc += 5; }
+      else if(ec <= 1){ sc += 3; }
+      else { sc += 1; }
     }
-    res.push({ idx: idx, ecart: (ec === null ? 99 : ec) });
+
+    // Consommation : discriminant le plus fort
+    if(a.conso && r.co){
+      var dc = Math.abs(r.co - a.conso);
+      if(dc > 15) return;
+      if(dc <= 2){ sc += 6; }
+      else if(dc <= 8){ sc += 3; }
+      else { sc += 1; }
+    }
+
+    // GES
+    if(a.ges && r.gv){
+      var dg = Math.abs(r.gv - a.ges);
+      if(dg > 8) return;
+      if(dg <= 1){ sc += 4; }
+      else if(dg <= 4){ sc += 2; }
+      else { sc += 1; }
+    }
+
+    if(a.dpe && r.d){ sc += 2; }
+    if(a.type && r.t){ sc += 1; }
+
+    res.push({ idx: idx, ecart: (ec === null ? 99 : ec), sc: sc });
   });
-  res.sort(function(x, y){ return x.ecart - y.ecart; });
+  res.sort(function(x, y){
+    if(y.sc !== x.sc) return y.sc - x.sc;
+    return x.ecart - y.ecart;
+  });
   if(res.length > 12){ res = res.slice(0, 12); }
   return res;
+}
+
+// Libelle de fiabilite selon le score
+function annNiveau(sc){
+  if(sc >= 12) return { txt: 'TRES PROBABLE', col: '#3ddc8c', bg: 'rgba(61,220,140,.15)' };
+  if(sc >= 7) return { txt: 'PROBABLE', col: '#f0b41a', bg: 'rgba(240,180,26,.15)' };
+  return { txt: 'POSSIBLE', col: 'rgba(255,255,255,.45)', bg: 'rgba(255,255,255,.08)' };
 }
 
 function svUrl(la, lo){ return 'https://www.google.com/maps/@?api=1&map_action=pano&viewpoint=' + la + ',' + lo; }
@@ -325,8 +366,14 @@ function renderAnn(){
       if(r.s) inf.push(r.s + ' m2');
       if(r.d) inf.push('DPE ' + esc(r.d));
       if(r.t) inf.push(esc(r.t));
+      if(r.co) inf.push(r.co + ' kWh/m2/an');
+      if(r.gv) inf.push(r.gv + ' kgCO2');
       if(r.dt) inf.push('diagnostic du ' + esc(r.dt));
       html += '<div class="cd">' + inf.join(' &middot; ') + '</div>';
+      if(a.ch !== cd.idx && cd.sc !== undefined){
+        var nv = annNiveau(cd.sc);
+        html += '<div style="margin-top:4px"><span class="ann-tag" style="background:' + nv.bg + ';color:' + nv.col + '">' + nv.txt + '</span></div>';
+      }
       html += '<div class="cl">';
       html += '<a href="' + svUrl(r.la, r.lo) + '" target="_blank">Street View</a>';
       html += '<a href="' + gmUrl2(r.a + ' ' + r.c) + '" target="_blank">Plan</a>';
@@ -351,6 +398,8 @@ document.getElementById('an-add').addEventListener('click', function(){
     type: document.getElementById('an-type').value,
     surf: parseFloat(document.getElementById('an-surf').value) || 0,
     dpe: document.getElementById('an-dpe').value,
+    conso: parseFloat(document.getElementById('an-conso').value) || 0,
+    ges: parseFloat(document.getElementById('an-ges').value) || 0,
     prix: document.getElementById('an-prix').value.trim(),
     cd: [],
     ch: -1
@@ -371,6 +420,8 @@ document.getElementById('an-add').addEventListener('click', function(){
   document.getElementById('an-surf').value = '';
   document.getElementById('an-prix').value = '';
   document.getElementById('an-dpe').value = '';
+  document.getElementById('an-conso').value = '';
+  document.getElementById('an-ges').value = '';
   if(a.cd.length === 1){
     msg.style.color = '#3ddc8c';
     msg.textContent = 'Une seule adresse correspond : ' + D[a.cd[0].idx].a;
