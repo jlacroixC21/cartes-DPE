@@ -80,7 +80,7 @@ h1{font-size:15px;font-weight:700;color:#f0ece6}h1 span{color:#e07c4f}.sub{font-
 <header>
 <div class="hdr-top"><div class="hl"><div class="logo">DPE</div><div>
 <h1>Metz et Maizière <span>&middot;</span> Carte DPE</h1>
-<div class="sub">3392 diagnostics - 24/09/2026 15h09 - Source ADEME</div>
+<div class="sub">3392 diagnostics - 24/09/2026 16h35 - Source ADEME</div>
 </div></div>
 <div class="st">Affiches: <span class="sv" id="cnt">3392</span> &middot; <span class="pw" id="pw">60 passoires F/G</span></div></div>
 <div class="view-tabs"><button class="vtab ac" id="vtab-carte">&#127758; Carte</button><button class="vtab" id="vtab-liste">&#128203; Liste</button><button class="vtab" id="vtab-ann">&#127991; Annonces</button></div>
@@ -336,7 +336,7 @@ function annDraw(){
     });
     annMk.push(prem);
   });
-  if(!map.hasLayer(annLayer)){ map.addLayer(annLayer); }
+  if(map.hasLayer(annLayer)){ map.removeLayer(annLayer); }
 }
 
 function renderAnn(){
