@@ -34,6 +34,7 @@ h1{font-size:15px;font-weight:700;color:#f0ece6}h1 span{color:#e07c4f}.sub{font-
 #map{flex:1;width:100%}
 #list-view{flex:1;width:100%;overflow-y:auto;display:none;background:#0d1117}
 #ann-view{flex:1;width:100%;overflow-y:auto;display:none;background:#0d1117;padding:14px}
+.rs-wrap{max-width:860px}#rech-view{flex:1;width:100%;overflow-y:auto;display:none;background:#0d1117;padding:14px}#rs-txt{width:100%;box-sizing:border-box;min-height:70px;resize:vertical;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.15);color:#e8e6e1;padding:9px 11px;border-radius:6px;font-size:14px;font-family:inherit;margin-bottom:8px}#rs-txt:focus{outline:none;border-color:#e07c4f}.rs-mic{background:#1a2744;border:1px solid #e07c4f;color:#e07c4f;padding:8px 16px;border-radius:4px;font-size:13px;font-weight:700;font-family:inherit;cursor:pointer}.rs-mic.rs-on{background:#c0392b;border-color:#c0392b;color:#fff;animation:rsPulse 1s infinite}@keyframes rsPulse{0%{box-shadow:0 0 0 0 rgba(192,57,43,.6)}100%{box-shadow:0 0 0 10px rgba(192,57,43,0)}}#rs-msg{font-size:11px;color:#f0b41a;min-height:14px;margin:4px 0}#rs-ex{font-size:11px;color:rgba(255,255,255,.45);margin-top:6px;line-height:1.9}.rs-exemple{display:inline-block;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:12px;padding:1px 9px;margin:0 4px 0 0;cursor:pointer;color:rgba(255,255,255,.75)}.rs-exemple:hover{border-color:#e07c4f;color:#e07c4f}.rs-note{font-size:10.5px;color:rgba(255,255,255,.4);margin-top:8px}.rs-crit{margin:4px 0 10px}.rs-lbl{font-size:10px;text-transform:uppercase;letter-spacing:.06em;color:rgba(255,255,255,.4);margin-bottom:4px}.rs-puce{display:inline-block;background:rgba(224,124,79,.15);border:1px solid rgba(224,124,79,.5);color:#f3b08f;border-radius:12px;padding:2px 10px;font-size:11px;margin:0 5px 5px 0}.rs-puce.rs-off{background:rgba(255,255,255,.04);border-color:rgba(255,255,255,.15);color:rgba(255,255,255,.45)}.rs-tete{font-size:12px;color:#e8e6e1;margin:6px 0 10px;display:flex;align-items:center;gap:10px;flex-wrap:wrap}.rs-vide{font-size:12px;color:rgba(255,255,255,.5);padding:10px 0}.rs-item{display:flex;align-items:center;gap:10px;padding:9px 4px;border-bottom:1px solid rgba(255,255,255,.06)}.rs-info{flex:1;min-width:0}.rs-act{margin-top:4px;display:flex;gap:6px}.rs-voir,.rs-sv{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.15);color:#e8e6e1;padding:3px 9px;border-radius:4px;font-size:10.5px;font-family:inherit;cursor:pointer;text-decoration:none}.rs-voir:hover,.rs-sv:hover{border-color:#e07c4f;color:#e07c4f}#rs-effacer{position:fixed;left:50%;transform:translateX(-50%);bottom:24px;z-index:1001;display:none;background:#e07c4f;color:#fff;border:none;border-radius:20px;padding:10px 20px;font-size:13px;font-weight:700;font-family:inherit;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,.4)}
 .ann-form{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);border-radius:6px;padding:14px;margin-bottom:16px;max-width:760px}
 .ann-form h3{margin:0 0 10px;font-size:13px;color:#e07c4f;font-weight:700}
 .ann-row{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:8px}
@@ -80,10 +81,10 @@ h1{font-size:15px;font-weight:700;color:#f0ece6}h1 span{color:#e07c4f}.sub{font-
 <header>
 <div class="hdr-top"><div class="hl"><div class="logo">DPE</div><div>
 <h1>Remiremont et alentours <span>&middot;</span> Carte DPE</h1>
-<div class="sub">536 diagnostics - 18/10/2026 19h19 - Source ADEME</div>
+<div class="sub">536 diagnostics - 18/10/2026 20h00 - Source ADEME</div>
 </div></div>
 <div class="st">Affiches: <span class="sv" id="cnt">536</span> &middot; <span class="pw" id="pw">12 passoires F/G</span></div></div>
-<div class="view-tabs"><button class="vtab ac" id="vtab-carte">&#127758; Carte</button><button class="vtab" id="vtab-liste">&#128203; Liste</button><button class="vtab" id="vtab-ann">&#127991; Annonces</button></div>
+<div class="view-tabs"><button class="vtab ac" id="vtab-carte">&#127758; Carte</button><button class="vtab" id="vtab-liste">&#128203; Liste</button><button class="vtab" id="vtab-ann">&#127991; Annonces</button><button class="vtab" id="vtab-rech">&#128269; Recherche</button></div>
 <div class="tabs"><button class="tab ac" data-tab="dpe">Etiquette DPE</button><button class="tab" data-tab="date">Date du DPE</button><button class="tab" data-tab="surf">Surface</button><button class="tab" data-tab="type">Type de bien</button></div>
 <div class="filter-bar visible" id="bar-dpe"><div id="fl" style="display:flex;gap:3px;flex-wrap:wrap">
 <button class="fb ac" style="--c:#e07c4f;--bg:rgba(224,124,79,.15)" data-d="all">Tous</button>
@@ -96,7 +97,7 @@ h1{font-size:15px;font-weight:700;color:#f0ece6}h1 span{color:#e07c4f}.sub{font-
 <button class="fb" style="--c:#b4161a;--bg:rgba(180,22,26,.12)" data-d="G">G <small>(3)</small></button>
 <button class="fb" style="--c:#8e44ad;--bg:rgba(142,68,173,.15)" data-d="OLD">3-6 mois <small>(376)</small></button>
 </div></div>
-<div class="filter-bar" id="bar-date"><span class="fl-label">Periode :</span><div class="date-group"><label style="font-size:10px;color:rgba(255,255,255,.4)">Du</label><input type="date" class="date-input" id="dt-from" value="2021-07-01"><label style="font-size:10px;color:rgba(255,255,255,.4)">au</label><input type="date" class="date-input" id="dt-to" value="2026-12-31"><button class="date-apply" id="dt-apply">Filtrer</button><button class="date-reset" id="dt-reset">Reinit.</button></div><div style="display:flex;gap:3px;flex-wrap:wrap;margin-left:6px" id="dq"><button class="dq" data-from="2026-01-01" data-to="2026-12-31">2026</button><button class="dq" data-from="2025-01-01" data-to="2025-12-31">2025</button><button class="dq" data-from="2024-01-01" data-to="2024-12-31">2024</button><button class="dq" data-from="2023-01-01" data-to="2023-12-31">2023</button><button class="dq" data-from="2022-01-01" data-to="2022-12-31">2022</button><button class="dq" data-from="2021-07-01" data-to="2021-12-31">2021</button><button class="dq" data-from="2025-10-01" data-to="2026-12-31">6 derniers mois</button><button class="dq" data-from="2025-04-01" data-to="2026-12-31">12 derniers mois</button></div></div>
+<div class="filter-bar" id="bar-date"><span class="fl-label">Periode :</span><div class="date-group"><label style="font-size:10px;color:rgba(255,255,255,.4)">Du</label><input type="date" class="date-input" id="dt-from" value="2021-07-01"><label style="font-size:10px;color:rgba(255,255,255,.4)">au</label><input type="date" class="date-input" id="dt-to" value="2026-12-31"><button class="date-apply" id="dt-apply">Filtrer</button><button class="date-reset" id="dt-reset">Reinit.</button></div><div style="display:flex;gap:3px;flex-wrap:wrap;margin-left:6px" id="dq"><button class="dq" data-from="2026-01-01" data-to="2026-12-31">2026</button><button class="dq" data-from="2025-01-01" data-to="2025-12-31">2025</button><button class="dq" data-from="2024-01-01" data-to="2024-12-31">2024</button><button class="dq" data-from="2023-01-01" data-to="2023-12-31">2023</button><button class="dq" data-from="2022-01-01" data-to="2022-12-31">2022</button><button class="dq" data-from="2021-07-01" data-to="2021-12-31">2021</button><button class="dq" data-from="2026-04-19" data-to="2099-12-31">6 derniers mois</button><button class="dq" data-from="2025-10-18" data-to="2099-12-31">12 derniers mois</button></div></div>
 <div class="filter-bar" id="bar-surf"><div class="surf-group"><span class="fl-label">Surface :</span><div class="range-wrap"><span class="range-val" id="surf-min-val">0</span><input type="range" id="surf-min" min="0" max="300" value="0" step="5"><span style="color:rgba(255,255,255,.3);font-size:10px">a</span><input type="range" id="surf-max" min="0" max="300" value="300" step="5"><span class="range-val" id="surf-max-val">300+</span><span style="font-size:10px;color:rgba(255,255,255,.3)">m2</span></div><button class="date-apply" id="surf-apply">Filtrer</button><button class="date-reset" id="surf-reset">Reinit.</button></div><div style="display:flex;gap:3px;flex-wrap:wrap;margin-top:4px" id="sp"><button class="sp" data-min="0" data-max="20">Studios &lt;20</button><button class="sp" data-min="20" data-max="40">T1/T2 20-40</button><button class="sp" data-min="40" data-max="60">T2/T3 40-60</button><button class="sp" data-min="60" data-max="80">T3/T4 60-80</button><button class="sp" data-min="80" data-max="100">T4/T5 80-100</button><button class="sp" data-min="100" data-max="150">Grands 100-150</button><button class="sp" data-min="150" data-max="300">150+ m2</button></div></div>
 <div class="filter-bar" id="bar-type"><span class="fl-label">Type :</span><div style="display:flex;gap:6px;flex-wrap:wrap" id="tfl">
 <button class="tb ac" data-type="all"><span class="ico">&#127960;</span> Tous <small>(536)</small></button>
@@ -105,6 +106,7 @@ h1{font-size:15px;font-weight:700;color:#f0ece6}h1 span{color:#e07c4f}.sub{font-
 <button class="tb" data-type="immeuble"><span class="ico">&#127959;</span> Immeubles <small>(40)</small></button>
 </div></div></header>
 <div id="map"></div>
+<div id="rech-view"><div class="rs-wrap"><div class="ann-form" style="max-width:none"><h3>Recherche acquéreur</h3><div style="font-size:11px;color:rgba(255,255,255,.5);margin-bottom:10px">Dictez ou tapez ce que recherche votre acquéreur : type de bien, nombre de pièces, surface, lettres DPE, étage, commune. Les biens correspondants sont cherchés dans les DPE ADEME de la carte.</div><textarea id="rs-txt" placeholder="Ex : appartement 3 pièces entre 60 et 75 m², DPE A à D, pas de rez-de-chaussée"></textarea><div class="ann-row" style="align-items:center"><button class="rs-mic" id="rs-micro">&#127908; Dicter</button><button class="ann-btn" id="rs-go">Rechercher</button><button class="rs-mic" id="rs-clear" style="border-color:rgba(255,255,255,.3);color:#e8e6e1">&#10005; Effacer</button></div><div id="rs-msg"></div><div id="rs-ex">Exemples : <span class="rs-exemple">Appartement 3 pièces entre 60 et 75 m², DPE A à D, pas de rez-de-chaussée</span><span class="rs-exemple">Maison 4 chambres, DPE C ou mieux</span><span class="rs-exemple">Studio ou 2 pièces moins de 40 m², pas de passoire</span><span class="rs-exemple">T4 à partir du 2e étage, au moins 80 m²</span></div><div class="rs-note">Le nombre de pièces n&rsquo;est presque jamais renseigné dans les DPE : il est estimé d&rsquo;après la surface. Le prix n&rsquo;y figure pas. Pour dicter, ouvrez la carte depuis le lien en ligne (Chrome, Edge ou Safari) et autorisez le micro.</div></div><div id="rs-res"></div></div></div><button id="rs-effacer">&#10005; Effacer la recherche</button>
 <div id="ann-view">
 <div class="ann-form">
 <h3>Ajouter une annonce reperee</h3>
@@ -520,6 +522,388 @@ document.getElementById('ann-list').addEventListener('click', function(e){
 
 annLoad();
 annDraw();
+
+
+/* ===== Onglet Recherche acquereur ===== */
+var RS_SRC = (typeof DA !== 'undefined' && DA && DA.length > D.length) ? DA : D;
+var RS_PERIODE = (RS_SRC === D) ? 'de la carte' : 'des 12 derniers mois';
+var rsLayer = L.layerGroup();
+var RS_RES = [];
+var RS_REC = null;
+var rsEcoute = false;
+var RS_NB = {'un':1,'une':1,'deux':2,'trois':3,'quatre':4,'cinq':5,'six':6,'sept':7,'huit':8,'neuf':9,'dix':10};
+var RS_APPT = {1:[0,35],2:[28,52],3:[48,75],4:[68,98],5:[88,130],6:[110,9999]};
+var RS_MAISON = {1:[0,45],2:[35,70],3:[50,95],4:[70,120],5:[90,160],6:[120,9999]};
+var RS_LET = 'ABCDEFG';
+
+function rsNorm(s){
+  s = (s || '').toLowerCase();
+  if (s.normalize) { s = s.normalize('NFD').replace(/[\u0300-\u036f]/g, ''); }
+  return s.replace(/\u2019/g, "'");
+}
+
+function rsPrep(txt){
+  var t = ' ' + rsNorm(txt) + ' ';
+  t = t.replace(/\b(un|une|deux|trois|quatre|cinq|six|sept|huit|neuf|dix)\b/g, function(m){ return String(RS_NB[m]); });
+  t = t.replace(/(\d),(\d)/g, '$1.$2');
+  t = t.replace(/[,;:!?()"]/g, ' ').replace(/\.(?!\d)/g, ' ');
+  t = t.replace(/m\u00b2|m2\b|\bm 2\b|metres? carres?|\bm carres?/g, ' m2 ');
+  t = t.replace(/rez[\s-]*de[\s-]*chaussee/g, 'rdc');
+  t = t.replace(/(\d)\s*(?:er|e|eme|ieme)\b/g, '$1 ');
+  t = t.replace(/\s+/g, ' ');
+  return t;
+}
+
+function rsLettres(a, b){
+  var i = RS_LET.indexOf(a.toUpperCase()), j = RS_LET.indexOf(b.toUpperCase());
+  if (i < 0 || j < 0) { return null; }
+  if (i > j) { var k = i; i = j; j = k; }
+  return RS_LET.substring(i, j + 1).split('');
+}
+
+function rsBande(n, maison){
+  var tb = maison ? RS_MAISON : RS_APPT;
+  if (n < 1) { n = 1; }
+  if (n > 6) { n = 6; }
+  return tb[n];
+}
+
+function rsPiecesEstimees(s, t){
+  if (!s) { return ''; }
+  var tb = (t === 'maison') ? RS_MAISON : RS_APPT;
+  var best = 1;
+  for (var n = 1; n <= 6; n++) {
+    var b = tb[n];
+    var mid = (n === 6) ? b[0] + 20 : (b[0] + b[1]) / 2;
+    var bm = (best === 6) ? tb[6][0] + 20 : (tb[best][0] + tb[best][1]) / 2;
+    if (Math.abs(s - mid) < Math.abs(s - bm)) { best = n; }
+  }
+  return best === 6 ? '6 p. et +' : best + ' p.';
+}
+
+function rsAnalyser(txt){
+  var t = rsPrep(txt);
+  var c = {type: null, pmin: null, pmax: null, smin: null, smax: null, dpe: null,
+           etMin: null, rdcSeul: false, sansRdc: false, communes: [], budget: false, mots: []};
+  var m;
+
+  var vMaison = /\b(maisons?|pavillons?|villas?|longeres?|corps de ferme)\b/.test(t);
+  var vAppt = /\b(appartements?|apparts?|studios?|duplex|lofts?|[tf]\s?\d)\b/.test(t);
+  if (vMaison && !vAppt) { c.type = 'maison'; }
+  if (vAppt && !vMaison) { c.type = 'appartement'; }
+
+  /* Pieces */
+  if (/\bstudios?\b/.test(t)) { c.pmin = 1; c.pmax = 1; }
+  if ((m = t.match(/(\d+)\s*(?:ou|a|-|\/)\s*(\d+)\s*pieces?/))) { c.pmin = +m[1]; c.pmax = +m[2]; }
+  else if ((m = t.match(/\b[tf]\s?(\d)\s*(?:ou|a|-|\/)\s*[tf]?\s?(\d)\b/))) { c.pmin = +m[1]; c.pmax = +m[2]; }
+  else if ((m = t.match(/(?:au moins|minimum|mini|min|a partir de|plus de)\s*(?:un |une )?(\d+)\s*pieces?/))) { c.pmin = +m[1]; }
+  else if ((m = t.match(/(\d+)\s*pieces?\s*(?:minimum|mini|min|et plus|ou plus|au moins)/))) { c.pmin = +m[1]; }
+  else if ((m = t.match(/\b[tf]\s?(\d)\s*(?:minimum|mini|min|et plus|ou plus)/))) { c.pmin = +m[1]; }
+  else if ((m = t.match(/(\d+)\s*pieces?/))) { c.pmin = +m[1]; c.pmax = +m[1]; }
+  else if ((m = t.match(/\b[tf]\s?(\d)\b/))) { c.pmin = +m[1]; c.pmax = +m[1]; }
+  else if ((m = t.match(/(?:au moins|minimum|mini|min)\s*(\d+)\s*chambres?/)) || (m = t.match(/(\d+)\s*chambres?\s*(?:minimum|mini|min|et plus|ou plus|au moins)/))) { c.pmin = +m[1] + 1; }
+  else if ((m = t.match(/(\d+)\s*chambres?/))) { c.pmin = +m[1] + 1; c.pmax = +m[1] + 1; }
+  if (c.pmin && c.pmin > 15) { c.pmin = null; c.pmax = null; }
+
+  /* Surface */
+  var N = '(\\d+(?:\\.\\d+)?)';
+  var fait = false;
+  m = t.match(new RegExp('(?:entre|de)\\s+' + N + '\\s*(?:m2\\s*)?(?:et|a|-)\\s*' + N + '\\s*m2'))
+      || t.match(new RegExp('\\s' + N + '\\s*(?:m2\\s*)?(?:a|-|\\/)\\s*' + N + '\\s*m2'));
+  if (m && +m[1] >= 10) {
+    c.smin = +m[1]; c.smax = +m[2]; fait = true;
+    if (c.smin > c.smax) { var k = c.smin; c.smin = c.smax; c.smax = k; }
+  }
+  if (!fait && ((m = t.match(new RegExp('(?:au moins|minimum|mini|min|plus de|superieure? a|a partir de)\\s*' + N + '\\s*m2')))
+           || (m = t.match(new RegExp(N + '\\s*m2\\s*(?:minimum|mini|min|et plus|ou plus|au moins)'))))) {
+    c.smin = +m[1]; fait = true;
+  }
+  if (!fait && ((m = t.match(new RegExp('(?:maximum|maxi|max|moins de|au plus|jusqu\'?a)\\s*' + N + '\\s*m2')))
+           || (m = t.match(new RegExp(N + '\\s*m2\\s*(?:maximum|maxi|max)'))))) {
+    c.smax = +m[1]; fait = true;
+  }
+  if (!fait && (m = t.match(new RegExp(N + '\\s*m2')))) {
+    c.smin = Math.round(+m[1] * 0.9); c.smax = Math.round(+m[1] * 1.1);
+  }
+
+  /* DPE */
+  var neg = /(pas de|hors|sans|pas en|aucune?|evite[rz]?)\s*(?:les\s*)?passoires?/.test(t) || /pas de [fg]\s*(?:ni|ou|et|\/)\s*[fg]\b/.test(t);
+  if (neg) { c.dpe = ['A','B','C','D','E']; }
+  else if (/passoires?/.test(t)) { c.dpe = ['F','G']; }
+  else if (/(a renover|travaux a prevoir|avec travaux|a rafraichir)/.test(t)) { c.dpe = ['E','F','G']; }
+  if ((m = t.match(/\b(?:dpe|classe|classes|etiquette|etiquettes|lettre|lettres|diagnostic)\b(.{0,45})/))) {
+    var seg = ' ' + m[1].replace(/\b(energie|energetique|energetiques|de|du|en|la|le|:)\b/g, ' ') + ' ';
+    var r2;
+    if ((r2 = seg.match(/\b([a-g])\s*(?:a|au|-|jusqu'?a|\/)\s*([a-g])\b/))) { c.dpe = rsLettres(r2[1], r2[2]); }
+    else if ((r2 = seg.match(/\b([a-g])\s*(?:ou mieux|et mieux|minimum|mini|min|maximum|max|au pire|et plus|ou plus)\b/))
+             || (r2 = seg.match(/(?:au moins|minimum|mini|min|au pire|maximum|max|jusqu'?a)\s*([a-g])\b/))) {
+      c.dpe = rsLettres('a', r2[1]);
+    }
+    else {
+      var toks = seg.replace(/[,;\/]/g, ' ').split(' ');
+      var lst = [];
+      for (var i = 0; i < toks.length; i++) {
+        var tk = toks[i];
+        if (tk === '') { continue; }
+        if (/^[a-g]$/.test(tk)) { if (tk === 'a' && lst.length) { break; } lst.push(tk.toUpperCase()); continue; }
+        if (tk === 'ou' || tk === 'et') { continue; }
+        break;
+      }
+      if (lst.length) { c.dpe = lst; }
+    }
+  }
+
+  /* Etage */
+  if (/(pas|hors|sauf|jamais|evite[rz]?|surtout pas)\s*(?:de |en |au |le |du )?rdc/.test(t)) { c.sansRdc = true; }
+  else if (/\brdc\b/.test(t)) { c.rdcSeul = true; }
+  if ((m = t.match(/(?:a partir du|au moins au|au moins|minimum|mini|min|au-dessus du|au dessus du)\s*(\d+)\s*etage/))
+      || (m = t.match(/(\d+)\s*etage\s*(?:minimum|mini|min|et plus|ou plus|et au-dessus|et au dessus)/))) { c.etMin = +m[1]; }
+  else if (/(etage eleve|etages eleves|dernier etage|haut etage)/.test(t)) { c.etMin = 3; }
+  if (c.etMin !== null) { c.sansRdc = false; c.rdcSeul = false; }
+
+  /* Communes de la carte */
+  var vues = {};
+  RS_SRC.forEach(function(r){
+    if (!r.c || vues[r.c]) { return; }
+    vues[r.c] = 1;
+    var n = rsNorm(r.c).replace(/-/g, ' ');
+    if (n.length >= 4 && t.replace(/-/g, ' ').indexOf(' ' + n + ' ') >= 0) { c.communes.push(r.c); }
+  });
+
+  if (/(\d+\s*(?:k|000)?\s*(?:euros?|eur|\u20ac))|budget|\bk\u20ac|\bmillions?\b/.test(t)) { c.budget = true; }
+
+  /* Pieces -> surface quand aucune surface n est donnee */
+  c.surfDePieces = false;
+  if (c.smin === null && c.smax === null && c.pmin) {
+    var mai = (c.type === 'maison');
+    c.smin = rsBande(c.pmin, mai)[0];
+    c.smax = c.pmax ? rsBande(c.pmax, mai)[1] : 9999;
+    c.surfDePieces = true;
+  }
+  return c;
+}
+
+function rsEtageNum(et){
+  if (!et) { return null; }
+  if (et === 'RDC') { return 0; }
+  var m = String(et).match(/(\d+)/);
+  return m ? +m[1] : null;
+}
+
+function rsCorrespond(r, c){
+  if (c.type && r.t !== c.type) { return false; }
+  if (c.smin !== null || c.smax !== null) {
+    if (!r.s) { return false; }
+    if (c.smin !== null && r.s < c.smin) { return false; }
+    if (c.smax !== null && r.s > c.smax) { return false; }
+  }
+  if (c.dpe && c.dpe.indexOf(r.d) < 0) { return false; }
+  if (c.communes.length && c.communes.indexOf(r.c) < 0) { return false; }
+  if (r.t === 'appartement' || !r.t) {
+    var e = rsEtageNum(r.et);
+    if (c.sansRdc && e === 0) { return false; }
+    if (c.rdcSeul && e !== null && e !== 0) { return false; }
+    if (c.etMin !== null && e !== null && e < c.etMin) { return false; }
+  }
+  return true;
+}
+
+function rsDateNum(dt){
+  if (!dt) { return 0; }
+  var p = dt.split('/');
+  return p.length === 3 ? +(p[2] + p[1] + p[0]) : 0;
+}
+
+function rsPuce(txt, ok){
+  return '<span class="rs-puce' + (ok ? '' : ' rs-off') + '">' + txt + '</span>';
+}
+
+function rsResume(c){
+  var h = '';
+  h += rsPuce(c.type === 'maison' ? 'Maison' : (c.type === 'appartement' ? 'Appartement' : 'Tous types'), !!c.type);
+  if (c.pmin) {
+    var p = c.pmax ? (c.pmin === c.pmax ? c.pmin + ' pièces' : c.pmin + ' à ' + c.pmax + ' pièces') : c.pmin + ' pièces et +';
+    h += rsPuce(p, true);
+  }
+  if (c.smin !== null || c.smax !== null) {
+    var s;
+    if (c.smax === null || c.smax >= 9999) { s = c.smin + ' m² et +'; }
+    else if (c.smin === null || c.smin === 0) { s = "jusqu'à " + c.smax + ' m²'; }
+    else { s = c.smin + ' à ' + c.smax + ' m²'; }
+    h += rsPuce(s + (c.surfDePieces ? ' (estimé d’après les pièces)' : ''), true);
+  } else { h += rsPuce('Surface libre', false); }
+  h += rsPuce(c.dpe ? 'DPE ' + c.dpe.join(', ') : 'Toutes lettres DPE', !!c.dpe);
+  if (c.sansRdc) { h += rsPuce('Pas de RDC', true); }
+  if (c.rdcSeul) { h += rsPuce('RDC', true); }
+  if (c.etMin !== null) { h += rsPuce('Étage ' + c.etMin + ' et +', true); }
+  if (c.communes.length) { h += rsPuce(c.communes.join(', '), true); }
+  if (c.budget) { h += rsPuce('Budget non utilisé : pas de prix dans les DPE', false); }
+  return h;
+}
+
+function rsChercher(){
+  var txt = document.getElementById('rs-txt').value;
+  var out = document.getElementById('rs-res');
+  var msg = document.getElementById('rs-msg');
+  msg.textContent = '';
+  if (!txt.replace(/\s/g, '')) { out.innerHTML = ''; return; }
+  var c = rsAnalyser(txt);
+  RS_RES = [];
+  RS_SRC.forEach(function(r){ if (rsCorrespond(r, c)) { RS_RES.push(r); } });
+  RS_RES.sort(function(a, b){ return rsDateNum(b.dt) - rsDateNum(a.dt); });
+  var h = '<div class="rs-crit"><div class="rs-lbl">Critères compris</div>' + rsResume(c) + '</div>';
+  h += '<div class="rs-tete"><b>' + RS_RES.length.toLocaleString('fr-FR') + '</b> bien(s) correspondant(s) dans les DPE ' + RS_PERIODE + ', du plus récent au plus ancien.';
+  if (RS_RES.length) { h += ' <button class="ann-btn" id="rs-carte">Voir sur la carte</button>'; }
+  h += '</div>';
+  if (!RS_RES.length) {
+    h += '<div class="rs-vide">Aucun bien ne correspond. Élargissez la surface ou les lettres DPE.</div>';
+  }
+  var max = Math.min(RS_RES.length, 200);
+  for (var i = 0; i < max; i++) {
+    var r = RS_RES[i];
+    var col = (typeof COL !== 'undefined' && COL[r.d]) ? COL[r.d] : '#888';
+    var tl = r.t === 'appartement' ? 'Appartement' : (r.t === 'maison' ? 'Maison' : (r.t === 'immeuble' ? 'Immeuble' : ''));
+    var det = [];
+    if (tl) { det.push(tl); }
+    if (r.s) { det.push(r.s + ' m²'); det.push('≈ ' + rsPiecesEstimees(r.s, r.t)); }
+    if (r.et) { det.push(esc(r.et)); }
+    if (r.co) { det.push(r.co + ' kWh/m²/an'); }
+    h += '<div class="rs-item">';
+    h += '<div class="list-dpe" style="background:' + col + '">' + (r.d || '?') + '</div>';
+    h += '<div class="rs-info"><div class="list-addr">' + esc(r.a) + '</div>';
+    h += '<div class="list-details">' + esc(r.c) + ' &middot; ' + det.join(' &middot; ') + '</div>';
+    h += '<div class="rs-act"><button class="rs-voir" data-i="' + i + '">Sur la carte</button>';
+    h += '<a class="rs-sv" target="_blank" href="' + svUrl(r.la, r.lo) + '">Street View</a></div></div>';
+    h += '<div class="list-right">' + (r.dt ? '<div class="list-date">DPE du ' + r.dt + '</div>' : '') + '</div>';
+    h += '</div>';
+  }
+  if (RS_RES.length > max) { h += '<div class="rs-vide">Affichage limité aux ' + max + ' plus récents sur ' + RS_RES.length + '. Précisez la recherche.</div>'; }
+  out.innerHTML = h;
+  var bc = document.getElementById('rs-carte');
+  if (bc) { bc.addEventListener('click', function(){ rsSurCarte(-1); }); }
+}
+
+function rsPopup(r){
+  var tl = r.t === 'appartement' ? 'Appartement' : (r.t === 'maison' ? 'Maison' : (r.t || ''));
+  return '<div class="dp"><b>' + esc(r.a) + '</b><br>' + esc(r.c) + '<br>' + tl + (r.s ? ' &middot; ' + r.s + ' m² (≈ ' + rsPiecesEstimees(r.s, r.t) + ')' : '') +
+         (r.et ? ' &middot; ' + esc(r.et) : '') + '<br>DPE ' + (r.d || '?') + (r.dt ? ' du ' + r.dt : '') +
+         '<br><a href="' + svUrl(r.la, r.lo) + '" target="_blank">Street View</a></div>';
+}
+
+function rsSurCarte(idx){
+  rsLayer.clearLayers();
+  var pts = [];
+  var cible = null;
+  RS_RES.slice(0, 500).forEach(function(r, i){
+    var mk = L.circleMarker([r.la, r.lo], {radius: 9, color: '#fff', weight: 2, fillColor: '#00b4d8', fillOpacity: 0.95});
+    mk.bindPopup(rsPopup(r));
+    rsLayer.addLayer(mk);
+    pts.push([r.la, r.lo]);
+    if (i === idx) { cible = mk; }
+  });
+  if (!map.hasLayer(rsLayer)) { map.addLayer(rsLayer); }
+  if (map.hasLayer(cl)) { map.removeLayer(cl); }
+  document.getElementById('vtab-carte').click();
+  document.getElementById('rs-effacer').style.display = 'block';
+  setTimeout(function(){
+    map.invalidateSize();
+    if (cible) { map.setView(cible.getLatLng(), 18); cible.openPopup(); }
+    else if (pts.length) { map.fitBounds(pts, {padding: [40, 40], maxZoom: 17}); }
+  }, 250);
+}
+
+function rsMicro(){
+  var SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  var msg = document.getElementById('rs-msg');
+  var btn = document.getElementById('rs-micro');
+  if (!SR) {
+    msg.textContent = 'Dictée non disponible sur ce navigateur : utilisez Chrome, ou le micro du clavier sur téléphone.';
+    return;
+  }
+  if (rsEcoute && RS_REC) { RS_REC.stop(); return; }
+  var zone = document.getElementById('rs-txt');
+  var base = zone.value.replace(/\s+$/, '');
+  if (base) { base += ' '; }
+  RS_REC = new SR();
+  RS_REC.lang = 'fr-FR';
+  RS_REC.interimResults = true;
+  RS_REC.continuous = false;
+  RS_REC.onresult = function(e){
+    var s = '';
+    for (var i = 0; i < e.results.length; i++) { s += e.results[i][0].transcript; }
+    zone.value = base + s;
+  };
+  RS_REC.onerror = function(e){
+    if (e.error === 'not-allowed' || e.error === 'service-not-allowed') {
+      msg.textContent = 'Micro refusé : autorisez le micro pour ce site. La dictée ne fonctionne pas depuis la pièce jointe du mail, ouvrez le lien en ligne.';
+    } else if (e.error === 'no-speech') {
+      msg.textContent = "Je n'ai rien entendu, réessayez.";
+    } else if (e.error === 'network') {
+      msg.textContent = 'La dictée demande une connexion Internet.';
+    } else {
+      msg.textContent = 'Erreur micro : ' + e.error;
+    }
+  };
+  RS_REC.onend = function(){
+    rsEcoute = false;
+    btn.classList.remove('rs-on');
+    btn.innerHTML = '&#127908; Dicter';
+    if (zone.value.replace(/\s/g, '')) { rsChercher(); }
+  };
+  try { RS_REC.start(); } catch (err) { msg.textContent = 'Micro indisponible : ' + err.message; return; }
+  rsEcoute = true;
+  btn.classList.add('rs-on');
+  btn.innerHTML = '&#9632; Arrêter';
+  msg.textContent = 'Parlez, la recherche se lance quand vous vous arrêtez...';
+}
+
+function rsAfficherVue(){
+  ['vtab-carte', 'vtab-liste', 'vtab-ann'].forEach(function(id){ var b = document.getElementById(id); if (b) { b.classList.remove('ac'); } });
+  document.getElementById('vtab-rech').classList.add('ac');
+  ['map', 'list-view', 'ann-view', 'tsw', 'lg'].forEach(function(id){ var el = document.getElementById(id); if (el) { el.style.display = 'none'; } });
+  document.getElementById('rech-view').style.display = 'block';
+  document.getElementById('rs-effacer').style.display = 'none';
+}
+
+document.getElementById('vtab-rech').addEventListener('click', rsAfficherVue);
+['vtab-carte', 'vtab-liste', 'vtab-ann'].forEach(function(id){
+  var b = document.getElementById(id);
+  if (b) { b.addEventListener('click', function(){
+    document.getElementById('vtab-rech').classList.remove('ac');
+    document.getElementById('rech-view').style.display = 'none';
+    document.getElementById('rs-effacer').style.display = (id === 'vtab-carte' && rsLayer.getLayers().length) ? 'block' : 'none';
+  }); }
+});
+document.getElementById('rs-go').addEventListener('click', rsChercher);
+document.getElementById('rs-micro').addEventListener('click', rsMicro);
+document.getElementById('rs-txt').addEventListener('keydown', function(e){ if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); rsChercher(); } });
+document.getElementById('rs-ex').addEventListener('click', function(e){
+  var x = e.target.closest('.rs-exemple');
+  if (!x) { return; }
+  document.getElementById('rs-txt').value = x.textContent;
+  rsChercher();
+});
+document.getElementById('rs-res').addEventListener('click', function(e){
+  var b = e.target.closest('.rs-voir');
+  if (b) { rsSurCarte(parseInt(b.dataset.i, 10)); }
+});
+function rsEffacer(toutVider){
+  rsLayer.clearLayers();
+  if (map.hasLayer(rsLayer)) { map.removeLayer(rsLayer); }
+  if (!map.hasLayer(cl)) { map.addLayer(cl); }
+  document.getElementById('rs-effacer').style.display = 'none';
+  if (toutVider) {
+    RS_RES = [];
+    document.getElementById('rs-txt').value = '';
+    document.getElementById('rs-res').innerHTML = '';
+    document.getElementById('rs-msg').textContent = '';
+  }
+}
+document.getElementById('rs-effacer').addEventListener('click', function(){ rsEffacer(false); });
+document.getElementById('rs-clear').addEventListener('click', function(){ rsEffacer(true); });
+if (!(window.SpeechRecognition || window.webkitSpeechRecognition)) {
+  document.getElementById('rs-micro').title = 'Dictee non disponible sur ce navigateur';
+}
 
 function getFiltered(){var res=[];D.forEach(function(r,idx){var ok1;if(curDPE==='OLD'){ok1=(r.o===1)}else{ok1=(!r.o)&&(curDPE==='all'||r.d===curDPE)}var dtInt=parseD(r.dt);var ok2=(dtInt>=curDateFrom&&dtInt<=curDateTo);var sv=r.s||0;var ok3=(sv===0||(sv>=curSurfMin&&sv<=curSurfMax));var ok4=(curType==='all'||r.t===curType);var ok5=(!searchText||r.a.toLowerCase().indexOf(searchText)>=0);if(ok1&&ok2&&ok3&&ok4&&ok5)res.push({r:r,idx:idx})});res.sort(function(a,b){return parseD(b.r.dt)-parseD(a.r.dt)});return res}
 function applyFilters(){cl.clearLayers();var filtered=getFiltered();var nn=0;var nFG=0;filtered.forEach(function(item){cl.addLayer(am[item.idx]);nn++;if(item.r.d==='F'||item.r.d==='G')nFG++});document.getElementById('cnt').textContent=nn.toLocaleString('fr-FR');document.getElementById('pw').textContent=nFG+' passoires F/G';updateList(filtered)}
