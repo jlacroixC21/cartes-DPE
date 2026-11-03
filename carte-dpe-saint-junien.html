@@ -1,0 +1,962 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Carte DPE - Saint-Junien</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css"/>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.5.3/MarkerCluster.css"/>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.5.3/MarkerCluster.Default.css"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.5.3/leaflet.markercluster.min.js"></script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&display=swap');
+*{margin:0;padding:0;box-sizing:border-box}body{font-family:"DM Sans",sans-serif;background:#0a0f1a;color:#e8e6e1;height:100vh;display:flex;flex-direction:column}
+header{background:linear-gradient(135deg,#1a2744,#0d1b2a);padding:8px 16px;border-bottom:1px solid rgba(255,255,255,.08);flex-shrink:0;z-index:1000}
+.hdr-top{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:6px}.hl{display:flex;align-items:center;gap:10px}
+.logo{width:32px;height:32px;background:linear-gradient(135deg,#e07c4f,#d4a574);border-radius:7px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;color:#0d1b2a}
+h1{font-size:15px;font-weight:700;color:#f0ece6}h1 span{color:#e07c4f}.sub{font-size:9px;color:rgba(255,255,255,.4);text-transform:uppercase;letter-spacing:1.5px}
+.st{display:flex;gap:10px;font-size:10px;color:rgba(255,255,255,.5);align-items:center;flex-wrap:wrap}.sv{font-weight:700;color:#e07c4f}.pw{color:#e13d2e}
+.view-tabs{display:flex;gap:0;margin-top:8px;border-bottom:2px solid rgba(255,255,255,.06)}
+.vtab{background:none;border:none;color:rgba(255,255,255,.45);padding:6px 16px;font-size:12px;font-family:inherit;cursor:pointer;font-weight:700;border-bottom:2px solid transparent;margin-bottom:-2px;transition:all .2s}
+.vtab:hover{color:rgba(255,255,255,.7)}.vtab.ac{color:#e07c4f;border-bottom-color:#e07c4f}
+.tabs{display:flex;gap:0;margin-top:4px;border-bottom:2px solid rgba(255,255,255,.06)}.tab{background:none;border:none;color:rgba(255,255,255,.45);padding:5px 12px;font-size:11px;font-family:inherit;cursor:pointer;font-weight:600;border-bottom:2px solid transparent;margin-bottom:-2px;transition:all .2s}.tab:hover{color:rgba(255,255,255,.7)}.tab.ac{color:#e07c4f;border-bottom-color:#e07c4f}
+.filter-bar{display:none;padding:6px 0 2px;flex-wrap:wrap;gap:4px;align-items:center}.filter-bar.visible{display:flex}
+.fl-label{font-size:9px;color:rgba(255,255,255,.35);text-transform:uppercase;letter-spacing:1px;margin-right:4px}
+.fb{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);color:#c8c4be;padding:4px 9px;border-radius:4px;font-size:10px;font-family:inherit;cursor:pointer;transition:all .2s;font-weight:600}.fb:hover{background:rgba(255,255,255,.12)}.fb.ac{border-color:var(--c);color:var(--c);background:var(--bg)}
+.date-group{display:flex;align-items:center;gap:6px;flex-wrap:wrap}.date-input{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);color:#e8e6e1;padding:4px 8px;border-radius:4px;font-size:11px;font-family:inherit;outline:none}.date-input:focus{border-color:#e07c4f}
+.date-apply{background:#e07c4f;border:none;color:#0d1b2a;padding:4px 12px;border-radius:4px;font-size:10px;font-family:inherit;cursor:pointer;font-weight:700}.date-reset{background:none;border:1px solid rgba(255,255,255,.2);color:rgba(255,255,255,.5);padding:4px 10px;border-radius:4px;font-size:10px;font-family:inherit;cursor:pointer}
+.dq,.sp,.tb{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);color:rgba(255,255,255,.5);padding:3px 8px;border-radius:3px;font-size:9px;font-family:inherit;cursor:pointer;transition:all .15s}.dq:hover,.dq.ac,.sp:hover,.sp.ac,.tb:hover,.tb.ac{border-color:#e07c4f;color:#e07c4f;background:rgba(224,124,79,.1)}
+.tb{padding:5px 12px;font-size:11px;display:flex;align-items:center;gap:5px}.tb .ico{font-size:14px}
+.surf-group{display:flex;align-items:center;gap:8px;flex-wrap:wrap;width:100%}.range-wrap{display:flex;align-items:center;gap:8px;flex:1;min-width:200px;max-width:500px}
+.range-wrap input[type=range]{flex:1;accent-color:#e07c4f;height:4px;cursor:pointer;-webkit-appearance:none;appearance:none;background:rgba(255,255,255,.15);border-radius:2px;outline:none}
+.range-wrap input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:16px;height:16px;border-radius:50%;background:#e07c4f;border:2px solid #fff;cursor:pointer;box-shadow:0 1px 4px rgba(0,0,0,.4)}
+.range-val{font-size:12px;color:#e07c4f;font-weight:700;min-width:40px;text-align:center}
+#map{flex:1;width:100%}
+#list-view{flex:1;width:100%;overflow-y:auto;display:none;background:#0d1117}
+#ann-view{flex:1;width:100%;overflow-y:auto;display:none;background:#0d1117;padding:14px}
+.rs-wrap{max-width:860px}#rech-view{flex:1;width:100%;overflow-y:auto;display:none;background:#0d1117;padding:14px}#rs-txt{width:100%;box-sizing:border-box;min-height:70px;resize:vertical;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.15);color:#e8e6e1;padding:9px 11px;border-radius:6px;font-size:14px;font-family:inherit;margin-bottom:8px}#rs-txt:focus{outline:none;border-color:#e07c4f}.rs-mic{background:#1a2744;border:1px solid #e07c4f;color:#e07c4f;padding:8px 16px;border-radius:4px;font-size:13px;font-weight:700;font-family:inherit;cursor:pointer}.rs-mic.rs-on{background:#c0392b;border-color:#c0392b;color:#fff;animation:rsPulse 1s infinite}@keyframes rsPulse{0%{box-shadow:0 0 0 0 rgba(192,57,43,.6)}100%{box-shadow:0 0 0 10px rgba(192,57,43,0)}}#rs-msg{font-size:11px;color:#f0b41a;min-height:14px;margin:4px 0}#rs-ex{font-size:11px;color:rgba(255,255,255,.45);margin-top:6px;line-height:1.9}.rs-exemple{display:inline-block;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:12px;padding:1px 9px;margin:0 4px 0 0;cursor:pointer;color:rgba(255,255,255,.75)}.rs-exemple:hover{border-color:#e07c4f;color:#e07c4f}.rs-note{font-size:10.5px;color:rgba(255,255,255,.4);margin-top:8px}.rs-crit{margin:4px 0 10px}.rs-lbl{font-size:10px;text-transform:uppercase;letter-spacing:.06em;color:rgba(255,255,255,.4);margin-bottom:4px}.rs-puce{display:inline-block;background:rgba(224,124,79,.15);border:1px solid rgba(224,124,79,.5);color:#f3b08f;border-radius:12px;padding:2px 10px;font-size:11px;margin:0 5px 5px 0}.rs-puce.rs-off{background:rgba(255,255,255,.04);border-color:rgba(255,255,255,.15);color:rgba(255,255,255,.45)}.rs-tete{font-size:12px;color:#e8e6e1;margin:6px 0 10px;display:flex;align-items:center;gap:10px;flex-wrap:wrap}.rs-vide{font-size:12px;color:rgba(255,255,255,.5);padding:10px 0}.rs-item{display:flex;align-items:center;gap:10px;padding:9px 4px;border-bottom:1px solid rgba(255,255,255,.06)}.rs-info{flex:1;min-width:0}.rs-act{margin-top:4px;display:flex;gap:6px;flex-wrap:wrap}.rs-voir,.rs-sv{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.15);color:#e8e6e1;padding:3px 9px;border-radius:4px;font-size:10.5px;font-family:inherit;cursor:pointer;text-decoration:none}.rs-voir:hover,.rs-sv:hover{border-color:#e07c4f;color:#e07c4f}#rs-effacer{position:fixed;left:50%;transform:translateX(-50%);bottom:24px;z-index:1001;display:none;background:#e07c4f;color:#fff;border:none;border-radius:20px;padding:10px 20px;font-size:13px;font-weight:700;font-family:inherit;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,.4)}
+.ann-form{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);border-radius:6px;padding:14px;margin-bottom:16px;max-width:760px}
+.ann-form h3{margin:0 0 10px;font-size:13px;color:#e07c4f;font-weight:700}
+.ann-row{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:8px}
+.ann-form input,.ann-form select{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.15);color:#e8e6e1;padding:7px 9px;border-radius:4px;font-size:12px;font-family:inherit}
+.ann-form input:focus,.ann-form select:focus{outline:none;border-color:#e07c4f}
+.ann-form input::placeholder{color:rgba(255,255,255,.3)}
+.ann-btn{background:#e07c4f;border:none;color:#fff;padding:8px 18px;border-radius:4px;font-size:12px;font-weight:700;font-family:inherit;cursor:pointer}
+.ann-btn:hover{background:#c96a40}.ann-btn:disabled{opacity:.5;cursor:default}
+.ann-msg{font-size:11px;margin-top:8px;min-height:15px}
+.ann-item{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);border-left:3px solid #fff;border-radius:5px;padding:10px 12px;margin-bottom:8px;max-width:760px}
+.ann-item .at{font-size:13px;font-weight:700;color:#e8e6e1;margin-bottom:3px}
+.ann-item .ad{font-size:11px;color:rgba(255,255,255,.5);margin-bottom:6px}
+.ann-tag{display:inline-block;font-size:9px;font-weight:700;padding:2px 7px;border-radius:3px;margin-right:5px}
+.ann-ok{background:rgba(0,156,91,.2);color:#3ddc8c}.ann-no{background:rgba(255,255,255,.08);color:rgba(255,255,255,.45)}
+.ann-act a{color:#e07c4f;font-size:11px;text-decoration:none;margin-right:12px}.ann-act a:hover{text-decoration:underline}
+.ann-del{background:none;border:none;color:rgba(255,255,255,.35);font-size:11px;cursor:pointer;font-family:inherit;padding:0}
+.ann-del:hover{color:#e13d2e}
+.cand{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);border-radius:4px;padding:8px 10px;margin-top:6px}
+.cand.sel{border-color:#3ddc8c;background:rgba(61,220,140,.08)}
+.cand .ca{font-size:12px;color:#e8e6e1;font-weight:600}
+.cand .cd{font-size:10px;color:rgba(255,255,255,.45);margin-top:2px}
+.cand .cl{margin-top:5px}
+.cand .cl a{color:#4285F4;font-size:10px;text-decoration:none;margin-right:10px}
+.cand-ok{background:none;border:1px solid #3ddc8c;color:#3ddc8c;font-size:10px;padding:2px 8px;border-radius:3px;cursor:pointer;font-family:inherit}
+.list-item{display:flex;align-items:center;gap:10px;padding:10px 16px;border-bottom:1px solid rgba(255,255,255,.06);cursor:pointer;transition:background .15s}
+.list-item:hover{background:rgba(255,255,255,.04)}
+.list-dpe{width:32px;height:32px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;color:#fff;flex-shrink:0}
+.list-info{flex:1;min-width:0}.list-addr{font-size:12px;font-weight:600;color:#e8e6e1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.list-details{font-size:10px;color:rgba(255,255,255,.4);margin-top:2px}
+.list-right{text-align:right;flex-shrink:0}.list-surf{font-size:12px;font-weight:700;color:#e07c4f}.list-date{font-size:9px;color:rgba(255,255,255,.3);margin-top:1px}
+.list-passoire{background:rgba(220,53,69,.15);border:1px solid rgba(220,53,69,.4);color:#dc3545;padding:1px 5px;border-radius:3px;font-size:8px;font-weight:700;margin-left:5px}
+.list-count{padding:8px 16px;font-size:10px;color:rgba(255,255,255,.3);text-transform:uppercase;letter-spacing:1px;border-bottom:1px solid rgba(255,255,255,.06)}
+.list-search{width:100%;padding:10px 16px;background:#0d1117;border:none;border-bottom:1px solid rgba(255,255,255,.1);color:#e8e6e1;font-size:13px;font-family:inherit;outline:none}
+.list-search::placeholder{color:rgba(255,255,255,.25)}.list-search:focus{border-bottom-color:#e07c4f}
+.list-toolbar{display:flex;align-items:center;gap:0}.list-toolbar .list-search{flex:1}.export-btn{background:#e07c4f;border:none;color:#0d1b2a;padding:10px 16px;font-size:11px;font-family:inherit;cursor:pointer;font-weight:700;border-bottom:1px solid rgba(255,255,255,.1);white-space:nowrap}
+.leaflet-control-zoom a{background:#1a2744!important;color:#e8e6e1!important;border-color:rgba(255,255,255,.1)!important}.leaflet-control-attribution{background:rgba(13,27,42,.85)!important;color:rgba(255,255,255,.4)!important;font-size:9px!important}
+.dp{font-family:"DM Sans",sans-serif;min-width:210px}.dp .db{display:inline-block;width:26px;height:26px;border-radius:5px;text-align:center;line-height:26px;font-weight:700;font-size:13px;color:#fff;margin-right:5px;vertical-align:middle}.dp .tl{font-weight:700;font-size:13px;vertical-align:middle}.dp .ad{font-size:11px;color:#555;margin:5px 0 3px}.dp .ir{font-size:10px;color:#666;line-height:1.7}.dp .ir b{color:#333}
+.dp .dt-badge{display:inline-block;background:#f0f4ff;border:1px solid #c5cfe0;color:#3a5a8c;padding:1px 6px;border-radius:3px;font-size:9px;font-weight:600;margin-top:4px}.dp .loc-info{background:#f8f9fa;border-radius:4px;padding:4px 6px;margin-top:4px;font-size:10px;color:#444}.dp .loc-info span{color:#888;font-size:9px}
+.pb{background:rgba(220,53,69,.15);border:1px solid rgba(220,53,69,.4);color:#dc3545;padding:1px 5px;border-radius:3px;font-size:8px;font-weight:700;margin-left:3px;vertical-align:middle}
+.lg{position:absolute;bottom:24px;right:10px;background:rgba(13,27,42,.92);backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,.1);border-radius:9px;padding:8px 12px;z-index:1000;font-size:10px}.lg-t{font-weight:700;color:#f0ece6;margin-bottom:4px;font-size:11px}.lg-i{display:flex;align-items:center;gap:5px;margin:2px 0;color:rgba(255,255,255,.7)}.lg-d{width:10px;height:10px;border-radius:50%;border:1px solid rgba(255,255,255,.2)}
+.tsw{position:absolute;bottom:30px;left:10px;z-index:1000;display:flex;flex-direction:column;gap:3px}.ts{background:rgba(26,39,68,.92);border:1px solid rgba(255,255,255,.1);color:#c8c4be;padding:5px 10px;border-radius:5px;font-size:10px;font-family:inherit;cursor:pointer}.ts.ac{border-color:#e07c4f;color:#e07c4f}
+@media(max-width:600px){header{padding:6px 10px}h1{font-size:13px}.sub,.st{display:none}}
+</style></head><body>
+<header>
+<div class="hdr-top"><div class="hl"><div class="logo">DPE</div><div>
+<h1>Saint-Junien <span>&middot;</span> Carte DPE</h1>
+<div class="sub">107 diagnostics - 03/11/2026 17h43 - Source ADEME</div>
+</div></div>
+<div class="st">Affiches: <span class="sv" id="cnt">107</span> &middot; <span class="pw" id="pw">1 passoires F/G</span></div></div>
+<div class="view-tabs"><button class="vtab ac" id="vtab-carte">&#127758; Carte</button><button class="vtab" id="vtab-liste">&#128203; Liste</button><button class="vtab" id="vtab-ann">&#127991; Annonces</button><button class="vtab" id="vtab-rech">&#128269; Recherche</button></div>
+<div class="tabs"><button class="tab ac" data-tab="dpe">Etiquette DPE</button><button class="tab" data-tab="date">Date du DPE</button><button class="tab" data-tab="surf">Surface</button><button class="tab" data-tab="type">Type de bien</button></div>
+<div class="filter-bar visible" id="bar-dpe"><div id="fl" style="display:flex;gap:3px;flex-wrap:wrap">
+<button class="fb ac" style="--c:#e07c4f;--bg:rgba(224,124,79,.15)" data-d="all">Tous</button>
+<button class="fb" style="--c:#009c5b;--bg:rgba(0,156,91,.12)" data-d="A">A <small>(0)</small></button>
+<button class="fb" style="--c:#51b550;--bg:rgba(81,181,80,.12)" data-d="B">B <small>(0)</small></button>
+<button class="fb" style="--c:#edd613;--bg:rgba(237,214,19,.12)" data-d="C">C <small>(9)</small></button>
+<button class="fb" style="--c:#f0b41a;--bg:rgba(240,180,26,.12)" data-d="D">D <small>(5)</small></button>
+<button class="fb" style="--c:#ef8023;--bg:rgba(239,128,35,.12)" data-d="E">E <small>(10)</small></button>
+<button class="fb" style="--c:#e13d2e;--bg:rgba(225,61,46,.12)" data-d="F">F <small>(1)</small></button>
+<button class="fb" style="--c:#b4161a;--bg:rgba(180,22,26,.12)" data-d="G">G <small>(0)</small></button>
+<button class="fb" style="--c:#8e44ad;--bg:rgba(142,68,173,.15)" data-d="OLD">3-6 mois <small>(82)</small></button>
+</div></div>
+<div class="filter-bar" id="bar-date"><span class="fl-label">Periode :</span><div class="date-group"><label style="font-size:10px;color:rgba(255,255,255,.4)">Du</label><input type="date" class="date-input" id="dt-from" value="2021-07-01"><label style="font-size:10px;color:rgba(255,255,255,.4)">au</label><input type="date" class="date-input" id="dt-to" value="2026-12-31"><button class="date-apply" id="dt-apply">Filtrer</button><button class="date-reset" id="dt-reset">Reinit.</button></div><div style="display:flex;gap:3px;flex-wrap:wrap;margin-left:6px" id="dq"><button class="dq" data-from="2026-01-01" data-to="2026-12-31">2026</button><button class="dq" data-from="2025-01-01" data-to="2025-12-31">2025</button><button class="dq" data-from="2024-01-01" data-to="2024-12-31">2024</button><button class="dq" data-from="2023-01-01" data-to="2023-12-31">2023</button><button class="dq" data-from="2022-01-01" data-to="2022-12-31">2022</button><button class="dq" data-from="2021-07-01" data-to="2021-12-31">2021</button><button class="dq" data-from="2026-05-05" data-to="2099-12-31">6 derniers mois</button><button class="dq" data-from="2025-11-03" data-to="2099-12-31">12 derniers mois</button></div></div>
+<div class="filter-bar" id="bar-surf"><div class="surf-group"><span class="fl-label">Surface :</span><div class="range-wrap"><span class="range-val" id="surf-min-val">0</span><input type="range" id="surf-min" min="0" max="300" value="0" step="5"><span style="color:rgba(255,255,255,.3);font-size:10px">a</span><input type="range" id="surf-max" min="0" max="300" value="300" step="5"><span class="range-val" id="surf-max-val">300+</span><span style="font-size:10px;color:rgba(255,255,255,.3)">m2</span></div><button class="date-apply" id="surf-apply">Filtrer</button><button class="date-reset" id="surf-reset">Reinit.</button></div><div style="display:flex;gap:3px;flex-wrap:wrap;margin-top:4px" id="sp"><button class="sp" data-min="0" data-max="20">Studios &lt;20</button><button class="sp" data-min="20" data-max="40">T1/T2 20-40</button><button class="sp" data-min="40" data-max="60">T2/T3 40-60</button><button class="sp" data-min="60" data-max="80">T3/T4 60-80</button><button class="sp" data-min="80" data-max="100">T4/T5 80-100</button><button class="sp" data-min="100" data-max="150">Grands 100-150</button><button class="sp" data-min="150" data-max="300">150+ m2</button></div></div>
+<div class="filter-bar" id="bar-type"><span class="fl-label">Type :</span><div style="display:flex;gap:6px;flex-wrap:wrap" id="tfl">
+<button class="tb ac" data-type="all"><span class="ico">&#127960;</span> Tous <small>(107)</small></button>
+<button class="tb" data-type="appartement"><span class="ico">&#127970;</span> Appartements <small>(38)</small></button>
+<button class="tb" data-type="maison"><span class="ico">&#127968;</span> Maisons <small>(60)</small></button>
+<button class="tb" data-type="immeuble"><span class="ico">&#127959;</span> Immeubles <small>(9)</small></button>
+</div></div></header>
+<div id="map"></div>
+<div id="rech-view"><div class="rs-wrap"><div class="ann-form" style="max-width:none"><h3>Recherche acquéreur</h3><div style="font-size:11px;color:rgba(255,255,255,.5);margin-bottom:10px">Dictez ou tapez ce que recherche votre acquéreur : type de bien, nombre de pièces, surface, lettres DPE, étage, commune. Les biens correspondants sont cherchés dans les DPE ADEME des 30 derniers jours.</div><textarea id="rs-txt" placeholder="Ex : appartement 3 pièces entre 60 et 75 m², DPE A à D, pas de rez-de-chaussée"></textarea><div class="ann-row" style="align-items:center"><button class="rs-mic" id="rs-micro">&#127908; Dicter</button><button class="ann-btn" id="rs-go">Rechercher</button><button class="rs-mic" id="rs-clear" style="border-color:rgba(255,255,255,.3);color:#e8e6e1">&#10005; Effacer</button></div><div id="rs-msg"></div><div id="rs-ex">Exemples : <span class="rs-exemple">Appartement 3 pièces entre 60 et 75 m², DPE A à D, pas de rez-de-chaussée</span><span class="rs-exemple">Maison 4 chambres, DPE C ou mieux</span><span class="rs-exemple">Studio ou 2 pièces moins de 40 m², pas de passoire</span><span class="rs-exemple">T4 à partir du 2e étage, au moins 80 m²</span></div><div class="rs-note">Le nombre de pièces n&rsquo;est presque jamais renseigné dans les DPE : il est estimé d&rsquo;après la surface. Le prix n&rsquo;y figure pas. Pour dicter, ouvrez la carte depuis le lien en ligne (Chrome, Edge ou Safari) et autorisez le micro.</div></div><div id="rs-res"></div></div></div><button id="rs-effacer">&#10005; Effacer la recherche</button>
+<div id="ann-view">
+<div class="ann-form">
+<h3>Ajouter une annonce reperee</h3>
+<div style="font-size:11px;color:rgba(255,255,255,.45);margin-bottom:10px">Saisissez ce que l&rsquo;annonce indique. Les adresses possibles seront recherchees dans les DPE ADEME des 12 derniers mois.</div>
+<div class="ann-row">
+<input type="text" id="an-url" placeholder="Lien de l'annonce (https://...)" style="flex:1;min-width:260px">
+</div><div class="ann-row">
+<input type="text" id="an-adr" placeholder="Adresse si connue (facultatif)" style="flex:1;min-width:200px">
+<input type="text" id="an-com" placeholder="Commune" style="width:150px">
+</div><div class="ann-row">
+<select id="an-type"><option value="appartement">Appartement</option><option value="maison">Maison</option><option value="immeuble">Immeuble</option></select>
+<input type="number" id="an-surf" placeholder="Surface m2" style="width:110px">
+<select id="an-dpe"><option value="">DPE ?</option><option>A</option><option>B</option><option>C</option><option>D</option><option>E</option><option>F</option><option>G</option></select>
+<input type="number" id="an-conso" placeholder="Conso kWh/m2/an" style="width:140px">
+<select id="an-gesl"><option value="">GES ?</option><option>A</option><option>B</option><option>C</option><option>D</option><option>E</option><option>F</option><option>G</option></select>
+<input type="number" id="an-etage" placeholder="Etage" style="width:80px">
+<input type="number" id="an-ges" placeholder="GES" style="width:85px">
+<input type="text" id="an-prix" placeholder="Prix" style="width:110px">
+<button class="ann-btn" id="an-add">Ajouter</button>
+</div>
+<div class="ann-msg" id="an-msg"></div>
+</div>
+<div id="ann-list"></div>
+</div>
+<div id="list-view"><div class="list-toolbar"><input type="text" class="list-search" id="list-search" placeholder="Rechercher une adresse..."><button class="export-btn" id="export-btn">Exporter Excel</button></div><div class="list-count" id="list-count"></div><div id="list-items"></div></div>
+<div class="tsw" id="tsw"><button class="ts ac" data-t="streets">Rues</button><button class="ts" data-t="sat">Satellite</button></div>
+<div class="lg" id="lg"><div class="lg-t">Etiquette DPE</div>
+<div class="lg-i"><div class="lg-d" style="background:#009c5b"></div>A (&le;70)</div>
+<div class="lg-i"><div class="lg-d" style="background:#51b550"></div>B (71-110)</div>
+<div class="lg-i"><div class="lg-d" style="background:#edd613"></div>C (111-180)</div>
+<div class="lg-i"><div class="lg-d" style="background:#f0b41a"></div>D (181-250)</div>
+<div class="lg-i"><div class="lg-d" style="background:#ef8023"></div>E (251-330)</div>
+<div class="lg-i"><div class="lg-d" style="background:#e13d2e"></div>F (331-420) <span class="pb">PASSOIRE</span></div>
+<div class="lg-i"><div class="lg-d" style="background:#b4161a"></div>G (&gt;420) <span class="pb">PASSOIRE</span></div>
+<div class="lg-i"><div class="lg-d" style="background:#8e44ad"></div>DPE 3 a 6 mois</div>
+</div>
+<script>
+var D=[{"la":45.884493,"lo":0.900992,"d":"C","g":"C","a":"32 Faubourg Auguste Blanqui 87200 Saint-Junien","c":"Saint-Junien","cp":"87200","s":52.1,"t":"appartement","co":146.0,"gv":17.0,"p":"avant 1948","dt":"10/05/2026","et":"Etage 2","po":"","cb":"","o":1},{"la":45.886416,"lo":0.892519,"d":"F","g":"F","a":"8 Rue Colette 87200 Saint-Junien","c":"Saint-Junien","cp":"87200","s":83.7,"t":"maison","co":347.6,"gv":70.8,"p":"1978-1982","dt":"11/05/2026","et":"","po":"","cb":"","o":1},{"la":45.883387,"lo":0.898274,"d":"C","g":"B","a":"10 Rue Jean Moulin 87200 Saint-Junien","c":"Saint-Junien","cp":"87200","s":69.1,"t":"maison","co":179.3,"gv":6.7,"p":"avant 1948","dt":"11/05/2026","et":"","po":"","cb":"","o":1},{"la":45.890443,"lo":0.908655,"d":"F","g":"C","a":"5bis Impasse Saint-François 87200 Saint-Junien","c":"Saint-Junien","cp":"87200","s":51.5,"t":"maison","co":370.0,"gv":15.0,"p":"avant 1948","dt":"12/05/2026","et":"RDC","po":"","cb":"66253","o":1},{"la":45.890439,"lo":0.903656,"d":"D","g":"D","a":"17 Avenue Henri Barbusse 87200 Saint-Junien","c":"Saint-Junien","cp":"87200","s":null,"t":"immeuble","co":197.0,"gv":43.0,"p":"avant 1948","dt":"14/05/2026","et":"","po":"","cb":"","o":1},{"la":45.884532,"lo":0.899399,"d":"D","g":"C","a":"3 Rue de Schiltigheim 87200 Saint-Junien","c":"Saint-Junien","cp":"87200","s":77.9,"t":"maison","co":208.3,"gv":28.1,"p":"1948-1974","dt":"18/05/2026","et":"","po":"","cb":"","o":1},{"la":45.91473,"lo":0.86838,"d":"F","g":"C","a":"Plaud 87200 Saint-Junien","c":"Saint-Junien","cp":"87200","s":84.2,"t":"maison","co":351.6,"gv":14.9,"p":"avant 1948","dt":"19/05/2026","et":"","po":"","cb":"","o":1},{"la":45.882241,"lo":0.908389,"d":"D","g":"C","a":"11 Rue Molière 87200 Saint-Junien","c":"Saint-Junien","cp":"87200","s":113.4,"t":"maison","co":228.4,"gv":29.3,"p":"1948-1974","dt":"19/05/2026","et":"","po":"","cb":"","o":1},{"la":45.915087,"lo":0.87407,"d":"A","g":"A","a":"20 La Lande de Plaud 87200 Saint-Junien","c":"Saint-Junien","cp":"87200","s":110.7,"t":"maison","co":66.0,"gv":2.0,"p":"2013-2021","dt":"20/05/2026","et":"RDC","po":"","cb":"66212","o":1},{"la":45.891926,"lo":0.886863,"d":"E","g":"E","a":"12 Route de Saulgond 87200 Saint-Junien","c":"Saint-Junien","cp":"87200","s":110.0,"t":"maison","co":252.0,"gv":54.0,"p":"1948-1974","dt":"20/05/2026","et":"RDC","po":"","cb":"66394","o":1},{"la":45.902441,"lo":0.904593,"d":"G","g":"G","a":"16 Allée du Chatelard 87200 Saint-Junien","c":"Saint-Junien","cp":"87200","s":100.5,"t":"maison","co":441.0,"gv":128.0,"p":"1948-1974","dt":"28/05/2026","et":"RDC","po":"","cb":"2026/POMMIER/0639","o":1},{"la":45.885901,"lo":0.899355,"d":"D","g":"B","a":"2 Rue de Breche 87200 Saint-Junien","c":"Saint-Junien","cp":"87200","s":null,"t":"immeuble","co":203.8,"gv":8.0,"p":"1989-2000","dt":"28/05/2026","et":"","po":"","cb":"","o":1},{"la":45.890601,"lo":0.91464,"d":"D","g":"B","a":"6 Impasse Jacques Brel 87200 Saint-Junien","c":"Saint-Junien","cp":"87200","s":108.2,"t":"maison","co":196.0,"gv":7.0,"p":"2006-2012","dt":"29/05/2026","et":"RDC","po":"","cb":"26/IMO/0003","o":1},{"la":45.912825,"lo":0.942533,"d":"D","g":"B","a":"8 Rue des Trotteurs 87200 Saint-Junien","c":"Saint-Junien","cp":"87200","s":94.8,"t":"maison","co":203.3,"gv":8.1,"p":"1948-1974","dt":"03/06/2026","et":"","po":"","cb":"","o":1},{"la":45.88789,"lo":0.893868,"d":"D","g":"D","a":"1 Faubourg Liebknecht 87200 Saint-Junien","c":"Saint-Junien","cp":"87200","s":118.2,"t":"maison","co":145.1,"gv":30.5,"p":"avant 1948","dt":"03/06/2026","et":"","po":"","cb":"","o":1},{"la":45.883714,"lo":0.901993,"d":"C","g":"C","a":"6 Avenue Martial Thiphonnet 87200 Saint-Junien","c":"Saint-Junien","cp":"87200","s":132.7,"t":"maison","co":147.0,"gv":24.0,"p":"avant 1948","dt":"08/06/2026","et":"","po":"1-Bâtiment n°1-1-LogZone","cb":"","o":1},{"la":45.891643,"lo":0.901308,"d":"D","g":"D","a":"3 Rue Auguste Gagne 87200 Saint-Junien","c":"Saint-Junien","cp":"87200","s":73.1,"t":"appartement","co":201.2,"gv":41.2,"p":"1948-1974","dt":"10/06/2026","et":"Etage 2","po":"","cb":"","o":1},{"la":45.883599,"lo":0.90054,"d":"F","g":"F","a":"31ter Faubourg Auguste Blanqui 87200 Saint-Junien","c":"Saint-Junien","cp":"87200","s":108.0,"t":"maison","co":364.8,"gv":74.7,"p":"1948-1974","dt":"11/06/2026","et":"","po":"","cb":"","o":1},{"la":45.890485,"lo":0.908708,"d":"G","g":"G","a":"7 Impasse Saint-François 87200 Saint-Junien","c":"Saint-Junien","cp":"87200","s":114.7,"t":"maison","co":426.0,"gv":130.0,"p":"1948-1974","dt":"11/06/2026","et":"RDC","po":"Maison individuelle","cb":"260594ADER","o":1},{"la":45.889459,"lo":0.904734,"d":"D","g":"D","a":"14 Avenue Anatole France 87200 Saint-Junien","c":"Saint-Junien","cp":"87200","s":216.8,"t":"maison","co":219.2,"gv":43.9,"p":"1948-1974","dt":"11/06/2026","et":"","po":"","cb":"","o":1},{"la":45.887685,"lo":0.901587,"d":"C","g":"A","a":"8 Place Guy Moquet 87200 Saint-Junien","c":"Saint-Junien","cp":"87200","s":63.5,"t":"appartement","co":113.0,"gv":4.0,"p":"avant 1948","dt":"12/06/2026","et":"RDC","po":"Appartement n°1 - T03 - 1er étage","cb":"260612ADP","o":1},{"la":45.887125,"lo":0.897113,"d":"D","g":"B","a":"3 Rue Rouget de Lisle 87200 Saint-Junien","c":"Saint-Junien","cp":"87200","s":78.5,"t":"maison","co":216.4,"gv":8.5,"p":"avant 1948","dt":"12/06/2026","et":"","po":"","cb":"","o":1},{"la":45.887685,"lo":0.901587,"d":"C","g":"B","a":"8 Place Guy Moquet 87200 Saint-Junien","c":"Saint-Junien","cp":"87200","s":61.9,"t":"appartement","co":158.0,"gv":6.0,"p":"avant 1948","dt":"12/06/2026","et":"RDC","po":"Appartement n°3 - T02 - 3ème étage","cb":"260614ADP","o":1},{"la":45.885567,"lo":0.912095,"d":"D","g":"D","a":"60 Avenue Voltaire 87200 Saint-Junien","c":"Saint-Junien","cp":"87200","s":137.4,"t":"maison","co":226.3,"gv":32.7,"p":"1978-1982","dt":"12/06/2026","et":"","po":"","cb":"","o":1},{"la":45.887685,"lo":0.901587,"d":"C","g":"A","a":"8 Place Guy Moquet 87200 Saint-Junien","c":"Saint-Junien","cp":"87200","s":64.7,"t":"appartement","co":111.0,"gv":4.0,"p":"avant 1948","dt":"12/06/2026","et":"RDC","po":"Appartement n°2 - T03 - 2ème étage","cb":"260613ADP","o":1},{"la":45.887123,"lo":0.893748,"d":"F","g":"F","a":"3 Rue Jean Pierre Timbaud 87200 Saint-Junien","c":"Saint-Junien","cp":"87200","s":105.3,"t":"maison","co":402.0,"gv":76.0,"p":"1948-1974","dt":"14/06/2026","et":"","po":"","cb":"","o":1},{"la":45.8868,"lo":0.892738,"d":"E","g":"E","a":"2 Rue Colette 87200 Saint-Junien","c":"Saint-Junien","cp":"87200","s":109.3,"t":"maison","co":294.0,"gv":63.0,"p":"avant 1948","dt":"15/06/2026","et":"RDC","po":"","cb":"26MFA0079","o":1},{"la":45.892845,"lo":0.907224,"d":"F","g":"C","a":"67 Avenue Henri Barbusse 87200 Saint-Junien","c":"Saint-Junien","cp":"87200","s":41.0,"t":"appartement","co":337.4,"gv":13.3,"p":"avant 1948","dt":"16/06/2026","et":"Etage 1","po":"Droite","cb":"","o":1},{"la":45.884554,"lo":0.903757,"d":"E","g":"D","a":"15 Avenue d’Estienne d’Orves 87200 Saint-Junien","c":"Saint-Junien","cp":"87200","s":101.2,"t":"maison","co":265.1,"gv":45.3,"p":"1948-1974","dt":"17/06/2026","et":"","po":"","cb":"","o":1},{"la":45.88225,"lo":0.896304,"d":"E","g":"E","a":"12bis Avenue Victor Roche 87200 Saint-Junien","c":"Saint-Junien","cp":"87200","s":null,"t":"immeuble","co":253.6,"gv":55.5,"p":"1948-1974","dt":"17/06/2026","et":"","po":"","cb":"","o":1},{"la":45.883776,"lo":0.900123,"d":"F","g":"C","a":"16 Rue Boileau 87200 Saint-Junien","c":"Saint-Junien","cp":"87200","s":107.1,"t":"appartement","co":384.0,"gv":15.0,"p":"avant 1948","dt":"18/06/2026","et":"RDC","po":"","cb":"26-HABTALAN-2650","o":1},{"la":45.895676,"lo":0.912848,"d":"D","g":"D","a":"23 Avenue d’Oradour-sur-Glane 87200 Saint-Junien","c":"Saint-Junien","cp":"87200","s":null,"t":"immeuble","co":164.4,"gv":32.6,"p":"avant 1948","dt":"18/06/2026","et":"","po":"","cb":"","o":1},{"la":45.890466,"lo":0.867889,"d":"C","g":"B","a":"Lieu-dit Raquiaud 87200 Saint-Junien","c":"Saint-Junien","cp":"87200","s":116.0,"t":"maison","co":178.0,"gv":7.0,"p":"avant 1948","dt":"18/06/2026","et":"","po":"","cb":"","o":1},{"la":45.89207,"lo":0.92363,"d":"B","g":"B","a":"27 Impasse Hector Berlioz 87200 Saint-Junien","c":"Saint-Junien","cp":"87200","s":139.5,"t":"maison","co":62.6,"gv":8.3,"p":"2013-2021","dt":"19/06/2026","et":"","po":"","cb":"","o":1},{"la":45.889124,"lo":0.892819,"d":"F","g":"F","a":"24 Avenue Léontine Vignerie 87200 Saint-Junien","c":"Saint-Junien","cp":"87200","s":46.2,"t":"maison","co":368.0,"gv":81.0,"p":"avant 1948","dt":"19/06/2026","et":"RDC","po":"","cb":"67183","o":1},{"la":45.887391,"lo":0.91001,"d":"C","g":"C","a":"17 Rue Frédéric Mistral 87200 Saint-Junien","c":"Saint-Junien","cp":"87200","s":61.4,"t":"maison","co":163.8,"gv":28.2,"p":"1948-1974","dt":"21/06/2026","et":"","po":"","cb":"","o":1},{"la":45.892459,"lo":0.881604,"d":"G","g":"D","a":"44 Route de Croyer 87200 Saint-Junien","c":"Saint-Junien","cp":"87200","s":97.3,"t":"maison","co":471.0,"gv":49.0,"p":"1948-1974","dt":"22/06/2026","et":"RDC","po":"","cb":"2026-06-088","o":1},{"la":45.887747,"lo":0.899332,"d":"C","g":"C","a":"2 Boulevard Victor Hugo 87200 Saint-Junien","c":"Saint-Junien","cp":"87200","s":54.8,"t":"appartement","co":135.0,"gv":28.0,"p":"avant 1948","dt":"23/06/2026","et":"RDC","po":"Etage : 1 er","cb":"2026-06-095","o":1},{"la":45.888448,"lo":0.913837,"d":"D","g":"D","a":"2 Rue Picasso 87200 Saint-Junien","c":"Saint-Junien","cp":"87200","s":186.4,"t":"maison","co":215.7,"gv":42.2,"p":"1975-1977","dt":"23/06/2026","et":"","po":"","cb":"","o":1},{"la":45.891986,"lo":0.886699,"d":"D","g":"D","a":"11 Route de Saulgond 87200 Saint-Junien","c":"Saint-Junien","cp":"87200","s":95.0,"t":"maison","co":212.0,"gv":44.3,"p":"avant 1948","dt":"23/06/2026","et":"","po":"","cb":"","o":1},{"la":45.892213,"lo":0.918616,"d":"C","g":"C","a":"5 Impasse Gabriel Fauré 87200 Saint-Junien","c":"Saint-Junien","cp":"87200","s":91.1,"t":"maison","co":147.2,"gv":27.5,"p":"2001-2005","dt":"25/06/2026","et":"","po":"","cb":"","o":1},{"la":45.887941,"lo":0.899855,"d":"E","g":"C","a":"3bis Rue Peyrusson 87200 Saint-Junien","c":"Saint-Junien","cp":"87200","s":52.1,"t":"appartement","co":312.0,"gv":12.0,"p":"avant 1948","dt":"26/06/2026","et":"RDC","po":"Appartement T02 - RDC gauche","cb":"260663ADEP","o":1},{"la":45.886638,"lo":0.901468,"d":"E","g":"E","a":"3 Rue Renan 87200 Saint-Junien","c":"Saint-Junien","cp":"87200","s":133.9,"t":"maison","co":307.9,"gv":68.0,"p":"1948-1974","dt":"26/06/2026","et":"","po":"","cb":"","o":1},{"la":45.886045,"lo":0.902896,"d":"D","g":"B","a":"2 Rue Karl Marx 87200 Saint-Junien","c":"Saint-Junien","cp":"87200","s":18.0,"t":"appartement","co":267.0,"gv":10.0,"p":"avant 1948","dt":"26/06/2026","et":"RDC","po":"RDC 2 eme porte gauche","cb":"1504","o":1},{"la":45.8914,"lo":0.913037,"d":"B","g":"A","a":"Résidence Montrozier - Bâtiment C1 87200 Saint-Junien","c":"Saint-Junien","cp":"87200","s":56.3,"t":"appartement","co":90.0,"gv":3.0,"p":"1948-1974","dt":"26/06/2026","et":"RDC","po":"2ème étage ,porte à droite","cb":"206-2026-06-19","o":1},{"la":45.886937,"lo":0.901651,"d":"C","g":"A","a":"4 Rue Charretière 87200 Saint-Junien","c":"Saint-Junien","cp":"87200","s":45.1,"t":"appartement","co":148.0,"gv":5.0,"p":"avant 1948","dt":"29/06/2026","et":"RDC","po":"Etage : 3e","cb":"2026-06-115","o":1},{"la":45.887124,"lo":0.9107,"d":"E","g":"E","a":"23 Rue Frédéric Mistral 87200 Saint-Junien","c":"Saint-Junien","cp":"87200","s":80.5,"t":"maison","co":300.0,"gv":65.0,"p":"1948-1974","dt":"02/07/2026","et":"RDC","po":"","cb":"DO-2026-06-16459","o":1},{"la":45.883555,"lo":0.905756,"d":"F","g":"D","a":"7 Rue Lagarde 87200 Saint-Junien","c":"Saint-Junien","cp":"87200","s":138.3,"t":"maison","co":339.0,"gv":38.0,"p":"avant 1948","dt":"03/07/2026","et":"RDC","po":"","cb":"67576","o":1},{"la":45.894818,"lo":0.90287,"d":"E","g":"E","a":"32 Rue Auguste Gagne 87200 Saint-Junien","c":"Saint-Junien","cp":"87200","s":79.5,"t":"maison","co":282.0,"gv":61.0,"p":"1948-1974","dt":"03/07/2026","et":"RDC","po":"Maison individuelle","cb":"260686DEG","o":1},{"la":45.882879,"lo":0.895275,"d":"C","g":"A","a":"8bis Avenue Victor Roche 87200 Saint-Junien","c":"Saint-Junien","cp":"87200","s":93.7,"t":"appartement","co":123.0,"gv":4.0,"p":"avant 1948","dt":"03/07/2026","et":"RDC","po":"","cb":"257205","o":1},{"la":45.886937,"lo":0.901651,"d":"C","g":"A","a":"4 Rue Charretière 87200 Saint-Junien","c":"Saint-Junien","cp":"87200","s":55.7,"t":"appartement","co":127.0,"gv":4.0,"p":"avant 1948","dt":"03/07/2026","et":"RDC","po":"Etage : 3e","cb":"2026-06-115","o":1},{"la":45.887486,"lo":0.899545,"d":"D","g":"D","a":"19 Rue Jean Jacques Rousseau 87200 Saint-Junien","c":"Saint-Junien","cp":"87200","s":164.4,"t":"appartement","co":143.9,"gv":30.4,"p":"avant 1948","dt":"05/07/2026","et":"Etage 1","po":"","cb":"","o":1},{"la":45.926266,"lo":0.928684,"d":"C","g":"A","a":"130 Les Charles 87200 Saint-Junien","c":"Saint-Junien","cp":"87200","s":155.5,"t":"maison","co":143.0,"gv":5.0,"p":"avant 1948","dt":"06/07/2026","et":"RDC","po":"","cb":"26-HABTALAN2-0109","o":1},{"la":45.883789,"lo":0.903765,"d":"D","g":"D","a":"Résidence Rochebrune - Bâtiment B 87200 Saint-Junien","c":"Saint-Junien","cp":"87200","s":44.7,"t":"appartement","co":145.0,"gv":30.0,"p":"2013-2021","dt":"06/07/2026","et":"RDC","po":"Batiment B ; Etage 5; Porte B503","cb":"MA2605090688","o":1},{"la":45.883789,"lo":0.903765,"d":"C","g":"C","a":"Résidence Rochebrune - Bâtiment B 87200 Saint-Junien","c":"Saint-Junien","cp":"87200","s":44.7,"t":"appartement","co":142.0,"gv":29.0,"p":"2013-2021","dt":"07/07/2026","et":"RDC","po":"Batiment B ; Etage 5; Porte B503","cb":"MA2605090688","o":1},{"la":45.886544,"lo":0.899426,"d":"D","g":"D","a":"19 Rue Rorice Rigaud 87200 Saint-Junien","c":"Saint-Junien","cp":"87200","s":51.5,"t":"appartement","co":209.6,"gv":43.3,"p":"1948-1974","dt":"07/07/2026","et":"RDC","po":"","cb":"","o":1},{"la":45.8884,"lo":0.90253,"d":"A","g":"A","a":"Résidence Jean Teillet - Bâtiment B2 87200 Saint-Junien","c":"Saint-Junien","cp":"87200","s":86.1,"t":"appartement","co":62.0,"gv":2.0,"p":"2013-2021","dt":"08/07/2026","et":"RDC","po":"Appartement type 4 n°B2-42 au 4ème étage","cb":"26/IMO/1936","o":1},{"la":45.8884,"lo":0.90253,"d":"B","g":"A","a":"Résidence Jean Teillet - Bâtiment B2 87200 Saint-Junien","c":"Saint-Junien","cp":"87200","s":65.2,"t":"appartement","co":88.0,"gv":3.0,"p":"1948-1974","dt":"09/07/2026","et":"RDC","po":"","cb":"18/IMO/3694","o":1},{"la":45.888056,"lo":0.89947,"d":"C","g":"A","a":"3bis Boulevard Victor Hugo 87200 Saint-Junien","c":"Saint-Junien","cp":"87200","s":73.0,"t":"appartement","co":154.0,"gv":5.0,"p":"2001-2005","dt":"09/07/2026","et":"RDC","po":"","cb":"002EX380721","o":1},{"la":45.891401,"lo":0.912823,"d":"B","g":"A","a":"Résidence Montrozier - Bâtiment B1 87200 Saint-Junien","c":"Saint-Junien","cp":"87200","s":57.2,"t":"appartement","co":78.0,"gv":2.0,"p":"2013-2021","dt":"12/07/2026","et":"RDC","po":"Appartement de type 2 situé en rez-de-chaussé","cb":"1000.060726.TT","o":1},{"la":45.883803,"lo":0.891177,"d":"D","g":"B","a":"9 Quai des Mégisseries 87200 Saint-Junien","c":"Saint-Junien","cp":"87200","s":null,"t":"immeuble","co":194.1,"gv":6.5,"p":"1948-1974","dt":"14/07/2026","et":"","po":"","cb":"","o":1},{"la":45.889071,"lo":0.901479,"d":"C","g":"A","a":"38 Boulevard Victor Hugo 87200 Saint-Junien","c":"Saint-Junien","cp":"87200","s":116.0,"t":"appartement","co":118.0,"gv":4.0,"p":"avant 1948","dt":"15/07/2026","et":"RDC","po":"","cb":"DO-2026-06-16482","o":1},{"la":45.895238,"lo":0.903339,"d":"G","g":"G","a":"12 Rue Jean Rebier 87200 Saint-Junien","c":"Saint-Junien","cp":"87200","s":95.0,"t":"maison","co":415.0,"gv":116.6,"p":"1978-1982","dt":"20/07/2026","et":"","po":"","cb":"","o":1},{"la":45.886062,"lo":0.908837,"d":"C","g":"A","a":"3 Impasse de Nancy 87200 Saint-Junien","c":"Saint-Junien","cp":"87200","s":140.0,"t":"maison","co":114.0,"gv":4.0,"p":"1948-1974","dt":"20/07/2026","et":"RDC","po":"","cb":"AR/RC/00588","o":1},{"la":45.898701,"lo":0.902806,"d":"D","g":"D","a":"20 Avenue du Chatelard 87200 Saint-Junien","c":"Saint-Junien","cp":"87200","s":167.0,"t":"maison","co":201.0,"gv":30.0,"p":"1975-1977","dt":"22/07/2026","et":"RDC","po":"","cb":"DO-2026-07-16507","o":1},{"la":45.8884,"lo":0.90253,"d":"F","g":"F","a":"Résidence Jean Teillet - Bâtiment B2 87200 Saint-Junien","c":"Saint-Junien","cp":"87200","s":18.4,"t":"appartement","co":371.0,"gv":78.0,"p":"1948-1974","dt":"22/07/2026","et":"RDC","po":"Etage 3","cb":"22/07/5132","o":1},{"la":45.888238,"lo":0.889751,"d":"D","g":"D","a":"11 Impasse Teillet 87200 Saint-Junien","c":"Saint-Junien","cp":"87200","s":68.6,"t":"maison","co":174.4,"gv":38.0,"p":"avant 1948","dt":"23/07/2026","et":"","po":"","cb":"","o":1},{"la":45.88648,"lo":0.902966,"d":"C","g":"A","a":"15 Rue Guizier 87200 Saint-Junien","c":"Saint-Junien","cp":"87200","s":66.5,"t":"appartement","co":132.8,"gv":5.0,"p":"1948-1974","dt":"23/07/2026","et":"Etage 1","po":"","cb":"","o":1},{"la":45.885992,"lo":0.902913,"d":"D","g":"B","a":"4 Rue Karl Marx 87200 Saint-Junien","c":"Saint-Junien","cp":"87200","s":null,"t":"immeuble","co":216.2,"gv":8.3,"p":"avant 1948","dt":"24/07/2026","et":"","po":"RDC","cb":"","o":1},{"la":45.884564,"lo":0.905617,"d":"E","g":"E","a":"14 Impasse Macé 87200 Saint-Junien","c":"Saint-Junien","cp":"87200","s":111.0,"t":"maison","co":310.5,"gv":50.2,"p":"1948-1974","dt":"24/07/2026","et":"","po":"","cb":"","o":1},{"la":45.88225,"lo":0.896304,"d":"D","g":"D","a":"12bis Avenue Victor Roche 87200 Saint-Junien","c":"Saint-Junien","cp":"87200","s":null,"t":"immeuble","co":194.0,"gv":42.0,"p":"1948-1974","dt":"24/07/2026","et":"RDC","po":"RDC","cb":"260748D","o":1},{"la":45.891141,"lo":0.884713,"d":"D","g":"D","a":"7 Route de Croyer 87200 Saint-Junien","c":"Saint-Junien","cp":"87200","s":109.6,"t":"maison","co":186.7,"gv":40.7,"p":"1978-1982","dt":"24/07/2026","et":"","po":"","cb":"","o":1},{"la":45.923136,"lo":0.851697,"d":"D","g":"B","a":"565 Pressaleix de l’Outre 87200 Saint-Junien","c":"Saint-Junien","cp":"87200","s":67.0,"t":"maison","co":241.3,"gv":9.4,"p":"1948-1974","dt":"27/07/2026","et":"","po":"","cb":"","o":1},{"la":45.885667,"lo":0.910358,"d":"E","g":"D","a":"47 Avenue Voltaire 87200 Saint-Junien","c":"Saint-Junien","cp":"87200","s":61.7,"t":"maison","co":263.0,"gv":47.0,"p":"1948-1974","dt":"29/07/2026","et":"RDC","po":"","cb":"67808","o":1},{"la":45.888056,"lo":0.89947,"d":"B","g":"A","a":"3bis Boulevard Victor Hugo 87200 Saint-Junien","c":"Saint-Junien","cp":"87200","s":47.3,"t":"appartement","co":108.0,"gv":3.0,"p":"1989-2000","dt":"30/07/2026","et":"RDC","po":"","cb":"DO-2026-07-16503","o":1},{"la":45.90497,"lo":0.948796,"d":"G","g":"G","a":"305 Les Seguines Est 87200 Saint-Junien","c":"Saint-Junien","cp":"87200","s":52.0,"t":"maison","co":494.1,"gv":156.8,"p":"1948-1974","dt":"31/07/2026","et":"","po":"","cb":"","o":1},{"la":45.878653,"lo":0.907515,"d":"F","g":"F","a":"8 Route de Saint Martin de Jussac 87200 Saint-Junien","c":"Saint-Junien","cp":"87200","s":138.0,"t":"maison","co":325.4,"gv":71.9,"p":"1948-1974","dt":"31/07/2026","et":"","po":"","cb":"","o":1},{"la":45.889442,"lo":0.908439,"d":"F","g":"F","a":"24 Avenue Jean Jaurès 87200 Saint-Junien","c":"Saint-Junien","cp":"87200","s":101.9,"t":"maison","co":369.2,"gv":81.9,"p":"avant 1948","dt":"03/08/2026","et":"","po":"","cb":"","o":1},{"la":45.886521,"lo":0.901448,"d":"C","g":"C","a":"5 Rue Renan 87200 Saint-Junien","c":"Saint-Junien","cp":"87200","s":67.3,"t":"appartement","co":117.9,"gv":19.8,"p":"avant 1948","dt":"03/08/2026","et":"Etage 2","po":"","cb":"","o":1},{"la":45.886521,"lo":0.901448,"d":"C","g":"C","a":"5 Rue Renan 87200 Saint-Junien","c":"Saint-Junien","cp":"87200","s":69.0,"t":"appartement","co":118.9,"gv":20.2,"p":"avant 1948","dt":"03/08/2026","et":"Etage 1","po":"","cb":"","o":1},{"la":45.886521,"lo":0.901448,"d":"C","g":"A","a":"5 Rue Renan 87200 Saint-Junien","c":"Saint-Junien","cp":"87200","s":49.0,"t":"appartement","co":148.0,"gv":5.5,"p":"avant 1948","dt":"03/08/2026","et":"Etage 3","po":"","cb":"","o":1},{"la":45.894243,"lo":0.903187,"d":"G","g":"G","a":"6 Rue Jules Verne 87200 Saint-Junien","c":"Saint-Junien","cp":"87200","s":98.0,"t":"maison","co":331.0,"gv":104.0,"p":"1948-1974","dt":"05/08/2026","et":"RDC","po":"","cb":"DO-2026-08-16549","o":1},{"la":45.888214,"lo":0.902298,"d":"E","g":"D","a":"5 Impasse Labrunie 87200 Saint-Junien","c":"Saint-Junien","cp":"87200","s":46.7,"t":"maison","co":326.0,"gv":49.0,"p":"avant 1948","dt":"05/10/2026","et":"RDC","po":"","cb":"2026-10-034","o":0},{"la":45.881063,"lo":0.899325,"d":"E","g":"E","a":"3 Place Charles Michels 87200 Saint-Junien","c":"Saint-Junien","cp":"87200","s":88.0,"t":"maison","co":255.9,"gv":57.2,"p":"avant 1948","dt":"05/10/2026","et":"","po":"","cb":"","o":0},{"la":45.88648,"lo":0.902966,"d":"C","g":"B","a":"15 Rue Guizier 87200 Saint-Junien","c":"Saint-Junien","cp":"87200","s":70.8,"t":"appartement","co":158.3,"gv":6.1,"p":"avant 1948","dt":"05/10/2026","et":"Etage 3","po":"","cb":"","o":0},{"la":45.903336,"lo":0.913623,"d":"E","g":"C","a":"Le Petit Boisse 87200 Saint-Junien","c":"Saint-Junien","cp":"87200","s":null,"t":"immeuble","co":326.6,"gv":12.9,"p":"1948-1974","dt":"05/10/2026","et":"","po":"","cb":"","o":0},{"la":45.882408,"lo":0.896551,"d":"E","g":"E","a":"25bis Avenue Pingault 87200 Saint-Junien","c":"Saint-Junien","cp":"87200","s":86.5,"t":"maison","co":316.0,"gv":62.4,"p":"1948-1974","dt":"07/10/2026","et":"","po":"","cb":"","o":0},{"la":45.887519,"lo":0.899294,"d":"C","g":"C","a":"21 Rue Jean Jacques Rousseau 87200 Saint-Junien","c":"Saint-Junien","cp":"87200","s":106.7,"t":"appartement","co":117.0,"gv":25.0,"p":"avant 1948","dt":"07/10/2026","et":"RDC","po":"","cb":"327741","o":0},{"la":45.8822,"lo":0.900753,"d":"E","g":"C","a":"20 Rue Emile Zola 87200 Saint-Junien","c":"Saint-Junien","cp":"87200","s":66.5,"t":"maison","co":282.1,"gv":11.3,"p":"1948-1974","dt":"08/10/2026","et":"","po":"","cb":"","o":0},{"la":45.88278,"lo":0.900603,"d":"D","g":"D","a":"Rue Pasteur 87200 Saint-Junien","c":"Saint-Junien","cp":"87200","s":124.6,"t":"maison","co":221.5,"gv":48.5,"p":"1948-1974","dt":"08/10/2026","et":"","po":"","cb":"","o":0},{"la":45.894226,"lo":0.919233,"d":"C","g":"C","a":"5 Rue Mozart 87200 Saint-Junien","c":"Saint-Junien","cp":"87200","s":92.5,"t":"maison","co":141.7,"gv":21.6,"p":"1989-2000","dt":"08/10/2026","et":"","po":"","cb":"","o":0},{"la":45.894024,"lo":0.918556,"d":"C","g":"A","a":"4 Rue Mozart 87200 Saint-Junien","c":"Saint-Junien","cp":"87200","s":87.6,"t":"maison","co":124.1,"gv":4.9,"p":"1989-2000","dt":"13/10/2026","et":"","po":"","cb":"","o":0},{"la":45.935617,"lo":0.921036,"d":"F","g":"E","a":"1965 Les 3 Bornes 87200 Saint-Junien","c":"Saint-Junien","cp":"87200","s":118.3,"t":"maison","co":371.0,"gv":56.8,"p":"1948-1974","dt":"14/10/2026","et":"","po":"","cb":"","o":0},{"la":45.912779,"lo":0.839485,"d":"C","g":"B","a":"425 Le Mas 87200 Saint-Junien","c":"Saint-Junien","cp":"87200","s":104.2,"t":"maison","co":176.1,"gv":6.9,"p":"1948-1974","dt":"15/10/2026","et":"","po":"","cb":"","o":0},{"la":45.881604,"lo":0.894252,"d":"E","g":"E","a":"24 Quai des Mégisseries 87200 Saint-Junien","c":"Saint-Junien","cp":"87200","s":55.9,"t":"maison","co":306.0,"gv":58.0,"p":"avant 1948","dt":"15/10/2026","et":"RDC","po":"","cb":"26/IMO/031","o":0},{"la":45.887891,"lo":0.899566,"d":"D","g":"D","a":"10 Boulevard Victor Hugo 87200 Saint-Junien","c":"Saint-Junien","cp":"87200","s":52.5,"t":"appartement","co":156.8,"gv":33.8,"p":"avant 1948","dt":"15/10/2026","et":"Etage 2","po":"","cb":"","o":0},{"la":45.887577,"lo":0.900079,"d":"E","g":"E","a":"2bis Rue Peyrusson 87200 Saint-Junien","c":"Saint-Junien","cp":"87200","s":55.2,"t":"appartement","co":317.3,"gv":57.5,"p":"1948-1974","dt":"16/10/2026","et":"Etage 2","po":"","cb":"","o":0},{"la":45.887577,"lo":0.900079,"d":"E","g":"E","a":"2bis Rue Peyrusson 87200 Saint-Junien","c":"Saint-Junien","cp":"87200","s":null,"t":"immeuble","co":315.7,"gv":61.3,"p":"1948-1974","dt":"16/10/2026","et":"","po":"","cb":"","o":0},{"la":45.886183,"lo":0.904293,"d":"C","g":"C","a":"18 Boulevard Marcel Cachin 87200 Saint-Junien","c":"Saint-Junien","cp":"87200","s":73.2,"t":"appartement","co":94.7,"gv":19.1,"p":"avant 1948","dt":"16/10/2026","et":"Etage 2","po":"","cb":"","o":0},{"la":45.886183,"lo":0.904293,"d":"C","g":"C","a":"18 Boulevard Marcel Cachin 87200 Saint-Junien","c":"Saint-Junien","cp":"87200","s":69.5,"t":"appartement","co":97.3,"gv":19.7,"p":"avant 1948","dt":"16/10/2026","et":"Etage 1","po":"","cb":"","o":0},{"la":45.886183,"lo":0.904293,"d":"C","g":"C","a":"18 Boulevard Marcel Cachin 87200 Saint-Junien","c":"Saint-Junien","cp":"87200","s":78.8,"t":"appartement","co":96.3,"gv":19.5,"p":"avant 1948","dt":"16/10/2026","et":"RDC","po":"","cb":"","o":0},{"la":45.895352,"lo":0.883245,"d":"E","g":"E","a":"200 Cote de Sicioreix 87200 Saint-Junien","c":"Saint-Junien","cp":"87200","s":104.2,"t":"maison","co":283.7,"gv":62.4,"p":"1948-1974","dt":"21/10/2026","et":"","po":"","cb":"","o":0},{"la":45.893816,"lo":0.902817,"d":"D","g":"D","a":"1 Rue Jules Verne 87200 Saint-Junien","c":"Saint-Junien","cp":"87200","s":95.7,"t":"maison","co":219.5,"gv":48.0,"p":"1975-1977","dt":"21/10/2026","et":"","po":"","cb":"","o":0},{"la":45.8917,"lo":0.91284,"d":"D","g":"D","a":"Résidence Montrozier - Bâtiment B2 87200 Saint-Junien","c":"Saint-Junien","cp":"87200","s":76.0,"t":"appartement","co":192.0,"gv":41.0,"p":"1948-1974","dt":"22/10/2026","et":"RDC","po":"Bat. B2; Etage 4; Porte Gauche","cb":"2026-356 1","o":0},{"la":45.887618,"lo":0.896337,"d":"D","g":"D","a":"15 Rue Defaye 87200 Saint-Junien","c":"Saint-Junien","cp":"87200","s":245.1,"t":"maison","co":226.3,"gv":49.8,"p":"1948-1974","dt":"23/10/2026","et":"","po":"","cb":"","o":0},{"la":45.884395,"lo":0.900979,"d":"C","g":"A","a":"Faubourg Auguste Blanqui 87200 Saint-Junien","c":"Saint-Junien","cp":"87200","s":70.0,"t":"appartement","co":125.4,"gv":4.7,"p":"1948-1974","dt":"23/10/2026","et":"RDC","po":"","cb":"","o":0},{"la":45.885101,"lo":0.907911,"d":"E","g":"D","a":"34 Rue Lagarde 87200 Saint-Junien","c":"Saint-Junien","cp":"87200","s":66.0,"t":"maison","co":267.6,"gv":48.8,"p":"1948-1974","dt":"25/10/2026","et":"","po":"","cb":"","o":0}];
+var DA=[{"la":45.894372,"lo":0.910063,"a":"77bis Avenue Henri Barbusse 87200 Saint-Junien","c":"Saint-Junien","s":66.0,"t":"maison","d":"D","g":"D","co":157.4,"gv":34.1,"dt":"04/11/2025"},{"la":45.893,"lo":0.917267,"a":"Résidence Fayolas - Bâtiment G 87200 Saint-Junien","c":"Saint-Junien","s":33.4,"t":"appartement","d":"C","g":"A","co":171.3,"gv":6.0,"et":"RDC","dt":"04/11/2025"},{"la":45.888185,"lo":0.910614,"a":"59 Avenue Elisée Reclus 87200 Saint-Junien","c":"Saint-Junien","s":95.0,"t":"maison","d":"F","g":"F","co":413.2,"gv":91.9,"dt":"04/11/2025"},{"la":45.886062,"lo":0.908837,"a":"3 Impasse de Nancy 87200 Saint-Junien","c":"Saint-Junien","s":128.0,"t":"maison","d":"E","g":"E","co":278.5,"gv":62.0,"dt":"05/11/2025"},{"la":45.887502,"lo":0.895228,"a":"Résidence Defaye - bâtiment B 87200 Saint-Junien","c":"Saint-Junien","s":26.9,"t":"appartement","d":"E","g":"B","co":293.0,"gv":11.0,"et":"RDC","dt":"05/11/2025"},{"la":45.886304,"lo":0.90289,"a":"10 Rue Guizier 87200 Saint-Junien","c":"Saint-Junien","s":66.2,"t":"appartement","d":"C","g":"B","co":163.1,"gv":6.0,"et":"RDC","dt":"05/11/2025"},{"la":45.887024,"lo":0.898906,"a":"5 Boulevard de la République 87200 Saint-Junien","c":"Saint-Junien","s":79.0,"t":"appartement","d":"C","g":"B","co":161.0,"gv":6.2,"et":"Etage 1","dt":"05/11/2025"},{"la":45.929309,"lo":0.927905,"a":"1045 Les 3 Bornes 87200 Saint-Junien","c":"Saint-Junien","s":88.0,"t":"maison","d":"C","g":"A","co":112.7,"gv":3.6,"dt":"05/11/2025"},{"la":45.891805,"lo":0.91755,"a":"Résidence Fayolas - Bâtiment B 87200 Saint-Junien","c":"Saint-Junien","s":104.3,"t":"appartement","d":"C","g":"C","co":88.4,"gv":15.0,"et":"RDC","dt":"06/11/2025"},{"la":45.884432,"lo":0.897995,"a":"6 Place Barbés 87200 Saint-Junien","c":"Saint-Junien","s":53.0,"t":"maison","d":"G","g":"F","co":431.0,"gv":95.0,"et":"RDC","dt":"10/11/2025"},{"la":45.881851,"lo":0.899214,"a":"17 Avenue Maryse Bastié 87200 Saint-Junien","c":"Saint-Junien","s":97.9,"t":"appartement","d":"B","g":"A","co":101.8,"gv":3.0,"et":"RDC","dt":"11/11/2025"},{"la":45.876496,"lo":0.884929,"a":"11 Rue de Moissun 87200 Saint-Junien","c":"Saint-Junien","s":119.4,"t":"maison","d":"D","g":"D","co":196.7,"gv":43.0,"dt":"11/11/2025"},{"la":45.883399,"lo":0.907524,"a":"8 Rue du 19 Mars 1962 87200 Saint-Junien","c":"Saint-Junien","s":100.0,"t":"maison","d":"E","g":"E","co":285.4,"gv":62.7,"dt":"12/11/2025"},{"la":45.90172,"lo":0.92777,"a":"12 Impasse André-Marie Ampère 87200 Saint-Junien","c":"Saint-Junien","s":86.0,"t":"maison","d":"G","g":"E","co":462.2,"gv":63.8,"dt":"12/11/2025"},{"la":45.885979,"lo":0.891641,"a":"23 Rue Henriette Pérucaud 87200 Saint-Junien","c":"Saint-Junien","s":129.0,"t":"maison","d":"C","g":"C","co":134.2,"gv":28.6,"dt":"13/11/2025"},{"la":45.886377,"lo":0.900111,"a":"Rue d’Arsonval 87200 Saint-Junien","c":"Saint-Junien","s":90.0,"t":"appartement","d":"D","g":"D","co":202.6,"gv":43.6,"et":"Etage 1","dt":"13/11/2025"},{"la":45.884625,"lo":0.917116,"a":"10 Rue des Jonquilles 87200 Saint-Junien","c":"Saint-Junien","s":79.0,"t":"maison","d":"D","g":"B","co":199.2,"gv":7.8,"dt":"13/11/2025"},{"la":45.889632,"lo":0.919758,"a":"16 Rue Gauguin 87200 Saint-Junien","c":"Saint-Junien","s":115.0,"t":"maison","d":"C","g":"C","co":150.5,"gv":22.1,"dt":"14/11/2025"},{"la":45.904918,"lo":0.886674,"a":"Route de Sicioreix-la Cilletau 87200 Saint-Junien","c":"Saint-Junien","s":146.0,"t":"maison","d":"E","g":"B","co":283.9,"gv":10.0,"et":"RDC","dt":"14/11/2025"},{"la":45.893,"lo":0.917267,"a":"Résidence Fayolas - Bâtiment G 87200 Saint-Junien","c":"Saint-Junien","t":"immeuble","d":"D","g":"D","co":149.4,"gv":32.0,"et":"RDC","dt":"14/11/2025"},{"la":45.892887,"lo":0.921968,"a":"4 Rue Georges Bizet 87200 Saint-Junien","c":"Saint-Junien","s":91.0,"t":"maison","d":"C","g":"A","co":113.6,"gv":4.3,"dt":"14/11/2025"},{"la":45.881903,"lo":0.900585,"a":"34 Avenue Paul Vaillant Couturier 87200 Saint-Junien","c":"Saint-Junien","s":29.9,"t":"appartement","d":"D","g":"B","co":199.5,"gv":7.0,"et":"RDC","dt":"17/11/2025"},{"la":45.881903,"lo":0.900585,"a":"34 Avenue Paul Vaillant Couturier 87200 Saint-Junien","c":"Saint-Junien","s":64.6,"t":"appartement","d":"C","g":"C","co":136.5,"gv":28.0,"et":"RDC","dt":"17/11/2025"},{"la":45.881903,"lo":0.900585,"a":"34 Avenue Paul Vaillant Couturier 87200 Saint-Junien","c":"Saint-Junien","t":"immeuble","d":"C","g":"C","co":144.4,"gv":15.0,"et":"RDC","dt":"17/11/2025"},{"la":45.881903,"lo":0.900585,"a":"34 Avenue Paul Vaillant Couturier 87200 Saint-Junien","c":"Saint-Junien","s":35.7,"t":"appartement","d":"C","g":"A","co":165.4,"gv":6.0,"et":"RDC","dt":"17/11/2025"},{"la":45.894843,"lo":0.901106,"a":"6 Rue du 8 Mai 1945 87200 Saint-Junien","c":"Saint-Junien","s":73.2,"t":"maison","d":"D","g":"D","co":202.1,"gv":43.0,"et":"RDC","dt":"17/11/2025"},{"la":45.881903,"lo":0.900585,"a":"34 Avenue Paul Vaillant Couturier 87200 Saint-Junien","c":"Saint-Junien","s":64.3,"t":"appartement","d":"C","g":"C","co":116.5,"gv":23.0,"et":"RDC","dt":"17/11/2025"},{"la":45.881903,"lo":0.900585,"a":"34 Avenue Paul Vaillant Couturier 87200 Saint-Junien","c":"Saint-Junien","s":64.3,"t":"appartement","d":"C","g":"C","co":116.5,"gv":23.0,"et":"RDC","dt":"17/11/2025"},{"la":45.881903,"lo":0.900585,"a":"34 Avenue Paul Vaillant Couturier 87200 Saint-Junien","c":"Saint-Junien","s":35.1,"t":"appartement","d":"C","g":"A","co":157.7,"gv":5.0,"et":"RDC","dt":"17/11/2025"},{"la":45.881903,"lo":0.900585,"a":"34 Avenue Paul Vaillant Couturier 87200 Saint-Junien","c":"Saint-Junien","s":39.5,"t":"appartement","d":"D","g":"B","co":222.6,"gv":8.0,"et":"RDC","dt":"17/11/2025"},{"la":45.881903,"lo":0.900585,"a":"34 Avenue Paul Vaillant Couturier 87200 Saint-Junien","c":"Saint-Junien","s":41.5,"t":"appartement","d":"D","g":"B","co":229.1,"gv":8.0,"et":"RDC","dt":"17/11/2025"},{"la":45.893,"lo":0.917267,"a":"Résidence Fayolas - Bâtiment G 87200 Saint-Junien","c":"Saint-Junien","s":74.0,"t":"appartement","d":"D","g":"D","co":148.0,"gv":32.0,"et":"RDC","dt":"19/11/2025"},{"la":45.893,"lo":0.917267,"a":"Résidence Fayolas - Bâtiment G 87200 Saint-Junien","c":"Saint-Junien","s":74.0,"t":"appartement","d":"D","g":"D","co":148.0,"gv":32.0,"et":"RDC","dt":"19/11/2025"},{"la":45.893,"lo":0.917267,"a":"Résidence Fayolas - Bâtiment G 87200 Saint-Junien","c":"Saint-Junien","s":74.0,"t":"appartement","d":"D","g":"D","co":148.0,"gv":32.0,"et":"RDC","dt":"19/11/2025"},{"la":45.893,"lo":0.917267,"a":"Résidence Fayolas - Bâtiment G 87200 Saint-Junien","c":"Saint-Junien","s":74.0,"t":"appartement","d":"D","g":"D","co":148.0,"gv":32.0,"et":"RDC","dt":"19/11/2025"},{"la":45.893,"lo":0.917267,"a":"Résidence Fayolas - Bâtiment G 87200 Saint-Junien","c":"Saint-Junien","s":74.0,"t":"appartement","d":"D","g":"D","co":148.0,"gv":32.0,"et":"RDC","dt":"19/11/2025"},{"la":45.893,"lo":0.917267,"a":"Résidence Fayolas - Bâtiment G 87200 Saint-Junien","c":"Saint-Junien","s":74.0,"t":"appartement","d":"D","g":"D","co":148.0,"gv":32.0,"et":"RDC","dt":"19/11/2025"},{"la":45.893,"lo":0.917267,"a":"Résidence Fayolas - Bâtiment G 87200 Saint-Junien","c":"Saint-Junien","s":74.0,"t":"appartement","d":"D","g":"D","co":148.0,"gv":32.0,"et":"RDC","dt":"19/11/2025"},{"la":45.893,"lo":0.917267,"a":"Résidence Fayolas - Bâtiment G 87200 Saint-Junien","c":"Saint-Junien","s":50.0,"t":"appartement","d":"D","g":"D","co":156.4,"gv":34.0,"et":"RDC","dt":"19/11/2025"},{"la":45.893,"lo":0.917267,"a":"Résidence Fayolas - Bâtiment G 87200 Saint-Junien","c":"Saint-Junien","s":74.0,"t":"appartement","d":"D","g":"D","co":148.0,"gv":32.0,"et":"RDC","dt":"19/11/2025"},{"la":45.893,"lo":0.917267,"a":"Résidence Fayolas - Bâtiment G 87200 Saint-Junien","c":"Saint-Junien","s":40.0,"t":"appartement","d":"D","g":"D","co":160.7,"gv":35.0,"et":"RDC","dt":"19/11/2025"},{"la":45.893,"lo":0.917267,"a":"Résidence Fayolas - Bâtiment G 87200 Saint-Junien","c":"Saint-Junien","s":74.0,"t":"appartement","d":"D","g":"D","co":148.0,"gv":32.0,"et":"RDC","dt":"19/11/2025"},{"la":45.893,"lo":0.917267,"a":"Résidence Fayolas - Bâtiment G 87200 Saint-Junien","c":"Saint-Junien","s":74.0,"t":"appartement","d":"D","g":"D","co":148.0,"gv":32.0,"et":"RDC","dt":"19/11/2025"},{"la":45.893,"lo":0.917267,"a":"Résidence Fayolas - Bâtiment G 87200 Saint-Junien","c":"Saint-Junien","s":50.0,"t":"appartement","d":"D","g":"D","co":156.4,"gv":34.0,"et":"RDC","dt":"19/11/2025"},{"la":45.893,"lo":0.917267,"a":"Résidence Fayolas - Bâtiment G 87200 Saint-Junien","c":"Saint-Junien","s":74.0,"t":"appartement","d":"D","g":"D","co":148.0,"gv":32.0,"et":"RDC","dt":"19/11/2025"},{"la":45.893,"lo":0.917267,"a":"Résidence Fayolas - Bâtiment G 87200 Saint-Junien","c":"Saint-Junien","s":74.0,"t":"appartement","d":"D","g":"D","co":148.0,"gv":32.0,"et":"RDC","dt":"19/11/2025"},{"la":45.886188,"lo":0.90193,"a":"22 Rue Gabriel Péri 87200 Saint-Junien","c":"Saint-Junien","s":141.0,"t":"appartement","d":"D","g":"B","co":201.7,"gv":8.0,"et":"RDC","dt":"21/11/2025"},{"la":45.892383,"lo":0.919538,"a":"24 Rue Mozart 87200 Saint-Junien","c":"Saint-Junien","s":138.3,"t":"maison","d":"C","g":"A","co":140.2,"gv":5.5,"dt":"23/11/2025"},{"la":45.880842,"lo":0.89838,"a":"2 Quai des Mégisseries 87200 Saint-Junien","c":"Saint-Junien","s":95.0,"t":"appartement","d":"D","g":"D","co":176.7,"gv":36.6,"et":"Etage 1","dt":"25/11/2025"},{"la":45.893148,"lo":0.887032,"a":"27 Chemin du Cabot 87200 Saint-Junien","c":"Saint-Junien","s":87.0,"t":"maison","d":"E","g":"E","co":248.9,"gv":54.6,"dt":"27/11/2025"},{"la":45.887184,"lo":0.899996,"a":"5 Rue Rorice Rigaud 87200 Saint-Junien","c":"Saint-Junien","s":70.0,"t":"appartement","d":"D","g":"B","co":181.0,"gv":7.0,"et":"Etage 3","dt":"28/11/2025"},{"la":45.90467,"lo":0.911569,"a":"81bis Route du Dérot 87200 Saint-Junien","c":"Saint-Junien","s":93.0,"t":"maison","d":"D","g":"B","co":204.4,"gv":8.0,"dt":"28/11/2025"},{"la":45.887184,"lo":0.899996,"a":"5 Rue Rorice Rigaud 87200 Saint-Junien","c":"Saint-Junien","s":46.0,"t":"appartement","d":"C","g":"B","co":177.3,"gv":6.8,"et":"RDC","dt":"29/11/2025"},{"la":45.887184,"lo":0.899996,"a":"5 Rue Rorice Rigaud 87200 Saint-Junien","c":"Saint-Junien","s":70.0,"t":"appartement","d":"C","g":"A","co":144.2,"gv":5.6,"et":"Etage 1","dt":"29/11/2025"},{"la":45.887184,"lo":0.899996,"a":"5 Rue Rorice Rigaud 87200 Saint-Junien","c":"Saint-Junien","s":70.0,"t":"appartement","d":"C","g":"A","co":150.1,"gv":5.8,"et":"Etage 1","dt":"29/11/2025"},{"la":45.891379,"lo":0.913761,"a":"Résidence Montrozier - Bâtiment D1 87200 Saint-Junien","c":"Saint-Junien","s":44.7,"t":"appartement","d":"B","g":"A","co":74.1,"gv":2.0,"et":"RDC","dt":"02/12/2025"},{"la":45.886368,"lo":0.902987,"a":"17 Rue Guizier 87200 Saint-Junien","c":"Saint-Junien","s":41.0,"t":"appartement","d":"C","g":"A","co":148.8,"gv":5.5,"et":"Etage 1","dt":"05/12/2025"},{"la":45.886368,"lo":0.902987,"a":"17 Rue Guizier 87200 Saint-Junien","c":"Saint-Junien","s":58.4,"t":"appartement","d":"D","g":"B","co":189.0,"gv":7.3,"et":"Etage 3","dt":"05/12/2025"},{"la":45.883348,"lo":0.904564,"a":"4 Avenue d’Estienne d’Orves 87200 Saint-Junien","c":"Saint-Junien","s":44.0,"t":"appartement","d":"E","g":"C","co":282.5,"gv":11.1,"et":"Etage 1","dt":"05/12/2025"},{"la":45.894276,"lo":0.913113,"a":"9 Rue de Chantemerle 87200 Saint-Junien","c":"Saint-Junien","t":"immeuble","d":"E","g":"E","co":228.4,"gv":50.2,"dt":"08/12/2025"},{"la":45.885647,"lo":0.901701,"a":"10 Place Julienne Petit 87200 Saint-Junien","c":"Saint-Junien","s":63.0,"t":"appartement","d":"D","g":"D","co":169.8,"gv":36.8,"et":"Etage 1","dt":"08/12/2025"},{"la":45.894282,"lo":0.913645,"a":"9 Rue de Chantemerle 87200 Saint-Junien","c":"Saint-Junien","t":"immeuble","d":"E","g":"E","co":248.8,"gv":54.6,"dt":"08/12/2025"},{"la":45.886209,"lo":0.837089,"a":"760 Roche Route d'Angouleme 87200 Saint-Junien","c":"Saint-Junien","s":100.9,"t":"maison","d":"F","g":"F","co":332.8,"gv":96.0,"et":"RDC","dt":"08/12/2025"},{"la":45.885796,"lo":0.901756,"a":"6 Place Julienne Petit 87200 Saint-Junien","c":"Saint-Junien","t":"immeuble","d":"E","g":"C","co":282.1,"gv":11.3,"dt":"09/12/2025"},{"la":45.884072,"lo":0.90413,"a":"21 Avenue d’Estienne d’Orves 87200 Saint-Junien","c":"Saint-Junien","s":164.6,"t":"maison","d":"E","g":"D","co":302.4,"gv":47.2,"dt":"09/12/2025"},{"la":45.875867,"lo":0.887902,"a":"Impasse du Maine du Bost 87200 Saint-Junien","c":"Saint-Junien","s":150.0,"t":"maison","d":"D","g":"D","co":145.1,"gv":30.3,"dt":"10/12/2025"},{"la":45.888062,"lo":0.910476,"a":"10 Avenue Elisée Reclus 87200 Saint-Junien","c":"Saint-Junien","s":89.8,"t":"maison","d":"F","g":"F","co":381.3,"gv":83.2,"dt":"10/12/2025"},{"la":45.886509,"lo":0.90196,"a":"12 Rue Gabriel Péri 87200 Saint-Junien","c":"Saint-Junien","s":67.5,"t":"appartement","d":"D","g":"D","co":169.5,"gv":36.0,"et":"RDC","dt":"11/12/2025"},{"la":45.888816,"lo":0.888136,"a":"40 Faubourg Liebknecht 87200 Saint-Junien","c":"Saint-Junien","t":"immeuble","d":"D","g":"D","co":160.2,"gv":32.0,"et":"RDC","dt":"11/12/2025"},{"la":45.886509,"lo":0.90196,"a":"12 Rue Gabriel Péri 87200 Saint-Junien","c":"Saint-Junien","s":67.5,"t":"appartement","d":"D","g":"D","co":169.5,"gv":36.0,"et":"RDC","dt":"12/12/2025"},{"la":45.89068,"lo":0.904134,"a":"25 Avenue Henri Barbusse 87200 Saint-Junien","c":"Saint-Junien","t":"immeuble","d":"C","g":"C","co":141.6,"gv":27.1,"dt":"15/12/2025"},{"la":45.886203,"lo":0.902799,"a":"17 Rue Lamartine 87200 Saint-Junien","c":"Saint-Junien","s":31.7,"t":"appartement","d":"E","g":"B","co":270.5,"gv":10.5,"et":"RDC","dt":"15/12/2025"},{"la":45.888034,"lo":0.893704,"a":"8 Faubourg Liebknecht 87200 Saint-Junien","c":"Saint-Junien","t":"immeuble","d":"D","g":"D","co":238.7,"gv":37.0,"et":"RDC","dt":"16/12/2025"},{"la":45.886039,"lo":0.902469,"a":"8 Rue Lamartine 87200 Saint-Junien","c":"Saint-Junien","s":77.9,"t":"appartement","d":"E","g":"E","co":230.4,"gv":50.8,"et":"Etage 1","dt":"16/12/2025"},{"la":45.888034,"lo":0.893704,"a":"8 Faubourg Liebknecht 87200 Saint-Junien","c":"Saint-Junien","t":"immeuble","d":"D","g":"D","co":238.7,"gv":37.0,"et":"RDC","dt":"16/12/2025"},{"la":45.895533,"lo":0.902365,"a":"5 Rue Jean Rebier 87200 Saint-Junien","c":"Saint-Junien","s":66.6,"t":"maison","d":"G","g":"G","co":456.4,"gv":100.9,"dt":"16/12/2025"},{"la":45.879016,"lo":0.888765,"a":"11 Impasse de Codille 87200 Saint-Junien","c":"Saint-Junien","s":86.2,"t":"maison","d":"F","g":"F","co":350.1,"gv":77.8,"dt":"17/12/2025"},{"la":45.892849,"lo":0.920089,"a":"1 Rue Camille Saint-Saëns 87200 Saint-Junien","c":"Saint-Junien","s":80.1,"t":"maison","d":"D","g":"B","co":193.0,"gv":7.5,"dt":"18/12/2025"},{"la":45.883727,"lo":0.899382,"a":"1 Rue Justine Teillet 87200 Saint-Junien","c":"Saint-Junien","s":36.3,"t":"maison","d":"D","g":"B","co":206.4,"gv":7.9,"dt":"19/12/2025"},{"la":45.883642,"lo":0.900147,"a":"18 Rue Boileau 87200 Saint-Junien","c":"Saint-Junien","s":97.3,"t":"maison","d":"A","g":"A","co":57.2,"gv":2.2,"dt":"19/12/2025"},{"la":45.889232,"lo":0.901965,"a":"2bis Square Curie 87200 Saint-Junien","c":"Saint-Junien","s":145.0,"t":"maison","d":"B","g":"A","co":95.4,"gv":3.0,"et":"RDC","dt":"20/12/2025"},{"la":45.887714,"lo":0.910144,"a":"2 Chemin Croix Bonnaud 87200 Saint-Junien","c":"Saint-Junien","s":64.6,"t":"maison","d":"B","g":"A","co":95.0,"gv":3.7,"dt":"21/12/2025"},{"la":45.886139,"lo":0.899655,"a":"27 Rue Louis Codet 87200 Saint-Junien","c":"Saint-Junien","s":104.8,"t":"appartement","d":"D","g":"D","co":222.3,"gv":47.0,"et":"RDC","dt":"22/12/2025"},{"la":45.914648,"lo":0.916007,"a":"Le Pont du Dérot 87200 Saint-Junien","c":"Saint-Junien","s":59.5,"t":"maison","d":"G","g":"G","co":472.8,"gv":101.5,"dt":"22/12/2025"},{"la":45.904022,"lo":0.931806,"a":"190 Impasse du Pavillon 87200 Saint-Junien","c":"Saint-Junien","s":98.2,"t":"maison","d":"C","g":"B","co":172.8,"gv":6.0,"et":"RDC","dt":"23/12/2025"},{"la":45.888062,"lo":0.910476,"a":"10 Avenue Elisée Reclus 87200 Saint-Junien","c":"Saint-Junien","s":89.1,"t":"maison","d":"E","g":"E","co":326.3,"gv":69.8,"dt":"05/01/2026"},{"la":45.90172,"lo":0.92777,"a":"12 Impasse André-Marie Ampère 87200 Saint-Junien","c":"Saint-Junien","s":85.9,"t":"maison","d":"G","g":"E","co":461.0,"gv":63.6,"dt":"05/01/2026"},{"la":45.926113,"lo":0.929073,"a":"95 Lieu-dit les Charles 87200 Saint-Junien","c":"Saint-Junien","s":163.1,"t":"maison","d":"D","g":"D","co":202.8,"gv":41.2,"dt":"06/01/2026"},{"la":45.883534,"lo":0.905731,"a":"5bis Rue Lagarde 87200 Saint-Junien","c":"Saint-Junien","s":40.2,"t":"appartement","d":"F","g":"F","co":397.2,"gv":87.7,"et":"Etage 1","dt":"06/01/2026"},{"la":45.888216,"lo":0.901942,"a":"2 Impasse Labrunie 87200 Saint-Junien","c":"Saint-Junien","s":26.5,"t":"appartement","d":"C","g":"B","co":187.0,"gv":7.0,"et":"RDC","dt":"09/01/2026"},{"la":45.888216,"lo":0.901942,"a":"2 Impasse Labrunie 87200 Saint-Junien","c":"Saint-Junien","s":34.3,"t":"appartement","d":"C","g":"A","co":170.0,"gv":6.0,"et":"RDC","dt":"09/01/2026"},{"la":45.888093,"lo":0.883202,"a":"6 Impasse Pelgros 87200 Saint-Junien","c":"Saint-Junien","s":93.9,"t":"maison","d":"G","g":"C","co":428.4,"gv":17.5,"dt":"12/01/2026"},{"la":45.913715,"lo":0.83992,"a":"35 Rue de l’Ancienne Ecole le Mas 87200 Saint-Junien","c":"Saint-Junien","s":147.4,"t":"maison","d":"E","g":"D","co":271.2,"gv":45.7,"dt":"12/01/2026"},{"la":45.886203,"lo":0.902799,"a":"17 Rue Lamartine 87200 Saint-Junien","c":"Saint-Junien","t":"immeuble","d":"D","g":"B","co":198.8,"gv":7.6,"dt":"12/01/2026"},{"la":45.888093,"lo":0.883202,"a":"6 Impasse Pelgros 87200 Saint-Junien","c":"Saint-Junien","s":95.0,"t":"maison","d":"G","g":"C","co":440.7,"gv":18.0,"dt":"13/01/2026"},{"la":45.889041,"lo":0.887474,"a":"4 Place Bonnefond 87200 Saint-Junien","c":"Saint-Junien","s":59.2,"t":"appartement","d":"D","g":"D","co":177.0,"gv":35.0,"et":"RDC","dt":"14/01/2026"},{"la":45.881933,"lo":0.900165,"a":"40 Avenue Paul Vaillant Couturier 87200 Saint-Junien","c":"Saint-Junien","s":92.5,"t":"appartement","d":"D","g":"D","co":153.4,"gv":32.2,"et":"Etage 1","dt":"16/01/2026"},{"la":45.89068,"lo":0.904134,"a":"25 Avenue Henri Barbusse 87200 Saint-Junien","c":"Saint-Junien","s":98.0,"t":"appartement","d":"E","g":"E","co":255.3,"gv":56.4,"et":"Etage 2","dt":"19/01/2026"},{"la":45.895848,"lo":0.910614,"a":"1 Rue des Maumonts 87200 Saint-Junien","c":"Saint-Junien","s":69.1,"t":"maison","d":"E","g":"B","co":255.2,"gv":10.1,"dt":"19/01/2026"},{"la":45.887124,"lo":0.9107,"a":"23 Rue Frédéric Mistral 87200 Saint-Junien","c":"Saint-Junien","s":80.7,"t":"maison","d":"F","g":"F","co":336.7,"gv":74.0,"dt":"20/01/2026"},{"la":45.880842,"lo":0.89838,"a":"2 Quai des Mégisseries 87200 Saint-Junien","c":"Saint-Junien","s":90.7,"t":"appartement","d":"D","g":"D","co":199.4,"gv":41.7,"et":"Etage 1","dt":"20/01/2026"},{"la":45.884419,"lo":0.906814,"a":"19 Rue Lagarde 87200 Saint-Junien","c":"Saint-Junien","s":138.0,"t":"maison","d":"E","g":"E","co":236.2,"gv":51.9,"dt":"23/01/2026"},{"la":45.892335,"lo":0.917231,"a":"Résidence Fayolas - Bâtiment C 87200 Saint-Junien","c":"Saint-Junien","s":91.5,"t":"appartement","d":"C","g":"A","co":135.0,"gv":5.0,"et":"RDC","dt":"26/01/2026"},{"la":45.895147,"lo":0.909748,"a":"3 Avenue Romain Rolland 87200 Saint-Junien","c":"Saint-Junien","s":88.7,"t":"maison","d":"G","g":"C","co":444.3,"gv":18.1,"dt":"26/01/2026"},{"la":45.896214,"lo":0.867542,"a":"Croyer 87200 Saint-Junien","c":"Saint-Junien","s":83.8,"t":"maison","d":"F","g":"F","co":330.0,"gv":73.0,"et":"RDC","dt":"28/01/2026"},{"la":45.886048,"lo":0.90255,"a":"10 Rue Lamartine 87200 Saint-Junien","c":"Saint-Junien","s":94.4,"t":"appartement","d":"D","g":"D","co":222.4,"gv":48.5,"et":"RDC","dt":"28/01/2026"},{"la":45.896214,"lo":0.867542,"a":"Croyer 87200 Saint-Junien","c":"Saint-Junien","s":83.8,"t":"maison","d":"F","g":"F","co":366.0,"gv":81.0,"et":"RDC","dt":"28/01/2026"},{"la":45.896214,"lo":0.867542,"a":"Croyer 87200 Saint-Junien","c":"Saint-Junien","s":83.8,"t":"maison","d":"F","g":"F","co":325.0,"gv":72.0,"et":"RDC","dt":"28/01/2026"},{"la":45.895803,"lo":0.911058,"a":"9 Route du Dérot 87200 Saint-Junien","c":"Saint-Junien","s":52.8,"t":"appartement","d":"D","g":"D","co":169.4,"gv":34.5,"et":"RDC","dt":"03/02/2026"},{"la":45.892277,"lo":0.903596,"a":"7 Rue Zamenhof 87200 Saint-Junien","c":"Saint-Junien","s":138.5,"t":"maison","d":"F","g":"F","co":349.6,"gv":77.8,"dt":"04/02/2026"},{"la":45.882287,"lo":0.899524,"a":"22 Faubourg Gaillard 87200 Saint-Junien","c":"Saint-Junien","s":41.5,"t":"appartement","d":"D","g":"B","co":243.0,"gv":9.0,"et":"RDC","dt":"07/02/2026"},{"la":45.887956,"lo":0.900201,"a":"11 Rue de Nontron 87200 Saint-Junien","c":"Saint-Junien","s":44.6,"t":"appartement","d":"F","g":"F","co":389.8,"gv":85.1,"et":"RDC","dt":"11/02/2026"},{"la":45.887956,"lo":0.900201,"a":"11 Rue de Nontron 87200 Saint-Junien","c":"Saint-Junien","s":44.6,"t":"appartement","d":"E","g":"E","co":247.1,"gv":52.9,"et":"RDC","dt":"11/02/2026"},{"la":45.887956,"lo":0.900201,"a":"11 Rue de Nontron 87200 Saint-Junien","c":"Saint-Junien","s":46.8,"t":"appartement","d":"E","g":"E","co":263.6,"gv":56.7,"et":"RDC","dt":"11/02/2026"},{"la":45.884313,"lo":0.899156,"a":"2 Rue de Schiltigheim 87200 Saint-Junien","c":"Saint-Junien","s":100.0,"t":"maison","d":"E","g":"E","co":257.0,"gv":56.0,"et":"RDC","dt":"12/02/2026"},{"la":45.885984,"lo":0.906548,"a":"24 Avenue Voltaire 87200 Saint-Junien","c":"Saint-Junien","s":66.7,"t":"maison","d":"D","g":"D","co":175.2,"gv":35.0,"dt":"13/02/2026"},{"la":45.895354,"lo":0.893624,"a":"2 Impasse Bellevue de Glane 87200 Saint-Junien","c":"Saint-Junien","s":78.9,"t":"maison","d":"C","g":"A","co":126.9,"gv":5.1,"dt":"16/02/2026"},{"la":45.883789,"lo":0.903765,"a":"Résidence Rochebrune - Bâtiment B 87200 Saint-Junien","c":"Saint-Junien","s":65.5,"t":"appartement","d":"C","g":"B","co":164.0,"gv":6.0,"et":"RDC","dt":"17/02/2026"},{"la":45.891963,"lo":0.897868,"a":"9 Place la Bruyère 87200 Saint-Junien","c":"Saint-Junien","s":88.9,"t":"maison","d":"F","g":"F","co":394.2,"gv":87.8,"dt":"17/02/2026"},{"la":45.893576,"lo":0.917788,"a":"2 Rue du Village de Fayolas 87200 Saint-Junien","c":"Saint-Junien","s":117.2,"t":"maison","d":"D","g":"D","co":168.7,"gv":36.8,"dt":"17/02/2026"},{"la":45.892265,"lo":0.904461,"a":"12 Rue Zamenhof 87200 Saint-Junien","c":"Saint-Junien","s":86.4,"t":"maison","d":"E","g":"E","co":276.1,"gv":60.4,"dt":"18/02/2026"},{"la":45.897692,"lo":0.917671,"a":"Avenue d’Oradour-sur-Glane 87200 Saint-Junien","c":"Saint-Junien","s":47.8,"t":"maison","d":"C","g":"B","co":176.1,"gv":6.7,"dt":"22/02/2026"},{"la":45.886818,"lo":0.895621,"a":"8 Rue Alfred de Musset 87200 Saint-Junien","c":"Saint-Junien","s":98.5,"t":"maison","d":"C","g":"C","co":154.9,"gv":22.0,"dt":"23/02/2026"},{"la":45.884655,"lo":0.896463,"a":"16 Avenue Gustave Flaubert 87200 Saint-Junien","c":"Saint-Junien","s":178.6,"t":"appartement","d":"B","g":"A","co":94.0,"gv":3.0,"et":"RDC","dt":"25/02/2026"},{"la":45.884655,"lo":0.896463,"a":"16 Avenue Gustave Flaubert 87200 Saint-Junien","c":"Saint-Junien","s":154.4,"t":"appartement","d":"C","g":"A","co":130.0,"gv":5.0,"et":"RDC","dt":"25/02/2026"},{"la":45.894282,"lo":0.913645,"a":"9 Rue de Chantemerle 87200 Saint-Junien","c":"Saint-Junien","s":66.5,"t":"appartement","d":"D","g":"D","co":216.8,"gv":47.4,"et":"Etage 4","dt":"27/02/2026"},{"la":45.887394,"lo":0.90368,"a":"4 Rue du Chapelain 87200 Saint-Junien","c":"Saint-Junien","s":55.9,"t":"appartement","d":"C","g":"A","co":150.8,"gv":5.7,"et":"Etage 1","dt":"03/03/2026"},{"la":45.887891,"lo":0.899566,"a":"10 Boulevard Victor Hugo 87200 Saint-Junien","c":"Saint-Junien","s":51.2,"t":"appartement","d":"D","g":"D","co":173.4,"gv":37.5,"et":"Etage 1","dt":"04/03/2026"},{"la":45.889584,"lo":0.908252,"a":"19 Avenue Jean Jaurès 87200 Saint-Junien","c":"Saint-Junien","s":80.0,"t":"maison","d":"D","g":"D","co":223.6,"gv":46.3,"dt":"04/03/2026"},{"la":45.893,"lo":0.917267,"a":"Résidence Fayolas - Bâtiment G 87200 Saint-Junien","c":"Saint-Junien","s":77.4,"t":"appartement","d":"D","g":"C","co":208.0,"gv":12.0,"et":"RDC","dt":"04/03/2026"},{"la":45.887502,"lo":0.895228,"a":"Résidence Defaye - bâtiment B 87200 Saint-Junien","c":"Saint-Junien","s":66.6,"t":"appartement","d":"D","g":"B","co":233.0,"gv":9.0,"et":"RDC","dt":"04/03/2026"},{"la":45.892003,"lo":0.902426,"a":"2 Rue Zamenhof 87200 Saint-Junien","c":"Saint-Junien","s":86.5,"t":"maison","d":"D","g":"D","co":223.0,"gv":48.0,"et":"RDC","dt":"05/03/2026"},{"la":45.892961,"lo":0.922951,"a":"15 Impasse Hector Berlioz 87200 Saint-Junien","c":"Saint-Junien","s":95.4,"t":"maison","d":"A","g":"A","co":60.3,"gv":2.2,"dt":"06/03/2026"},{"la":45.868527,"lo":0.89122,"a":"1720 Route de Rochechouart 87200 Saint-Junien","c":"Saint-Junien","s":67.8,"t":"maison","d":"G","g":"G","co":320.0,"gv":101.0,"et":"RDC","dt":"08/03/2026"},{"la":45.868527,"lo":0.89122,"a":"1720 Route de Rochechouart 87200 Saint-Junien","c":"Saint-Junien","s":67.8,"t":"maison","d":"F","g":"F","co":257.0,"gv":80.0,"et":"RDC","dt":"08/03/2026"},{"la":45.898354,"lo":0.900863,"a":"5 Impasse du Rocher Sainte-Hélène 87200 Saint-Junien","c":"Saint-Junien","s":157.3,"t":"maison","d":"E","g":"B","co":285.6,"gv":8.7,"dt":"09/03/2026"},{"la":45.892977,"lo":0.923092,"a":"Impasse Hector Berlioz 87200 Saint-Junien","c":"Saint-Junien","s":103.5,"t":"maison","d":"F","g":"C","co":354.1,"gv":14.3,"dt":"10/03/2026"},{"la":45.882708,"lo":0.896998,"a":"23 Avenue Pingault 87200 Saint-Junien","c":"Saint-Junien","s":69.0,"t":"maison","d":"E","g":"E","co":310.0,"gv":66.0,"et":"RDC","dt":"13/03/2026"},{"la":45.882708,"lo":0.896998,"a":"23 Avenue Pingault 87200 Saint-Junien","c":"Saint-Junien","s":69.0,"t":"maison","d":"E","g":"E","co":306.0,"gv":66.0,"et":"RDC","dt":"13/03/2026"},{"la":45.887066,"lo":0.892212,"a":"25 Rue Alfred de Musset 87200 Saint-Junien","c":"Saint-Junien","s":108.3,"t":"maison","d":"E","g":"E","co":235.0,"gv":51.0,"et":"RDC","dt":"13/03/2026"},{"la":45.887772,"lo":0.903863,"a":"9 Boulevard Louis Blanc 87200 Saint-Junien","c":"Saint-Junien","s":31.8,"t":"appartement","d":"D","g":"B","co":240.0,"gv":9.1,"et":"Etage 1","dt":"17/03/2026"},{"la":45.887798,"lo":0.90113,"a":"1 Rue de Nontron 87200 Saint-Junien","c":"Saint-Junien","s":42.3,"t":"appartement","d":"D","g":"B","co":216.6,"gv":8.3,"et":"Etage 1","dt":"17/03/2026"},{"la":45.892037,"lo":0.898574,"a":"2 Rue Montaigne 87200 Saint-Junien","c":"Saint-Junien","s":224.0,"t":"maison","d":"D","g":"D","co":183.0,"gv":40.0,"et":"RDC","dt":"19/03/2026"},{"la":45.889584,"lo":0.908252,"a":"19 Avenue Jean Jaurès 87200 Saint-Junien","c":"Saint-Junien","s":23.7,"t":"appartement","d":"E","g":"C","co":318.5,"gv":12.4,"et":"RDC","dt":"19/03/2026"},{"la":45.886062,"lo":0.898124,"a":"1 Avenue Gustave Flaubert 87200 Saint-Junien","c":"Saint-Junien","s":117.1,"t":"maison","d":"E","g":"E","co":312.0,"gv":69.0,"et":"RDC","dt":"19/03/2026"},{"la":45.886368,"lo":0.902987,"a":"17 Rue Guizier 87200 Saint-Junien","c":"Saint-Junien","s":42.0,"t":"appartement","d":"C","g":"A","co":150.3,"gv":5.5,"et":"Etage 2","dt":"20/03/2026"},{"la":45.90623,"lo":0.95174,"a":"105 Les Seguines Ouest 87200 Saint-Junien","c":"Saint-Junien","s":148.3,"t":"maison","d":"E","g":"C","co":298.0,"gv":11.0,"et":"RDC","dt":"20/03/2026"},{"la":45.90623,"lo":0.95174,"a":"105 Les Seguines Ouest 87200 Saint-Junien","c":"Saint-Junien","s":148.3,"t":"maison","d":"E","g":"C","co":296.0,"gv":11.0,"et":"RDC","dt":"20/03/2026"},{"la":45.882241,"lo":0.908389,"a":"11 Rue Molière 87200 Saint-Junien","c":"Saint-Junien","s":113.4,"t":"maison","d":"E","g":"D","co":298.2,"gv":37.7,"dt":"22/03/2026"},{"la":45.907252,"lo":0.848584,"a":"Forgeix 87200 Saint-Junien","c":"Saint-Junien","s":72.8,"t":"maison","d":"C","g":"B","co":155.0,"gv":6.0,"dt":"24/03/2026"},{"la":45.8874,"lo":0.900791,"a":"14 Place Auguste Roche 87200 Saint-Junien","c":"Saint-Junien","s":55.0,"t":"appartement","d":"C","g":"C","co":97.0,"gv":19.0,"et":"RDC","dt":"25/03/2026"},{"la":45.888204,"lo":0.910691,"a":"61 Avenue Elisée Reclus 87200 Saint-Junien","c":"Saint-Junien","s":99.0,"t":"maison","d":"D","g":"D","co":186.0,"gv":39.0,"et":"RDC","dt":"25/03/2026"},{"la":45.888625,"lo":0.895868,"a":"8 Rue Laveyssière 87200 Saint-Junien","c":"Saint-Junien","s":112.0,"t":"maison","d":"B","g":"A","co":91.5,"gv":3.6,"dt":"25/03/2026"},{"la":45.886533,"lo":0.903419,"a":"3 Rue du Chapelain 87200 Saint-Junien","c":"Saint-Junien","s":48.1,"t":"maison","d":"F","g":"C","co":391.4,"gv":15.6,"dt":"25/03/2026"},{"la":45.8874,"lo":0.900791,"a":"14 Place Auguste Roche 87200 Saint-Junien","c":"Saint-Junien","s":57.1,"t":"appartement","d":"D","g":"D","co":186.0,"gv":39.0,"et":"RDC","dt":"25/03/2026"},{"la":45.897697,"lo":0.902695,"a":"4 Avenue du Chatelard 87200 Saint-Junien","c":"Saint-Junien","s":114.6,"t":"maison","d":"D","g":"D","co":178.4,"gv":37.3,"dt":"25/03/2026"},{"la":45.8874,"lo":0.900791,"a":"14 Place Auguste Roche 87200 Saint-Junien","c":"Saint-Junien","s":70.8,"t":"appartement","d":"C","g":"C","co":91.0,"gv":18.0,"et":"RDC","dt":"25/03/2026"},{"la":45.886089,"lo":0.900438,"a":"Rue Louis Codet 87200 Saint-Junien","c":"Saint-Junien","s":78.9,"t":"appartement","d":"B","g":"A","co":102.5,"gv":3.8,"et":"Etage 2","dt":"25/03/2026"},{"la":45.888056,"lo":0.89947,"a":"3bis Boulevard Victor Hugo 87200 Saint-Junien","c":"Saint-Junien","s":73.5,"t":"appartement","d":"C","g":"B","co":159.0,"gv":6.0,"et":"Etage 3","dt":"25/03/2026"},{"la":45.8874,"lo":0.900791,"a":"14 Place Auguste Roche 87200 Saint-Junien","c":"Saint-Junien","s":66.4,"t":"appartement","d":"D","g":"D","co":148.0,"gv":31.0,"et":"RDC","dt":"25/03/2026"},{"la":45.8874,"lo":0.900791,"a":"14 Place Auguste Roche 87200 Saint-Junien","c":"Saint-Junien","s":82.6,"t":"appartement","d":"C","g":"C","co":97.0,"gv":19.0,"et":"RDC","dt":"26/03/2026"},{"la":45.8874,"lo":0.900791,"a":"14 Place Auguste Roche 87200 Saint-Junien","c":"Saint-Junien","s":77.8,"t":"appartement","d":"C","g":"C","co":100.0,"gv":20.0,"et":"RDC","dt":"26/03/2026"},{"la":45.8874,"lo":0.900791,"a":"14 Place Auguste Roche 87200 Saint-Junien","c":"Saint-Junien","s":81.7,"t":"appartement","d":"C","g":"C","co":115.0,"gv":23.0,"et":"RDC","dt":"26/03/2026"},{"la":45.8874,"lo":0.900791,"a":"14 Place Auguste Roche 87200 Saint-Junien","c":"Saint-Junien","t":"immeuble","d":"C","g":"C","co":112.0,"gv":23.0,"et":"RDC","dt":"27/03/2026"},{"la":45.915053,"lo":0.916307,"a":"240 Le Pont du Dérot 87200 Saint-Junien","c":"Saint-Junien","s":70.3,"t":"maison","d":"C","g":"A","co":137.8,"gv":4.9,"dt":"27/03/2026"},{"la":45.881669,"lo":0.906097,"a":"18 Rue du Docteur Roux 87200 Saint-Junien","c":"Saint-Junien","s":86.0,"t":"maison","d":"E","g":"E","co":267.5,"gv":58.8,"dt":"27/03/2026"},{"la":45.912743,"lo":0.944198,"a":"2 Rue des Puits 87200 Saint-Junien","c":"Saint-Junien","s":145.0,"t":"maison","d":"D","g":"B","co":230.0,"gv":9.0,"et":"RDC","dt":"29/03/2026"},{"la":45.888099,"lo":0.901655,"a":"11 Rue Lucien Dumas 87200 Saint-Junien","c":"Saint-Junien","s":65.7,"t":"appartement","d":"C","g":"A","co":154.1,"gv":5.8,"et":"Etage 3","dt":"30/03/2026"},{"la":45.882774,"lo":0.901254,"a":"10 Rue Edouard Vaillant 87200 Saint-Junien","c":"Saint-Junien","s":96.2,"t":"maison","d":"F","g":"F","co":343.0,"gv":75.6,"dt":"30/03/2026"},{"la":45.893571,"lo":0.902098,"a":"14 Rue Auguste Gagne 87200 Saint-Junien","c":"Saint-Junien","s":89.1,"t":"maison","d":"C","g":"C","co":135.2,"gv":29.2,"dt":"31/03/2026"},{"la":45.896049,"lo":0.910259,"a":"5 Rue des Maumonts 87200 Saint-Junien","c":"Saint-Junien","s":86.0,"t":"maison","d":"D","g":"B","co":248.5,"gv":9.9,"dt":"02/04/2026"},{"la":45.913417,"lo":0.837734,"a":"80 Rue de la Prade le Mas 87200 Saint-Junien","c":"Saint-Junien","s":76.2,"t":"maison","d":"E","g":"E","co":306.4,"gv":59.6,"dt":"03/04/2026"},{"la":45.885395,"lo":0.900685,"a":"24 Boulevard de la République 87200 Saint-Junien","c":"Saint-Junien","s":71.0,"t":"maison","d":"F","g":"F","co":379.7,"gv":84.2,"dt":"03/04/2026"},{"la":45.891373,"lo":0.896718,"a":"2 Rue de la Paix 87200 Saint-Junien","c":"Saint-Junien","s":124.0,"t":"maison","d":"E","g":"D","co":270.3,"gv":31.3,"dt":"03/04/2026"},{"la":45.905671,"lo":0.915426,"a":"220 Le grand Boisse 87200 Saint-Junien","c":"Saint-Junien","s":169.8,"t":"maison","d":"A","g":"A","co":60.2,"gv":2.3,"dt":"08/04/2026"},{"la":45.887669,"lo":0.900165,"a":"2 Rue Peyrusson 87200 Saint-Junien","c":"Saint-Junien","s":33.0,"t":"appartement","d":"C","g":"A","co":160.4,"gv":5.9,"et":"Etage 2","dt":"09/04/2026"},{"la":45.887669,"lo":0.900165,"a":"2 Rue Peyrusson 87200 Saint-Junien","c":"Saint-Junien","s":26.5,"t":"appartement","d":"D","g":"D","co":249.3,"gv":34.5,"et":"Etage 2","dt":"09/04/2026"},{"la":45.8885,"lo":0.887532,"a":"3ter Place Bonnefond 87200 Saint-Junien","c":"Saint-Junien","s":75.7,"t":"maison","d":"F","g":"C","co":372.0,"gv":13.0,"et":"RDC","dt":"10/04/2026"},{"la":45.882774,"lo":0.901254,"a":"10 Rue Edouard Vaillant 87200 Saint-Junien","c":"Saint-Junien","s":94.3,"t":"maison","d":"E","g":"E","co":249.8,"gv":54.7,"dt":"10/04/2026"},{"la":45.887669,"lo":0.900165,"a":"2 Rue Peyrusson 87200 Saint-Junien","c":"Saint-Junien","s":35.7,"t":"appartement","d":"D","g":"D","co":250.6,"gv":33.5,"et":"Etage 2","dt":"12/04/2026"},{"la":45.887669,"lo":0.900165,"a":"2 Rue Peyrusson 87200 Saint-Junien","c":"Saint-Junien","s":57.5,"t":"appartement","d":"D","g":"B","co":183.9,"gv":7.1,"et":"Etage 2","dt":"12/04/2026"},{"la":45.887669,"lo":0.900165,"a":"2 Rue Peyrusson 87200 Saint-Junien","c":"Saint-Junien","s":180.0,"t":"appartement","d":"D","g":"D","co":192.4,"gv":35.6,"et":"Etage 1","dt":"12/04/2026"},{"la":45.887669,"lo":0.900165,"a":"2 Rue Peyrusson 87200 Saint-Junien","c":"Saint-Junien","t":"immeuble","d":"C","g":"C","co":174.7,"gv":19.6,"dt":"13/04/2026"},{"la":45.893887,"lo":0.902064,"a":"25bis Rue Auguste Gagne 87200 Saint-Junien","c":"Saint-Junien","s":59.0,"t":"appartement","d":"C","g":"A","co":136.6,"gv":5.1,"et":"Etage 2","dt":"13/04/2026"},{"la":45.893887,"lo":0.902064,"a":"25bis Rue Auguste Gagne 87200 Saint-Junien","c":"Saint-Junien","s":59.0,"t":"appartement","d":"C","g":"B","co":158.9,"gv":6.0,"et":"Etage 1","dt":"13/04/2026"},{"la":45.885822,"lo":0.890418,"a":"2 Avenue Gay Lussac 87200 Saint-Junien","c":"Saint-Junien","s":51.0,"t":"appartement","d":"C","g":"C","co":109.1,"gv":22.9,"et":"RDC","dt":"15/04/2026"},{"la":45.888214,"lo":0.902298,"a":"5 Impasse Labrunie 87200 Saint-Junien","c":"Saint-Junien","s":45.3,"t":"maison","d":"E","g":"E","co":316.4,"gv":51.1,"dt":"15/04/2026"},{"la":45.883642,"lo":0.900147,"a":"18 Rue Boileau 87200 Saint-Junien","c":"Saint-Junien","s":98.0,"t":"maison","d":"B","g":"A","co":90.0,"gv":3.0,"et":"RDC","dt":"16/04/2026"},{"la":45.889742,"lo":0.911581,"a":"17 Rue Bellevue 87200 Saint-Junien","c":"Saint-Junien","s":76.3,"t":"maison","d":"F","g":"F","co":372.7,"gv":82.8,"dt":"17/04/2026"},{"la":45.889758,"lo":0.912693,"a":"3 Rue Pierre Loti 87200 Saint-Junien","c":"Saint-Junien","s":70.1,"t":"maison","d":"D","g":"D","co":157.9,"gv":32.6,"dt":"17/04/2026"},{"la":45.898279,"lo":0.905603,"a":"42 Chemin des Gouttes 87200 Saint-Junien","c":"Saint-Junien","s":39.1,"t":"appartement","d":"D","g":"B","co":228.0,"gv":8.0,"et":"RDC","dt":"17/04/2026"},{"la":45.882292,"lo":0.901211,"a":"19 Rue Emile Zola 87200 Saint-Junien","c":"Saint-Junien","s":128.7,"t":"maison","d":"E","g":"E","co":290.0,"gv":63.0,"et":"RDC","dt":"18/04/2026"},{"la":45.89019,"lo":0.902927,"a":"7 Avenue Henri Barbusse 87200 Saint-Junien","c":"Saint-Junien","s":96.5,"t":"appartement","d":"D","g":"D","co":183.4,"gv":35.5,"et":"Etage 2","dt":"20/04/2026"},{"la":45.892753,"lo":0.912416,"a":"55 Avenue Rosa Luxemburg 87200 Saint-Junien","c":"Saint-Junien","s":101.1,"t":"maison","d":"F","g":"E","co":340.0,"gv":69.0,"et":"RDC","dt":"21/04/2026"},{"la":45.887845,"lo":0.894689,"a":"40 Rue Defaye 87200 Saint-Junien","c":"Saint-Junien","s":44.8,"t":"appartement","d":"G","g":"C","co":500.0,"gv":20.2,"et":"RDC","dt":"24/04/2026"},{"la":45.887845,"lo":0.894689,"a":"40 Rue Defaye 87200 Saint-Junien","c":"Saint-Junien","s":76.1,"t":"appartement","d":"F","g":"C","co":400.9,"gv":16.2,"et":"Etage 1","dt":"24/04/2026"},{"la":45.921002,"lo":0.851443,"a":"370 Pressaleix de l’Outre 87200 Saint-Junien","c":"Saint-Junien","s":140.1,"t":"maison","d":"D","g":"D","co":182.4,"gv":33.3,"dt":"28/04/2026"},{"la":45.887845,"lo":0.894689,"a":"40 Rue Defaye 87200 Saint-Junien","c":"Saint-Junien","s":46.5,"t":"appartement","d":"E","g":"C","co":286.5,"gv":11.4,"et":"Etage 1","dt":"28/04/2026"},{"la":45.888269,"lo":0.911054,"a":"65 Avenue Elisée Reclus 87200 Saint-Junien","c":"Saint-Junien","s":114.9,"t":"maison","d":"D","g":"D","co":142.7,"gv":30.9,"dt":"29/04/2026"},{"la":45.88237,"lo":0.89957,"a":"20 Faubourg Gaillard 87200 Saint-Junien","c":"Saint-Junien","s":195.0,"t":"maison","d":"C","g":"C","co":136.2,"gv":20.6,"dt":"30/04/2026"},{"la":45.886817,"lo":0.899005,"a":"1 Rue Camélinat 87200 Saint-Junien","c":"Saint-Junien","s":74.3,"t":"appartement","d":"G","g":"G","co":397.6,"gv":126.0,"et":"RDC","dt":"04/05/2026"},{"la":45.881885,"lo":0.899843,"a":"44 Avenue Paul Vaillant Couturier 87200 Saint-Junien","c":"Saint-Junien","s":93.3,"t":"appartement","d":"C","g":"A","co":140.5,"gv":5.4,"et":"RDC","dt":"04/05/2026"},{"la":45.884493,"lo":0.900992,"a":"32 Faubourg Auguste Blanqui 87200 Saint-Junien","c":"Saint-Junien","s":52.1,"t":"appartement","d":"C","g":"C","co":146.0,"gv":17.0,"et":"Etage 2","dt":"10/05/2026"},{"la":45.886416,"lo":0.892519,"a":"8 Rue Colette 87200 Saint-Junien","c":"Saint-Junien","s":83.7,"t":"maison","d":"F","g":"F","co":347.6,"gv":70.8,"dt":"11/05/2026"},{"la":45.883387,"lo":0.898274,"a":"10 Rue Jean Moulin 87200 Saint-Junien","c":"Saint-Junien","s":69.1,"t":"maison","d":"C","g":"B","co":179.3,"gv":6.7,"dt":"11/05/2026"},{"la":45.890443,"lo":0.908655,"a":"5bis Impasse Saint-François 87200 Saint-Junien","c":"Saint-Junien","s":51.5,"t":"maison","d":"F","g":"C","co":370.0,"gv":15.0,"et":"RDC","dt":"12/05/2026"},{"la":45.890439,"lo":0.903656,"a":"17 Avenue Henri Barbusse 87200 Saint-Junien","c":"Saint-Junien","t":"immeuble","d":"D","g":"D","co":197.0,"gv":43.0,"dt":"14/05/2026"},{"la":45.884532,"lo":0.899399,"a":"3 Rue de Schiltigheim 87200 Saint-Junien","c":"Saint-Junien","s":77.9,"t":"maison","d":"D","g":"C","co":208.3,"gv":28.1,"dt":"18/05/2026"},{"la":45.91473,"lo":0.86838,"a":"Plaud 87200 Saint-Junien","c":"Saint-Junien","s":84.2,"t":"maison","d":"F","g":"C","co":351.6,"gv":14.9,"dt":"19/05/2026"},{"la":45.882241,"lo":0.908389,"a":"11 Rue Molière 87200 Saint-Junien","c":"Saint-Junien","s":113.4,"t":"maison","d":"D","g":"C","co":228.4,"gv":29.3,"dt":"19/05/2026"},{"la":45.915087,"lo":0.87407,"a":"20 La Lande de Plaud 87200 Saint-Junien","c":"Saint-Junien","s":110.7,"t":"maison","d":"A","g":"A","co":66.0,"gv":2.0,"et":"RDC","dt":"20/05/2026"},{"la":45.891926,"lo":0.886863,"a":"12 Route de Saulgond 87200 Saint-Junien","c":"Saint-Junien","s":110.0,"t":"maison","d":"E","g":"E","co":252.0,"gv":54.0,"et":"RDC","dt":"20/05/2026"},{"la":45.902441,"lo":0.904593,"a":"16 Allée du Chatelard 87200 Saint-Junien","c":"Saint-Junien","s":100.5,"t":"maison","d":"G","g":"G","co":441.0,"gv":128.0,"et":"RDC","dt":"28/05/2026"},{"la":45.885901,"lo":0.899355,"a":"2 Rue de Breche 87200 Saint-Junien","c":"Saint-Junien","t":"immeuble","d":"D","g":"B","co":203.8,"gv":8.0,"dt":"28/05/2026"},{"la":45.890601,"lo":0.91464,"a":"6 Impasse Jacques Brel 87200 Saint-Junien","c":"Saint-Junien","s":108.2,"t":"maison","d":"D","g":"B","co":196.0,"gv":7.0,"et":"RDC","dt":"29/05/2026"},{"la":45.912825,"lo":0.942533,"a":"8 Rue des Trotteurs 87200 Saint-Junien","c":"Saint-Junien","s":94.8,"t":"maison","d":"D","g":"B","co":203.3,"gv":8.1,"dt":"03/06/2026"},{"la":45.88789,"lo":0.893868,"a":"1 Faubourg Liebknecht 87200 Saint-Junien","c":"Saint-Junien","s":118.2,"t":"maison","d":"D","g":"D","co":145.1,"gv":30.5,"dt":"03/06/2026"},{"la":45.883714,"lo":0.901993,"a":"6 Avenue Martial Thiphonnet 87200 Saint-Junien","c":"Saint-Junien","s":132.7,"t":"maison","d":"C","g":"C","co":147.0,"gv":24.0,"dt":"08/06/2026"},{"la":45.891643,"lo":0.901308,"a":"3 Rue Auguste Gagne 87200 Saint-Junien","c":"Saint-Junien","s":73.1,"t":"appartement","d":"D","g":"D","co":201.2,"gv":41.2,"et":"Etage 2","dt":"10/06/2026"},{"la":45.883599,"lo":0.90054,"a":"31ter Faubourg Auguste Blanqui 87200 Saint-Junien","c":"Saint-Junien","s":108.0,"t":"maison","d":"F","g":"F","co":364.8,"gv":74.7,"dt":"11/06/2026"},{"la":45.890485,"lo":0.908708,"a":"7 Impasse Saint-François 87200 Saint-Junien","c":"Saint-Junien","s":114.7,"t":"maison","d":"G","g":"G","co":426.0,"gv":130.0,"et":"RDC","dt":"11/06/2026"},{"la":45.889459,"lo":0.904734,"a":"14 Avenue Anatole France 87200 Saint-Junien","c":"Saint-Junien","s":216.8,"t":"maison","d":"D","g":"D","co":219.2,"gv":43.9,"dt":"11/06/2026"},{"la":45.887685,"lo":0.901587,"a":"8 Place Guy Moquet 87200 Saint-Junien","c":"Saint-Junien","s":63.5,"t":"appartement","d":"C","g":"A","co":113.0,"gv":4.0,"et":"RDC","dt":"12/06/2026"},{"la":45.887125,"lo":0.897113,"a":"3 Rue Rouget de Lisle 87200 Saint-Junien","c":"Saint-Junien","s":78.5,"t":"maison","d":"D","g":"B","co":216.4,"gv":8.5,"dt":"12/06/2026"},{"la":45.887685,"lo":0.901587,"a":"8 Place Guy Moquet 87200 Saint-Junien","c":"Saint-Junien","s":61.9,"t":"appartement","d":"C","g":"B","co":158.0,"gv":6.0,"et":"RDC","dt":"12/06/2026"},{"la":45.885567,"lo":0.912095,"a":"60 Avenue Voltaire 87200 Saint-Junien","c":"Saint-Junien","s":137.4,"t":"maison","d":"D","g":"D","co":226.3,"gv":32.7,"dt":"12/06/2026"},{"la":45.887685,"lo":0.901587,"a":"8 Place Guy Moquet 87200 Saint-Junien","c":"Saint-Junien","s":64.7,"t":"appartement","d":"C","g":"A","co":111.0,"gv":4.0,"et":"RDC","dt":"12/06/2026"},{"la":45.887123,"lo":0.893748,"a":"3 Rue Jean Pierre Timbaud 87200 Saint-Junien","c":"Saint-Junien","s":105.3,"t":"maison","d":"F","g":"F","co":402.0,"gv":76.0,"dt":"14/06/2026"},{"la":45.8868,"lo":0.892738,"a":"2 Rue Colette 87200 Saint-Junien","c":"Saint-Junien","s":109.3,"t":"maison","d":"E","g":"E","co":294.0,"gv":63.0,"et":"RDC","dt":"15/06/2026"},{"la":45.892845,"lo":0.907224,"a":"67 Avenue Henri Barbusse 87200 Saint-Junien","c":"Saint-Junien","s":41.0,"t":"appartement","d":"F","g":"C","co":337.4,"gv":13.3,"et":"Etage 1","dt":"16/06/2026"},{"la":45.884554,"lo":0.903757,"a":"15 Avenue d’Estienne d’Orves 87200 Saint-Junien","c":"Saint-Junien","s":101.2,"t":"maison","d":"E","g":"D","co":265.1,"gv":45.3,"dt":"17/06/2026"},{"la":45.88225,"lo":0.896304,"a":"12bis Avenue Victor Roche 87200 Saint-Junien","c":"Saint-Junien","t":"immeuble","d":"E","g":"E","co":253.6,"gv":55.5,"dt":"17/06/2026"},{"la":45.883776,"lo":0.900123,"a":"16 Rue Boileau 87200 Saint-Junien","c":"Saint-Junien","s":107.1,"t":"appartement","d":"F","g":"C","co":384.0,"gv":15.0,"et":"RDC","dt":"18/06/2026"},{"la":45.895676,"lo":0.912848,"a":"23 Avenue d’Oradour-sur-Glane 87200 Saint-Junien","c":"Saint-Junien","t":"immeuble","d":"D","g":"D","co":164.4,"gv":32.6,"dt":"18/06/2026"},{"la":45.890466,"lo":0.867889,"a":"Lieu-dit Raquiaud 87200 Saint-Junien","c":"Saint-Junien","s":116.0,"t":"maison","d":"C","g":"B","co":178.0,"gv":7.0,"dt":"18/06/2026"},{"la":45.89207,"lo":0.92363,"a":"27 Impasse Hector Berlioz 87200 Saint-Junien","c":"Saint-Junien","s":139.5,"t":"maison","d":"B","g":"B","co":62.6,"gv":8.3,"dt":"19/06/2026"},{"la":45.889124,"lo":0.892819,"a":"24 Avenue Léontine Vignerie 87200 Saint-Junien","c":"Saint-Junien","s":46.2,"t":"maison","d":"F","g":"F","co":368.0,"gv":81.0,"et":"RDC","dt":"19/06/2026"},{"la":45.887391,"lo":0.91001,"a":"17 Rue Frédéric Mistral 87200 Saint-Junien","c":"Saint-Junien","s":61.4,"t":"maison","d":"C","g":"C","co":163.8,"gv":28.2,"dt":"21/06/2026"},{"la":45.892459,"lo":0.881604,"a":"44 Route de Croyer 87200 Saint-Junien","c":"Saint-Junien","s":97.3,"t":"maison","d":"G","g":"D","co":471.0,"gv":49.0,"et":"RDC","dt":"22/06/2026"},{"la":45.887747,"lo":0.899332,"a":"2 Boulevard Victor Hugo 87200 Saint-Junien","c":"Saint-Junien","s":54.8,"t":"appartement","d":"C","g":"C","co":135.0,"gv":28.0,"et":"RDC","dt":"23/06/2026"},{"la":45.888448,"lo":0.913837,"a":"2 Rue Picasso 87200 Saint-Junien","c":"Saint-Junien","s":186.4,"t":"maison","d":"D","g":"D","co":215.7,"gv":42.2,"dt":"23/06/2026"},{"la":45.891986,"lo":0.886699,"a":"11 Route de Saulgond 87200 Saint-Junien","c":"Saint-Junien","s":95.0,"t":"maison","d":"D","g":"D","co":212.0,"gv":44.3,"dt":"23/06/2026"},{"la":45.892213,"lo":0.918616,"a":"5 Impasse Gabriel Fauré 87200 Saint-Junien","c":"Saint-Junien","s":91.1,"t":"maison","d":"C","g":"C","co":147.2,"gv":27.5,"dt":"25/06/2026"},{"la":45.887941,"lo":0.899855,"a":"3bis Rue Peyrusson 87200 Saint-Junien","c":"Saint-Junien","s":52.1,"t":"appartement","d":"E","g":"C","co":312.0,"gv":12.0,"et":"RDC","dt":"26/06/2026"},{"la":45.886638,"lo":0.901468,"a":"3 Rue Renan 87200 Saint-Junien","c":"Saint-Junien","s":133.9,"t":"maison","d":"E","g":"E","co":307.9,"gv":68.0,"dt":"26/06/2026"},{"la":45.886045,"lo":0.902896,"a":"2 Rue Karl Marx 87200 Saint-Junien","c":"Saint-Junien","s":18.0,"t":"appartement","d":"D","g":"B","co":267.0,"gv":10.0,"et":"RDC","dt":"26/06/2026"},{"la":45.8914,"lo":0.913037,"a":"Résidence Montrozier - Bâtiment C1 87200 Saint-Junien","c":"Saint-Junien","s":56.3,"t":"appartement","d":"B","g":"A","co":90.0,"gv":3.0,"et":"RDC","dt":"26/06/2026"},{"la":45.886937,"lo":0.901651,"a":"4 Rue Charretière 87200 Saint-Junien","c":"Saint-Junien","s":45.1,"t":"appartement","d":"C","g":"A","co":148.0,"gv":5.0,"et":"RDC","dt":"29/06/2026"},{"la":45.887124,"lo":0.9107,"a":"23 Rue Frédéric Mistral 87200 Saint-Junien","c":"Saint-Junien","s":80.5,"t":"maison","d":"E","g":"E","co":300.0,"gv":65.0,"et":"RDC","dt":"02/07/2026"},{"la":45.883555,"lo":0.905756,"a":"7 Rue Lagarde 87200 Saint-Junien","c":"Saint-Junien","s":138.3,"t":"maison","d":"F","g":"D","co":339.0,"gv":38.0,"et":"RDC","dt":"03/07/2026"},{"la":45.894818,"lo":0.90287,"a":"32 Rue Auguste Gagne 87200 Saint-Junien","c":"Saint-Junien","s":79.5,"t":"maison","d":"E","g":"E","co":282.0,"gv":61.0,"et":"RDC","dt":"03/07/2026"},{"la":45.882879,"lo":0.895275,"a":"8bis Avenue Victor Roche 87200 Saint-Junien","c":"Saint-Junien","s":93.7,"t":"appartement","d":"C","g":"A","co":123.0,"gv":4.0,"et":"RDC","dt":"03/07/2026"},{"la":45.886937,"lo":0.901651,"a":"4 Rue Charretière 87200 Saint-Junien","c":"Saint-Junien","s":55.7,"t":"appartement","d":"C","g":"A","co":127.0,"gv":4.0,"et":"RDC","dt":"03/07/2026"},{"la":45.887486,"lo":0.899545,"a":"19 Rue Jean Jacques Rousseau 87200 Saint-Junien","c":"Saint-Junien","s":164.4,"t":"appartement","d":"D","g":"D","co":143.9,"gv":30.4,"et":"Etage 1","dt":"05/07/2026"},{"la":45.926266,"lo":0.928684,"a":"130 Les Charles 87200 Saint-Junien","c":"Saint-Junien","s":155.5,"t":"maison","d":"C","g":"A","co":143.0,"gv":5.0,"et":"RDC","dt":"06/07/2026"},{"la":45.883789,"lo":0.903765,"a":"Résidence Rochebrune - Bâtiment B 87200 Saint-Junien","c":"Saint-Junien","s":44.7,"t":"appartement","d":"D","g":"D","co":145.0,"gv":30.0,"et":"RDC","dt":"06/07/2026"},{"la":45.883789,"lo":0.903765,"a":"Résidence Rochebrune - Bâtiment B 87200 Saint-Junien","c":"Saint-Junien","s":44.7,"t":"appartement","d":"C","g":"C","co":142.0,"gv":29.0,"et":"RDC","dt":"07/07/2026"},{"la":45.886544,"lo":0.899426,"a":"19 Rue Rorice Rigaud 87200 Saint-Junien","c":"Saint-Junien","s":51.5,"t":"appartement","d":"D","g":"D","co":209.6,"gv":43.3,"et":"RDC","dt":"07/07/2026"},{"la":45.8884,"lo":0.90253,"a":"Résidence Jean Teillet - Bâtiment B2 87200 Saint-Junien","c":"Saint-Junien","s":86.1,"t":"appartement","d":"A","g":"A","co":62.0,"gv":2.0,"et":"RDC","dt":"08/07/2026"},{"la":45.8884,"lo":0.90253,"a":"Résidence Jean Teillet - Bâtiment B2 87200 Saint-Junien","c":"Saint-Junien","s":65.2,"t":"appartement","d":"B","g":"A","co":88.0,"gv":3.0,"et":"RDC","dt":"09/07/2026"},{"la":45.888056,"lo":0.89947,"a":"3bis Boulevard Victor Hugo 87200 Saint-Junien","c":"Saint-Junien","s":73.0,"t":"appartement","d":"C","g":"A","co":154.0,"gv":5.0,"et":"RDC","dt":"09/07/2026"},{"la":45.891401,"lo":0.912823,"a":"Résidence Montrozier - Bâtiment B1 87200 Saint-Junien","c":"Saint-Junien","s":57.2,"t":"appartement","d":"B","g":"A","co":78.0,"gv":2.0,"et":"RDC","dt":"12/07/2026"},{"la":45.883803,"lo":0.891177,"a":"9 Quai des Mégisseries 87200 Saint-Junien","c":"Saint-Junien","t":"immeuble","d":"D","g":"B","co":194.1,"gv":6.5,"dt":"14/07/2026"},{"la":45.889071,"lo":0.901479,"a":"38 Boulevard Victor Hugo 87200 Saint-Junien","c":"Saint-Junien","s":116.0,"t":"appartement","d":"C","g":"A","co":118.0,"gv":4.0,"et":"RDC","dt":"15/07/2026"},{"la":45.895238,"lo":0.903339,"a":"12 Rue Jean Rebier 87200 Saint-Junien","c":"Saint-Junien","s":95.0,"t":"maison","d":"G","g":"G","co":415.0,"gv":116.6,"dt":"20/07/2026"},{"la":45.886062,"lo":0.908837,"a":"3 Impasse de Nancy 87200 Saint-Junien","c":"Saint-Junien","s":140.0,"t":"maison","d":"C","g":"A","co":114.0,"gv":4.0,"et":"RDC","dt":"20/07/2026"},{"la":45.898701,"lo":0.902806,"a":"20 Avenue du Chatelard 87200 Saint-Junien","c":"Saint-Junien","s":167.0,"t":"maison","d":"D","g":"D","co":201.0,"gv":30.0,"et":"RDC","dt":"22/07/2026"},{"la":45.8884,"lo":0.90253,"a":"Résidence Jean Teillet - Bâtiment B2 87200 Saint-Junien","c":"Saint-Junien","s":18.4,"t":"appartement","d":"F","g":"F","co":371.0,"gv":78.0,"et":"RDC","dt":"22/07/2026"},{"la":45.888238,"lo":0.889751,"a":"11 Impasse Teillet 87200 Saint-Junien","c":"Saint-Junien","s":68.6,"t":"maison","d":"D","g":"D","co":174.4,"gv":38.0,"dt":"23/07/2026"},{"la":45.88648,"lo":0.902966,"a":"15 Rue Guizier 87200 Saint-Junien","c":"Saint-Junien","s":66.5,"t":"appartement","d":"C","g":"A","co":132.8,"gv":5.0,"et":"Etage 1","dt":"23/07/2026"},{"la":45.885992,"lo":0.902913,"a":"4 Rue Karl Marx 87200 Saint-Junien","c":"Saint-Junien","t":"immeuble","d":"D","g":"B","co":216.2,"gv":8.3,"dt":"24/07/2026"},{"la":45.884564,"lo":0.905617,"a":"14 Impasse Macé 87200 Saint-Junien","c":"Saint-Junien","s":111.0,"t":"maison","d":"E","g":"E","co":310.5,"gv":50.2,"dt":"24/07/2026"},{"la":45.88225,"lo":0.896304,"a":"12bis Avenue Victor Roche 87200 Saint-Junien","c":"Saint-Junien","t":"immeuble","d":"D","g":"D","co":194.0,"gv":42.0,"et":"RDC","dt":"24/07/2026"},{"la":45.891141,"lo":0.884713,"a":"7 Route de Croyer 87200 Saint-Junien","c":"Saint-Junien","s":109.6,"t":"maison","d":"D","g":"D","co":186.7,"gv":40.7,"dt":"24/07/2026"},{"la":45.923136,"lo":0.851697,"a":"565 Pressaleix de l’Outre 87200 Saint-Junien","c":"Saint-Junien","s":67.0,"t":"maison","d":"D","g":"B","co":241.3,"gv":9.4,"dt":"27/07/2026"},{"la":45.885667,"lo":0.910358,"a":"47 Avenue Voltaire 87200 Saint-Junien","c":"Saint-Junien","s":61.7,"t":"maison","d":"E","g":"D","co":263.0,"gv":47.0,"et":"RDC","dt":"29/07/2026"},{"la":45.888056,"lo":0.89947,"a":"3bis Boulevard Victor Hugo 87200 Saint-Junien","c":"Saint-Junien","s":47.3,"t":"appartement","d":"B","g":"A","co":108.0,"gv":3.0,"et":"RDC","dt":"30/07/2026"},{"la":45.90497,"lo":0.948796,"a":"305 Les Seguines Est 87200 Saint-Junien","c":"Saint-Junien","s":52.0,"t":"maison","d":"G","g":"G","co":494.1,"gv":156.8,"dt":"31/07/2026"},{"la":45.878653,"lo":0.907515,"a":"8 Route de Saint Martin de Jussac 87200 Saint-Junien","c":"Saint-Junien","s":138.0,"t":"maison","d":"F","g":"F","co":325.4,"gv":71.9,"dt":"31/07/2026"},{"la":45.889442,"lo":0.908439,"a":"24 Avenue Jean Jaurès 87200 Saint-Junien","c":"Saint-Junien","s":101.9,"t":"maison","d":"F","g":"F","co":369.2,"gv":81.9,"dt":"03/08/2026"},{"la":45.886521,"lo":0.901448,"a":"5 Rue Renan 87200 Saint-Junien","c":"Saint-Junien","s":67.3,"t":"appartement","d":"C","g":"C","co":117.9,"gv":19.8,"et":"Etage 2","dt":"03/08/2026"},{"la":45.886521,"lo":0.901448,"a":"5 Rue Renan 87200 Saint-Junien","c":"Saint-Junien","s":69.0,"t":"appartement","d":"C","g":"C","co":118.9,"gv":20.2,"et":"Etage 1","dt":"03/08/2026"},{"la":45.886521,"lo":0.901448,"a":"5 Rue Renan 87200 Saint-Junien","c":"Saint-Junien","s":49.0,"t":"appartement","d":"C","g":"A","co":148.0,"gv":5.5,"et":"Etage 3","dt":"03/08/2026"},{"la":45.894243,"lo":0.903187,"a":"6 Rue Jules Verne 87200 Saint-Junien","c":"Saint-Junien","s":98.0,"t":"maison","d":"G","g":"G","co":331.0,"gv":104.0,"et":"RDC","dt":"05/08/2026"},{"la":45.882287,"lo":0.899524,"a":"22 Faubourg Gaillard 87200 Saint-Junien","c":"Saint-Junien","s":66.5,"t":"appartement","d":"D","g":"B","co":190.0,"gv":7.0,"et":"RDC","dt":"07/08/2026"},{"la":45.913459,"lo":0.837374,"a":"120 Rue de la Prade - Le Mas 87200 Saint-Junien","c":"Saint-Junien","s":76.6,"t":"maison","d":"F","g":"C","co":356.8,"gv":13.5,"dt":"11/08/2026"},{"la":45.883682,"lo":0.900451,"a":"52 Faubourg Auguste Blanqui 87200 Saint-Junien","c":"Saint-Junien","s":343.0,"t":"maison","d":"E","g":"E","co":253.0,"gv":53.0,"et":"RDC","dt":"12/08/2026"},{"la":45.884833,"lo":0.90758,"a":"30 Rue Lagarde 87200 Saint-Junien","c":"Saint-Junien","s":81.6,"t":"maison","d":"E","g":"E","co":277.9,"gv":59.6,"dt":"14/08/2026"},{"la":45.875953,"lo":0.891098,"a":"895 Route de Rochechouart 87200 Saint-Junien","c":"Saint-Junien","s":97.6,"t":"maison","d":"E","g":"E","co":233.2,"gv":65.3,"dt":"18/08/2026"},{"la":45.893704,"lo":0.907367,"a":"3 Chemin des Gouttes 87200 Saint-Junien","c":"Saint-Junien","s":173.0,"t":"maison","d":"C","g":"A","co":119.5,"gv":4.6,"dt":"19/08/2026"},{"la":45.886972,"lo":0.897722,"a":"4 Avenue Sadi Carnot 87200 Saint-Junien","c":"Saint-Junien","s":282.4,"t":"maison","d":"F","g":"C","co":356.0,"gv":14.0,"et":"RDC","dt":"19/08/2026"},{"la":45.893704,"lo":0.907367,"a":"3 Chemin des Gouttes 87200 Saint-Junien","c":"Saint-Junien","s":107.3,"t":"maison","d":"E","g":"E","co":289.5,"gv":63.7,"dt":"20/08/2026"},{"la":45.897303,"lo":0.911969,"a":"2 Rue du Gue Giraud 87200 Saint-Junien","c":"Saint-Junien","s":99.0,"t":"maison","d":"C","g":"C","co":125.4,"gv":25.4,"dt":"21/08/2026"},{"la":45.885987,"lo":0.90145,"a":"5 Rue Louis Codet 87200 Saint-Junien","c":"Saint-Junien","t":"immeuble","d":"C","g":"B","co":169.0,"gv":6.0,"et":"RDC","dt":"24/08/2026"},{"la":45.884748,"lo":0.900009,"a":"9 Rue de Schiltigheim 87200 Saint-Junien","c":"Saint-Junien","s":65.3,"t":"appartement","d":"D","g":"D","co":217.2,"gv":47.7,"et":"Etage 3","dt":"25/08/2026"},{"la":45.888221,"lo":0.905779,"a":"9 Avenue Elisée Reclus 87200 Saint-Junien","c":"Saint-Junien","s":73.4,"t":"appartement","d":"C","g":"C","co":119.6,"gv":25.6,"et":"RDC","dt":"27/08/2026"},{"la":45.893231,"lo":0.901931,"a":"21 Rue Auguste Gagne 87200 Saint-Junien","c":"Saint-Junien","s":80.4,"t":"maison","d":"F","g":"F","co":297.6,"gv":82.9,"dt":"27/08/2026"},{"la":45.893309,"lo":0.900203,"a":"27 Avenue Corot 87200 Saint-Junien","c":"Saint-Junien","s":91.5,"t":"maison","d":"D","g":"D","co":199.5,"gv":39.3,"dt":"27/08/2026"},{"la":45.910351,"lo":0.866445,"a":"550 Maziéras 87200 Saint-Junien","c":"Saint-Junien","s":60.6,"t":"maison","d":"E","g":"B","co":288.1,"gv":10.7,"dt":"27/08/2026"},{"la":45.883175,"lo":0.893991,"a":"17 Impasse Victor Roche 87200 Saint-Junien","c":"Saint-Junien","s":97.8,"t":"maison","d":"D","g":"B","co":229.3,"gv":8.6,"dt":"03/09/2026"},{"la":45.897453,"lo":0.902439,"a":"43 Avenue Corot 87200 Saint-Junien","c":"Saint-Junien","s":97.5,"t":"maison","d":"D","g":"D","co":229.3,"gv":49.6,"dt":"04/09/2026"},{"la":45.912747,"lo":0.941926,"a":"10 Rue des Trotteurs 87200 Saint-Junien","c":"Saint-Junien","s":104.0,"t":"maison","d":"E","g":"E","co":200.0,"gv":63.0,"et":"RDC","dt":"04/09/2026"},{"la":45.892476,"lo":0.899546,"a":"3 Boulevard de la Glane 87200 Saint-Junien","c":"Saint-Junien","s":118.4,"t":"maison","d":"D","g":"D","co":212.9,"gv":44.9,"dt":"06/09/2026"},{"la":45.896144,"lo":0.886392,"a":"130 Impasse Cote de Sicioreix 87200 Saint-Junien","c":"Saint-Junien","s":91.2,"t":"maison","d":"E","g":"C","co":285.5,"gv":11.4,"dt":"08/09/2026"},{"la":45.893119,"lo":0.92006,"a":"3 Rue Camille Saint-Saëns 87200 Saint-Junien","c":"Saint-Junien","s":93.0,"t":"maison","d":"C","g":"A","co":129.0,"gv":5.0,"et":"RDC","dt":"10/09/2026"},{"la":45.888686,"lo":0.900483,"a":"25 Boulevard Victor Hugo 87200 Saint-Junien","c":"Saint-Junien","s":118.7,"t":"appartement","d":"D","g":"D","co":211.2,"gv":45.5,"et":"Etage 1","dt":"11/09/2026"},{"la":45.888757,"lo":0.913094,"a":"11 Rue George Sand 87200 Saint-Junien","c":"Saint-Junien","s":142.0,"t":"maison","d":"B","g":"A","co":101.5,"gv":3.9,"dt":"11/09/2026"},{"la":45.882275,"lo":0.905516,"a":"43 Avenue d’Estienne d’Orves 87200 Saint-Junien","c":"Saint-Junien","s":211.4,"t":"maison","d":"C","g":"C","co":160.0,"gv":25.3,"dt":"15/09/2026"},{"la":45.912543,"lo":0.943891,"a":"5 Rue des Puits 87200 Saint-Junien","c":"Saint-Junien","s":88.6,"t":"maison","d":"C","g":"A","co":143.5,"gv":5.6,"dt":"16/09/2026"},{"la":45.895837,"lo":0.910793,"a":"2 Rue des Maumonts 87200 Saint-Junien","c":"Saint-Junien","s":70.2,"t":"appartement","d":"D","g":"D","co":157.5,"gv":33.3,"et":"RDC","dt":"16/09/2026"},{"la":45.885047,"lo":0.903451,"a":"5 Avenue d'Estienne d'Orves 87200 Saint-Junien","c":"Saint-Junien","s":51.0,"t":"appartement","d":"D","g":"B","co":227.0,"gv":8.0,"et":"RDC","dt":"17/09/2026"},{"la":45.884643,"lo":0.901321,"a":"2 Rue Corneboeuf 87200 Saint-Junien","c":"Saint-Junien","s":23.6,"t":"appartement","d":"D","g":"B","co":279.5,"gv":10.7,"et":"RDC","dt":"17/09/2026"},{"la":45.888974,"lo":0.895394,"a":"11 Avenue Léontine Vignerie 87200 Saint-Junien","c":"Saint-Junien","s":87.2,"t":"maison","d":"E","g":"E","co":279.6,"gv":61.5,"dt":"18/09/2026"},{"la":45.882292,"lo":0.901211,"a":"19 Rue Emile Zola 87200 Saint-Junien","c":"Saint-Junien","s":128.7,"t":"maison","d":"D","g":"D","co":212.0,"gv":46.0,"et":"RDC","dt":"18/09/2026"},{"la":45.887934,"lo":0.901569,"a":"5 Rue Lucien Dumas 87200 Saint-Junien","c":"Saint-Junien","t":"immeuble","d":"F","g":"C","co":415.8,"gv":16.7,"dt":"18/09/2026"},{"la":45.883918,"lo":0.89853,"a":"2 Rue Jean Moulin 87200 Saint-Junien","c":"Saint-Junien","s":84.9,"t":"maison","d":"F","g":"F","co":349.3,"gv":76.9,"dt":"18/09/2026"},{"la":45.881918,"lo":0.900061,"a":"42 Avenue Paul Vaillant Couturier 87200 Saint-Junien","c":"Saint-Junien","s":53.6,"t":"appartement","d":"D","g":"B","co":230.0,"gv":8.9,"et":"Etage 1","dt":"24/09/2026"},{"la":45.896124,"lo":0.909465,"a":"6 Rue Paul Eluard 87200 Saint-Junien","c":"Saint-Junien","s":93.8,"t":"maison","d":"D","g":"D","co":156.9,"gv":31.9,"dt":"24/09/2026"},{"la":45.882569,"lo":0.900644,"a":"13 Rue Pasteur 87200 Saint-Junien","c":"Saint-Junien","s":171.6,"t":"maison","d":"D","g":"D","co":196.6,"gv":41.9,"dt":"25/09/2026"},{"la":45.884303,"lo":0.900271,"a":"21ter Rue Boileau 87200 Saint-Junien","c":"Saint-Junien","s":75.4,"t":"appartement","d":"F","g":"C","co":368.9,"gv":14.7,"et":"Etage 1","dt":"29/09/2026"},{"la":45.8917,"lo":0.91284,"a":"Résidence Montrozier - Bâtiment B2 87200 Saint-Junien","c":"Saint-Junien","s":78.5,"t":"appartement","d":"A","g":"A","co":31.0,"gv":1.0,"et":"RDC","dt":"29/09/2026"},{"la":45.893107,"lo":0.904961,"a":"6 Cité Léontine Vignerie 87200 Saint-Junien","c":"Saint-Junien","s":169.3,"t":"maison","d":"D","g":"D","co":153.0,"gv":30.1,"dt":"29/09/2026"},{"la":45.904184,"lo":0.952942,"a":"La Croix des Séguines 87200 Saint-Junien","c":"Saint-Junien","s":60.8,"t":"maison","d":"F","g":"F","co":347.0,"gv":77.0,"et":"RDC","dt":"30/09/2026"},{"la":45.904184,"lo":0.952942,"a":"La Croix des Séguines 87200 Saint-Junien","c":"Saint-Junien","s":60.8,"t":"maison","d":"F","g":"F","co":364.0,"gv":81.0,"et":"RDC","dt":"30/09/2026"},{"la":45.888953,"lo":0.893358,"a":"21 Avenue Léontine Vignerie 87200 Saint-Junien","c":"Saint-Junien","s":115.0,"t":"maison","d":"E","g":"E","co":265.0,"gv":53.0,"et":"RDC","dt":"01/10/2026"},{"la":45.88356,"lo":0.900175,"a":"18bis Rue Boileau 87200 Saint-Junien","c":"Saint-Junien","s":91.9,"t":"maison","d":"D","g":"B","co":195.9,"gv":7.7,"dt":"02/10/2026"},{"la":45.896198,"lo":0.910177,"a":"6 Rue des Maumonts 87200 Saint-Junien","c":"Saint-Junien","s":176.6,"t":"maison","d":"D","g":"B","co":203.0,"gv":7.2,"dt":"02/10/2026"},{"la":45.888214,"lo":0.902298,"a":"5 Impasse Labrunie 87200 Saint-Junien","c":"Saint-Junien","s":46.7,"t":"maison","d":"E","g":"D","co":326.0,"gv":49.0,"et":"RDC","dt":"05/10/2026"},{"la":45.881063,"lo":0.899325,"a":"3 Place Charles Michels 87200 Saint-Junien","c":"Saint-Junien","s":88.0,"t":"maison","d":"E","g":"E","co":255.9,"gv":57.2,"dt":"05/10/2026"},{"la":45.88648,"lo":0.902966,"a":"15 Rue Guizier 87200 Saint-Junien","c":"Saint-Junien","s":70.8,"t":"appartement","d":"C","g":"B","co":158.3,"gv":6.1,"et":"Etage 3","dt":"05/10/2026"},{"la":45.903336,"lo":0.913623,"a":"Le Petit Boisse 87200 Saint-Junien","c":"Saint-Junien","t":"immeuble","d":"E","g":"C","co":326.6,"gv":12.9,"dt":"05/10/2026"},{"la":45.882408,"lo":0.896551,"a":"25bis Avenue Pingault 87200 Saint-Junien","c":"Saint-Junien","s":86.5,"t":"maison","d":"E","g":"E","co":316.0,"gv":62.4,"dt":"07/10/2026"},{"la":45.887519,"lo":0.899294,"a":"21 Rue Jean Jacques Rousseau 87200 Saint-Junien","c":"Saint-Junien","s":106.7,"t":"appartement","d":"C","g":"C","co":117.0,"gv":25.0,"et":"RDC","dt":"07/10/2026"},{"la":45.8822,"lo":0.900753,"a":"20 Rue Emile Zola 87200 Saint-Junien","c":"Saint-Junien","s":66.5,"t":"maison","d":"E","g":"C","co":282.1,"gv":11.3,"dt":"08/10/2026"},{"la":45.88278,"lo":0.900603,"a":"Rue Pasteur 87200 Saint-Junien","c":"Saint-Junien","s":124.6,"t":"maison","d":"D","g":"D","co":221.5,"gv":48.5,"dt":"08/10/2026"},{"la":45.894226,"lo":0.919233,"a":"5 Rue Mozart 87200 Saint-Junien","c":"Saint-Junien","s":92.5,"t":"maison","d":"C","g":"C","co":141.7,"gv":21.6,"dt":"08/10/2026"},{"la":45.894024,"lo":0.918556,"a":"4 Rue Mozart 87200 Saint-Junien","c":"Saint-Junien","s":87.6,"t":"maison","d":"C","g":"A","co":124.1,"gv":4.9,"dt":"13/10/2026"},{"la":45.935617,"lo":0.921036,"a":"1965 Les 3 Bornes 87200 Saint-Junien","c":"Saint-Junien","s":118.3,"t":"maison","d":"F","g":"E","co":371.0,"gv":56.8,"dt":"14/10/2026"},{"la":45.912779,"lo":0.839485,"a":"425 Le Mas 87200 Saint-Junien","c":"Saint-Junien","s":104.2,"t":"maison","d":"C","g":"B","co":176.1,"gv":6.9,"dt":"15/10/2026"},{"la":45.881604,"lo":0.894252,"a":"24 Quai des Mégisseries 87200 Saint-Junien","c":"Saint-Junien","s":55.9,"t":"maison","d":"E","g":"E","co":306.0,"gv":58.0,"et":"RDC","dt":"15/10/2026"},{"la":45.887891,"lo":0.899566,"a":"10 Boulevard Victor Hugo 87200 Saint-Junien","c":"Saint-Junien","s":52.5,"t":"appartement","d":"D","g":"D","co":156.8,"gv":33.8,"et":"Etage 2","dt":"15/10/2026"},{"la":45.887577,"lo":0.900079,"a":"2bis Rue Peyrusson 87200 Saint-Junien","c":"Saint-Junien","s":55.2,"t":"appartement","d":"E","g":"E","co":317.3,"gv":57.5,"et":"Etage 2","dt":"16/10/2026"},{"la":45.887577,"lo":0.900079,"a":"2bis Rue Peyrusson 87200 Saint-Junien","c":"Saint-Junien","t":"immeuble","d":"E","g":"E","co":315.7,"gv":61.3,"dt":"16/10/2026"},{"la":45.886183,"lo":0.904293,"a":"18 Boulevard Marcel Cachin 87200 Saint-Junien","c":"Saint-Junien","s":73.2,"t":"appartement","d":"C","g":"C","co":94.7,"gv":19.1,"et":"Etage 2","dt":"16/10/2026"},{"la":45.886183,"lo":0.904293,"a":"18 Boulevard Marcel Cachin 87200 Saint-Junien","c":"Saint-Junien","s":69.5,"t":"appartement","d":"C","g":"C","co":97.3,"gv":19.7,"et":"Etage 1","dt":"16/10/2026"},{"la":45.886183,"lo":0.904293,"a":"18 Boulevard Marcel Cachin 87200 Saint-Junien","c":"Saint-Junien","s":78.8,"t":"appartement","d":"C","g":"C","co":96.3,"gv":19.5,"et":"RDC","dt":"16/10/2026"},{"la":45.895352,"lo":0.883245,"a":"200 Cote de Sicioreix 87200 Saint-Junien","c":"Saint-Junien","s":104.2,"t":"maison","d":"E","g":"E","co":283.7,"gv":62.4,"dt":"21/10/2026"},{"la":45.893816,"lo":0.902817,"a":"1 Rue Jules Verne 87200 Saint-Junien","c":"Saint-Junien","s":95.7,"t":"maison","d":"D","g":"D","co":219.5,"gv":48.0,"dt":"21/10/2026"},{"la":45.8917,"lo":0.91284,"a":"Résidence Montrozier - Bâtiment B2 87200 Saint-Junien","c":"Saint-Junien","s":76.0,"t":"appartement","d":"D","g":"D","co":192.0,"gv":41.0,"et":"RDC","dt":"22/10/2026"},{"la":45.887618,"lo":0.896337,"a":"15 Rue Defaye 87200 Saint-Junien","c":"Saint-Junien","s":245.1,"t":"maison","d":"D","g":"D","co":226.3,"gv":49.8,"dt":"23/10/2026"},{"la":45.884395,"lo":0.900979,"a":"Faubourg Auguste Blanqui 87200 Saint-Junien","c":"Saint-Junien","s":70.0,"t":"appartement","d":"C","g":"A","co":125.4,"gv":4.7,"et":"RDC","dt":"23/10/2026"},{"la":45.885101,"lo":0.907911,"a":"34 Rue Lagarde 87200 Saint-Junien","c":"Saint-Junien","s":66.0,"t":"maison","d":"E","g":"D","co":267.6,"gv":48.8,"dt":"25/10/2026"}];
+var COL={A:'#009c5b',B:'#51b550',C:'#edd613',D:'#f0b41a',E:'#ef8023',F:'#e13d2e',G:'#b4161a','?':'#888'};
+var SLUG="saint-junien";
+var COMMUNE_DEF="Saint-Junien";
+var CODES_PAP={"Vanves": "g43274", "Malakoff": "g43281", "Boulogne-Billancourt": "g43267", "Colombes": "g43300"};
+var map=L.map('map',{center:[45.8876,0.9011],zoom:14});
+var tiles={streets:L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}',{attribution:'Esri',maxZoom:19}),sat:L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',{attribution:'Esri',maxZoom:19})};
+tiles.streets.addTo(map);var curTile='streets';
+document.getElementById('tsw').addEventListener('click',function(e){if(!e.target.classList.contains('ts'))return;map.removeLayer(tiles[curTile]);curTile=e.target.dataset.t;tiles[curTile].addTo(map);document.querySelectorAll('.ts').forEach(function(b){b.classList.remove('ac')});e.target.classList.add('ac')});
+var cl=L.markerClusterGroup({maxClusterRadius:45,disableClusteringAtZoom:18,showCoverageOnHover:false,chunkedLoading:true,
+iconCreateFunction:function(c){var ms=c.getAllChildMarkers();var ct={A:0,B:0,C:0,D:0,E:0,F:0,G:0};
+ms.forEach(function(m){var d=m.options.dpe;if(ct[d]!==undefined)ct[d]++});
+var dom='A',mx=0;['G','F','E','D','C','B','A'].forEach(function(k){if(ct[k]>mx){mx=ct[k];dom=k}});
+var col=COL[dom];if(ms.length&&ms[0].options.old){col='#8e44ad'}var nn=ms.length;var sz=nn<30?34:nn<100?40:nn<500?48:54;
+return L.divIcon({html:'<div style="background:'+col+';width:'+sz+'px;height:'+sz+'px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:'+(sz<40?11:13)+'px;border:2px solid rgba(255,255,255,.6);box-shadow:0 2px 8px rgba(0,0,0,.4)">'+nn+'</div>',className:'',iconSize:[sz,sz]})}});
+var am=[];var curDPE='all';var curDateFrom=0;var curDateTo=99999999;var curSurfMin=0;var curSurfMax=9999;var curType='all';var searchText='';
+function mkIc(d,o){var c=o?'#8e44ad':(COL[d]||'#888');return L.divIcon({className:'',html:'<div style="width:12px;height:12px;background:'+c+';border:2px solid #fff;border-radius:50%;box-shadow:0 1px 4px rgba(0,0,0,.4)"></div>',iconSize:[12,12],iconAnchor:[6,6]})}
+function esc(s){var d=document.createElement('div');d.textContent=s||'';return d.innerHTML}
+function parseD(s){if(!s)return 0;var p=s.split('/');return parseInt(p[2]+p[1]+p[0],10)}
+function dateToInt(s){return s?parseInt(s.replace(/-/g,''),10):0}
+D.forEach(function(r,idx){
+var m=L.marker([r.la,r.lo],{icon:mkIc(r.d,r.o),dpe:r.d,old:r.o?1:0,dtInt:parseD(r.dt),surf:r.s||0,btype:r.t,idx:idx});
+var ip=r.d==='F'||r.d==='G';var pt=ip?'<span class="pb">PASSOIRE THERMIQUE</span>':'';
+var sf=r.s?r.s+' m2':'N/C';var co=r.co?r.co+' kWh/m2/an':'N/C';var ge=r.gv?r.gv+' kgCO2/m2/an':'N/C';
+var locH='';if(r.et||r.po){var p=[];if(r.et&&!r.po)p.push('<b>'+esc(r.et)+'</b>');if(r.po)p.push(esc(r.po));locH='<div class="loc-info"><span>Localisation:</span> '+p.join(' - ')+'</div>'}
+if(r.cb){locH+='<div class="loc-info"><span>Ref. batiment:</span> '+esc(r.cb)+'</div>'}
+var dtH=r.dt?'<div class="dt-badge">DPE du '+esc(r.dt)+'</div>':'';if(r.o){dtH+=' <span style="display:inline-block;background:#8e44ad;color:#fff;padding:1px 6px;border-radius:3px;font-size:9px;font-weight:700;margin-top:4px">DPE 3-6 MOIS</span>'}
+var surfMin=r.s?Math.max(0,Math.floor(r.s-2)):0;
+var surfMax=r.s?Math.ceil(r.s+2):0;
+var slugC=r.c.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/[^a-z0-9]+/g,"-").replace(/^-+|-+$/g,"");
+var lbcType=r.t==="maison"?"&real_estate_type=1":"&real_estate_type=2";
+var lbcSurf=r.s?"&square="+surfMin+"-"+surfMax:"";
+var lbcDpe=r.d?"&energy_rate="+r.d.toLowerCase():"";
+var lbcLoc="&locations="+encodeURIComponent(r.c+(r.cp?"_"+r.cp:"")+"__"+r.la+"_"+r.lo+"_2000_2000");
+var lbcUrl="https://www.leboncoin.fr/recherche?category=9&text="+encodeURIComponent(r.c)+lbcLoc+lbcType+lbcSurf+lbcDpe;
+var biType=r.t==="maison"?"maison":(r.t==="immeuble"?"immeuble":"appartement");
+var biLoc=slugC+(r.cp?"-"+r.cp:"");
+var biUrl="https://www.bienici.com/recherche/achat/"+biLoc+"/"+biType+"?surface-min="+surfMin+"&surface-max="+surfMax+"&energyClassification="+r.d+"&classification-energetique="+r.d;
+var lbcLocUrl="https://www.leboncoin.fr/recherche?category=10&text="+encodeURIComponent(r.c)+lbcLoc+lbcType+lbcSurf+lbcDpe;
+var papType=r.t==="maison"?"vente-maisons":"vente-appartements";
+var papCode=CODES_PAP[r.c]||"";
+var papUrl=papCode?("https://www.pap.fr/annonce/"+papType+"-"+slugC+"-"+r.cp+"-"+papCode):"";
+var biLocUrl="https://www.bienici.com/recherche/location/"+biLoc+"/"+biType+"?surface-min="+surfMin+"&surface-max="+surfMax+"&energyClassification="+r.d+"&classification-energetique="+r.d;
+var gmUrl="https://www.google.com/maps/search/"+encodeURIComponent(r.a+" "+r.c);
+var lbcBtn='<div style="margin-top:6px"><a href="'+lbcUrl+'" target="_blank" style="display:inline-block;background:#FF6E14;color:#fff;padding:4px 10px;border-radius:4px;font-size:10px;font-weight:700;text-decoration:none;margin-right:4px">LeBonCoin</a><a href="'+biUrl+'" target="_blank" style="display:inline-block;background:#2CB5A0;color:#fff;padding:4px 10px;border-radius:4px;font-size:10px;font-weight:700;text-decoration:none;margin-right:4px">Bienici</a><a href="'+gmUrl+'" target="_blank" style="display:inline-block;background:#4285F4;color:#fff;padding:4px 10px;border-radius:4px;font-size:10px;font-weight:700;text-decoration:none">Google Maps</a></div>';
+lbcBtn+='<div style="margin-top:4px"><span style="font-size:9px;color:#888;margin-right:4px">Location :</span><a href="'+lbcLocUrl+'" target="_blank" style="display:inline-block;background:#FF6E14;color:#fff;padding:3px 8px;border-radius:4px;font-size:10px;font-weight:700;text-decoration:none;margin-right:4px;opacity:.85">LBC Loc.</a><a href="'+biLocUrl+'" target="_blank" style="display:inline-block;background:#2CB5A0;color:#fff;padding:3px 8px;border-radius:4px;font-size:10px;font-weight:700;text-decoration:none;opacity:.85">Bienici Loc.</a></div>';
+if(papUrl){lbcBtn+='<div style="margin-top:4px"><span style="font-size:9px;color:#888;margin-right:4px">Particuliers :</span><a href="'+papUrl+'" target="_blank" style="display:inline-block;background:#C8102E;color:#fff;padding:3px 8px;border-radius:4px;font-size:10px;font-weight:700;text-decoration:none;margin-right:4px">PAP Vente</a></div>'}
+m.bindPopup('<div class="dp"><span class="db" style="background:'+COL[r.d]+'">'+r.d+'</span><span class="tl">DPE '+r.d+'</span> '+pt+'<div class="ad">'+esc(r.a)+'</div><div class="ir"><b>Commune:</b> '+esc(r.c)+'<br><b>Type:</b> '+esc(r.t)+'<br><b>Surface:</b> '+sf+'<br><b>Conso:</b> '+co+'<br><b>GES:</b> '+ge+'<br><b>Periode:</b> '+(r.p||'N/C')+'</div>'+locH+dtH+lbcBtn+'</div>');
+am.push(m)});
+
+// ===== Onglet Annonces : adresses possibles via les DPE ADEME des 12 derniers mois =====
+var ANN_KEY = 'annonces_' + SLUG;
+var ANN = [];
+var annLayer = L.layerGroup();
+var annMk = [];
+var REF = (typeof DA !== 'undefined') ? DA : D;
+
+function nrm(s){ if(!s) return ''; return String(s).toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9]+/g,' ').trim(); }
+
+// Extrait le numero d etage depuis le libelle ADEME ("RDC", "Etage 3"...)
+function etgNum(s){
+  if(!s) return null;
+  var v = String(s).toLowerCase();
+  if(v.indexOf('rdc') >= 0) return 0;
+  var m = v.match(/(\d+)/);
+  return m ? parseInt(m[1]) : null;
+}
+
+// Identifiant stable d un DPE (ne depend pas de sa position dans la carte)
+function annCle(r){ return nrm(r.a) + '|' + nrm(r.c) + '|' + (r.s || '') + '|' + (r.d || '') + '|' + (r.dt || ''); }
+function annSnap(r){
+  return { la: r.la, lo: r.lo, a: r.a, c: r.c, s: r.s, t: r.t, d: r.d, g: r.g,
+           co: r.co, gv: r.gv, et: r.et, dt: r.dt };
+}
+
+// Cherche TOUS les DPE des 12 derniers mois compatibles avec l annonce.
+function annCandidats(a){
+  var res = [];
+  REF.forEach(function(r, idx){
+    if(a.com && nrm(r.c) !== nrm(a.com)) return;
+    if(a.type && r.t && r.t !== a.type) return;
+    if(a.dpe && r.d && r.d !== a.dpe) return;
+    if(a.gesl && r.g && r.g !== a.gesl) return;
+    if(a.etage !== '' && a.etage !== undefined && a.etage !== null && r.et){
+      var en = etgNum(r.et);
+      if(en !== null && en !== parseInt(a.etage)) return;
+    }
+
+    var sc = 0;
+    var ec = null;
+
+    if(a.surf && r.s){
+      ec = Math.abs(r.s - a.surf);
+      if(ec > 3) return;
+      if(ec <= 0.3){ sc += 5; }
+      else if(ec <= 1){ sc += 3; }
+      else if(ec <= 2){ sc += 2; }
+      else { sc += 1; }
+    }
+    if(a.conso && r.co){
+      var dc = Math.abs(r.co - a.conso);
+      if(dc > 15) return;
+      if(dc <= 2){ sc += 6; }
+      else if(dc <= 8){ sc += 3; }
+      else { sc += 1; }
+    }
+    if(a.ges && r.gv){
+      var dg = Math.abs(r.gv - a.ges);
+      if(dg > 8) return;
+      if(dg <= 1){ sc += 4; }
+      else if(dg <= 4){ sc += 2; }
+      else { sc += 1; }
+    }
+    if(a.dpe && r.d){ sc += 2; }
+    if(a.gesl && r.g){ sc += 3; }
+    if(a.etage !== '' && a.etage !== undefined && a.etage !== null && r.et && etgNum(r.et) !== null){ sc += 5; }
+    if(a.type && r.t){ sc += 1; }
+
+    res.push({ idx: idx, ecart: (ec === null ? 99 : ec), sc: sc });
+  });
+  res.sort(function(x, y){
+    if(y.sc !== x.sc) return y.sc - x.sc;
+    return x.ecart - y.ecart;
+  });
+  if(res.length > 12){ res = res.slice(0, 12); }
+  return res;
+}
+
+function annNiveau(sc){
+  if(sc >= 12) return { txt: 'TRES PROBABLE', col: '#3ddc8c', bg: 'rgba(61,220,140,.15)' };
+  if(sc >= 7) return { txt: 'PROBABLE', col: '#f0b41a', bg: 'rgba(240,180,26,.15)' };
+  return { txt: 'POSSIBLE', col: 'rgba(255,255,255,.45)', bg: 'rgba(255,255,255,.08)' };
+}
+
+// Recalcule candidats et adresse confirmee a partir des donnees du jour
+function annRefresh(){
+  ANN.forEach(function(a){
+    a.cd = annCandidats(a);
+    a.ch = -1;
+    if(a.conf){
+      var k = annCle(a.conf);
+      for(var i = 0; i < REF.length; i++){
+        if(annCle(REF[i]) === k){ a.ch = i; break; }
+      }
+    }
+  });
+}
+
+// Bien confirme : ligne du jour si le DPE est encore dans les 12 mois, sinon copie enregistree
+function annConf(a){
+  if(a.ch >= 0) return REF[a.ch];
+  return a.conf || null;
+}
+
+function annLoad(){
+  try{ var s = localStorage.getItem(ANN_KEY); ANN = s ? JSON.parse(s) : []; }catch(e){ ANN = []; }
+  ANN.forEach(function(a){ if(a.conf === undefined){ a.conf = null; } });
+  annRefresh();
+}
+function annSave(){
+  try{
+    var out = ANN.map(function(a){
+      var o = {};
+      for(var k in a){ if(k !== 'cd' && k !== 'ch'){ o[k] = a[k]; } }
+      return o;
+    });
+    localStorage.setItem(ANN_KEY, JSON.stringify(out));
+  }catch(e){}
+}
+
+function svUrl(la, lo){ return 'https://maps.google.com/maps?q=&layer=c&cbll=' + la + ',' + lo + '&cbp=12,0,0,0,0'; }
+function gmUrl2(txt){ return 'https://www.google.com/maps/search/' + encodeURIComponent(txt); }
+
+function annIcon(confirme){
+  var bord = confirme ? '#3ddc8c' : '#333';
+  var taille = confirme ? 17 : 13;
+  return L.divIcon({
+    className: '',
+    html: '<div style="width:' + taille + 'px;height:' + taille + 'px;border-radius:50%;background:#fff;border:3px solid ' + bord + ';box-shadow:0 0 6px rgba(0,0,0,.6)"></div>',
+    iconSize: [taille, taille],
+    iconAnchor: [taille / 2, taille / 2]
+  });
+}
+
+function annDraw(){
+  annLayer.clearLayers();
+  annMk = [];
+  ANN.forEach(function(a, i){
+    var pts = [];
+    var cf = annConf(a);
+    if(cf){
+      pts.push({ r: cf, conf: true });
+    } else if(a.cd && a.cd.length){
+      a.cd.forEach(function(c){ pts.push({ r: REF[c.idx], conf: false }); });
+    }
+    var prem = null;
+    pts.forEach(function(p, k){
+      var r = p.r;
+      if(!r) return;
+      var mk = L.marker([r.la, r.lo], { icon: annIcon(p.conf), zIndexOffset: 900 });
+      var ht = '<div style="font-family:system-ui;min-width:200px">';
+      ht += '<div style="font-weight:700;font-size:13px;margin-bottom:3px">Annonce particulier</div>';
+      if(!p.conf && pts.length > 1){
+        ht += '<div style="font-size:10px;background:#fff4e5;color:#b25e00;padding:2px 6px;border-radius:3px;margin-bottom:5px">Adresse possible ' + (k + 1) + ' sur ' + pts.length + '</div>';
+      }
+      if(p.conf){
+        ht += '<div style="font-size:10px;background:#e8f7ee;color:#0a7d43;padding:2px 6px;border-radius:3px;margin-bottom:5px">Adresse confirmee</div>';
+      }
+      ht += '<div style="font-size:12px;margin-bottom:2px">' + esc(r.a) + '</div>';
+      ht += '<div style="font-size:11px;color:#666;margin-bottom:5px">' + esc(r.c) + '</div>';
+      var dt = [];
+      if(r.t) dt.push(esc(r.t));
+      if(r.s) dt.push(r.s + ' m2');
+      if(r.d) dt.push('DPE ' + esc(r.d));
+      if(r.dt) dt.push('diag. ' + esc(r.dt));
+      if(a.prix) dt.push(esc(a.prix));
+      if(dt.length){ ht += '<div style="font-size:11px;margin-bottom:6px">' + dt.join(' &middot; ') + '</div>'; }
+      ht += '<a href="' + svUrl(r.la, r.lo) + '" target="_blank" rel="noopener" style="display:inline-block;background:#4285F4;color:#fff;padding:4px 10px;border-radius:4px;font-size:10px;font-weight:700;text-decoration:none;margin-right:5px">Street View</a>';
+      ht += '<a href="' + gmUrl2(r.a + ' ' + r.c) + '" target="_blank" rel="noopener" style="display:inline-block;background:#5a6b7d;color:#fff;padding:4px 10px;border-radius:4px;font-size:10px;font-weight:700;text-decoration:none;margin-right:5px">Plan</a>';
+      if(a.url){
+        ht += '<a href="' + a.url + '" target="_blank" rel="noopener" style="display:inline-block;background:#C8102E;color:#fff;padding:4px 10px;border-radius:4px;font-size:10px;font-weight:700;text-decoration:none">Voir l&rsquo;annonce</a>';
+      }
+      ht += '</div>';
+      mk.bindPopup(ht);
+      annLayer.addLayer(mk);
+      if(prem === null){ prem = mk; }
+    });
+    annMk.push(prem);
+  });
+  if(!map.hasLayer(annLayer)){ map.addLayer(annLayer); }
+}
+
+function renderAnn(){
+  var c = document.getElementById('ann-list');
+  if(!ANN.length){
+    c.innerHTML = '<div style="color:rgba(255,255,255,.4);font-size:12px">Aucune annonce enregistree. Ajoutez-en une ci-dessus : les adresses possibles seront recherchees dans les DPE des 12 derniers mois.</div>';
+    return;
+  }
+  var html = '';
+  ANN.forEach(function(a, i){
+    html += '<div class="ann-item">';
+    var titre = [];
+    if(a.type) titre.push(esc(a.type));
+    if(a.surf) titre.push(a.surf + ' m2');
+    if(a.dpe) titre.push('DPE ' + esc(a.dpe));
+    html += '<div class="at">' + (titre.length ? titre.join(' &middot; ') : 'Annonce') + '</div>';
+    var sub = [];
+    if(a.com) sub.push(esc(a.com));
+    if(a.prix) sub.push(esc(a.prix));
+    if(a.adr) sub.push(esc(a.adr));
+    html += '<div class="ad">' + sub.join(' &middot; ') + '</div>';
+
+    var cf = annConf(a);
+    if(cf){
+      html += '<span class="ann-tag ann-ok">ADRESSE CONFIRMEE</span>';
+    } else if(a.cd && a.cd.length){
+      html += '<span class="ann-tag ann-no">' + a.cd.length + ' ADRESSE(S) POSSIBLE(S)</span>';
+    } else {
+      html += '<span class="ann-tag ann-no">AUCUNE CORRESPONDANCE SUR 12 MOIS</span>';
+    }
+
+    html += '<div class="ann-act" style="margin-top:7px">';
+    if(a.url){ html += '<a href="' + a.url + '" target="_blank" rel="noopener">Voir l&rsquo;annonce</a>'; }
+    if(cf){ html += '<a href="#" data-unconf="' + i + '">Changer d&rsquo;adresse</a>'; }
+    html += '<button class="ann-del" data-del="' + i + '">Supprimer</button>';
+    html += '</div>';
+
+    var liste = [];
+    if(cf){ liste = [{ r: cf, idx: a.ch, sel: true }]; }
+    else if(a.cd){ liste = a.cd.map(function(x){ return { r: REF[x.idx], idx: x.idx, sc: x.sc, sel: false }; }); }
+
+    liste.forEach(function(cd){
+      var r = cd.r;
+      if(!r) return;
+      html += '<div class="cand' + (cd.sel ? ' sel' : '') + '">';
+      html += '<div class="ca">' + esc(r.a) + '</div>';
+      var inf = [];
+      if(r.s) inf.push(r.s + ' m2');
+      if(r.d) inf.push('DPE ' + esc(r.d));
+      if(r.t) inf.push(esc(r.t));
+      if(r.co) inf.push(r.co + ' kWh/m2/an');
+      if(r.et) inf.push(esc(r.et));
+      if(r.g) inf.push('GES ' + esc(r.g));
+      if(r.gv) inf.push(r.gv + ' kgCO2');
+      if(r.dt) inf.push('diagnostic du ' + esc(r.dt));
+      html += '<div class="cd">' + inf.join(' &middot; ') + '</div>';
+      if(!cd.sel && cd.sc !== undefined){
+        var nv = annNiveau(cd.sc);
+        html += '<div style="margin-top:4px"><span class="ann-tag" style="background:' + nv.bg + ';color:' + nv.col + '">' + nv.txt + '</span></div>';
+      }
+      html += '<div class="cl">';
+      html += '<a href="' + svUrl(r.la, r.lo) + '" target="_blank" rel="noopener">Street View</a>';
+      html += '<a href="' + gmUrl2(r.a + ' ' + r.c) + '" target="_blank" rel="noopener">Plan</a>';
+      html += '<a href="#" data-la="' + r.la + '" data-lo="' + r.lo + '">Sur la carte</a>';
+      if(!cd.sel){
+        html += '<button class="cand-ok" data-ok="' + i + '" data-idx="' + cd.idx + '">C&rsquo;est ce bien</button>';
+      }
+      html += '</div></div>';
+    });
+
+    html += '</div>';
+  });
+  c.innerHTML = html;
+}
+
+document.getElementById('an-add').addEventListener('click', function(){
+  var msg = document.getElementById('an-msg');
+  var a = {
+    url: document.getElementById('an-url').value.trim(),
+    adr: document.getElementById('an-adr').value.trim(),
+    com: document.getElementById('an-com').value.trim(),
+    type: document.getElementById('an-type').value,
+    surf: parseFloat(document.getElementById('an-surf').value) || 0,
+    dpe: document.getElementById('an-dpe').value,
+    conso: parseFloat(document.getElementById('an-conso').value) || 0,
+    ges: parseFloat(document.getElementById('an-ges').value) || 0,
+    gesl: document.getElementById('an-gesl').value,
+    etage: document.getElementById('an-etage').value,
+    prix: document.getElementById('an-prix').value.trim(),
+    conf: null,
+    cd: [],
+    ch: -1
+  };
+  if(!a.com){ a.com = COMMUNE_DEF; }
+  if(!a.surf && !a.dpe && !a.url){
+    msg.style.color = '#e13d2e';
+    msg.textContent = 'Indiquez au moins la surface ou l etiquette DPE de l annonce.';
+    return;
+  }
+  a.cd = annCandidats(a);
+  ANN.push(a);
+  annSave();
+  annDraw();
+  renderAnn();
+  ['an-url','an-adr','an-surf','an-prix','an-dpe','an-conso','an-ges','an-gesl','an-etage'].forEach(function(id){
+    var el = document.getElementById(id);
+    if(el){ el.value = ''; }
+  });
+  if(a.cd.length === 1){
+    msg.style.color = '#3ddc8c';
+    msg.textContent = 'Une seule adresse correspond : ' + REF[a.cd[0].idx].a;
+  } else if(a.cd.length > 1){
+    msg.style.color = '#3ddc8c';
+    msg.textContent = a.cd.length + ' adresses possibles trouvees sur 12 mois. Verifiez-les en Street View ci-dessous.';
+  } else {
+    msg.style.color = '#e07c4f';
+    msg.textContent = 'Aucun DPE ne correspond sur les 12 derniers mois. Le bien a peut-etre un DPE plus ancien.';
+  }
+});
+
+document.getElementById('ann-list').addEventListener('click', function(e){
+  var d = e.target.closest('[data-del]');
+  if(d){ ANN.splice(parseInt(d.dataset.del), 1); annSave(); annDraw(); renderAnn(); return; }
+  var ok = e.target.closest('[data-ok]');
+  if(ok){
+    var a = ANN[parseInt(ok.dataset.ok)];
+    var r = REF[parseInt(ok.dataset.idx)];
+    if(a && r){ a.conf = annSnap(r); a.ch = parseInt(ok.dataset.idx); }
+    annSave(); annDraw(); renderAnn(); return;
+  }
+  var un = e.target.closest('[data-unconf]');
+  if(un){
+    e.preventDefault();
+    var a2 = ANN[parseInt(un.dataset.unconf)];
+    if(a2){ a2.conf = null; a2.ch = -1; }
+    annSave(); annDraw(); renderAnn(); return;
+  }
+  var g = e.target.closest('[data-la]');
+  if(g){
+    e.preventDefault();
+    document.getElementById('vtab-carte').click();
+    map.setView([parseFloat(g.dataset.la), parseFloat(g.dataset.lo)], 18);
+  }
+});
+
+annLoad();
+annDraw();
+
+
+/* ===== Onglet Recherche acquereur ===== */
+var RS_JOURS = 30;
+var RS_SRC = (function(){
+  var lim = new Date();
+  lim.setDate(lim.getDate() - RS_JOURS);
+  var n = lim.getFullYear() * 10000 + (lim.getMonth() + 1) * 100 + lim.getDate();
+  return D.filter(function(r){ return rsDateNum(r.dt) >= n; });
+})();
+var RS_PERIODE = 'des ' + RS_JOURS + ' derniers jours';
+var rsLayer = L.layerGroup();
+var RS_RES = [];
+var RS_REC = null;
+var rsEcoute = false;
+var RS_NB = {'un':1,'une':1,'deux':2,'trois':3,'quatre':4,'cinq':5,'six':6,'sept':7,'huit':8,'neuf':9,'dix':10};
+var RS_APPT = {1:[0,35],2:[28,52],3:[48,75],4:[68,98],5:[88,130],6:[110,9999]};
+var RS_MAISON = {1:[0,45],2:[35,70],3:[50,95],4:[70,120],5:[90,160],6:[120,9999]};
+var RS_LET = 'ABCDEFG';
+
+function rsNorm(s){
+  s = (s || '').toLowerCase();
+  if (s.normalize) { s = s.normalize('NFD').replace(/[\u0300-\u036f]/g, ''); }
+  return s.replace(/\u2019/g, "'");
+}
+
+function rsPrep(txt){
+  var t = ' ' + rsNorm(txt) + ' ';
+  t = t.replace(/\b(un|une|deux|trois|quatre|cinq|six|sept|huit|neuf|dix)\b/g, function(m){ return String(RS_NB[m]); });
+  t = t.replace(/(\d),(\d)/g, '$1.$2');
+  t = t.replace(/[,;:!?()"]/g, ' ').replace(/\.(?!\d)/g, ' ');
+  t = t.replace(/m\u00b2|m2\b|\bm 2\b|metres? carres?|\bm carres?/g, ' m2 ');
+  t = t.replace(/rez[\s-]*de[\s-]*chaussee/g, 'rdc');
+  t = t.replace(/(\d)\s*(?:er|e|eme|ieme)\b/g, '$1 ');
+  t = t.replace(/\s+/g, ' ');
+  return t;
+}
+
+function rsLettres(a, b){
+  var i = RS_LET.indexOf(a.toUpperCase()), j = RS_LET.indexOf(b.toUpperCase());
+  if (i < 0 || j < 0) { return null; }
+  if (i > j) { var k = i; i = j; j = k; }
+  return RS_LET.substring(i, j + 1).split('');
+}
+
+function rsBande(n, maison){
+  var tb = maison ? RS_MAISON : RS_APPT;
+  if (n < 1) { n = 1; }
+  if (n > 6) { n = 6; }
+  return tb[n];
+}
+
+function rsPiecesEstimees(s, t){
+  if (!s) { return ''; }
+  var tb = (t === 'maison') ? RS_MAISON : RS_APPT;
+  var best = 1;
+  for (var n = 1; n <= 6; n++) {
+    var b = tb[n];
+    var mid = (n === 6) ? b[0] + 20 : (b[0] + b[1]) / 2;
+    var bm = (best === 6) ? tb[6][0] + 20 : (tb[best][0] + tb[best][1]) / 2;
+    if (Math.abs(s - mid) < Math.abs(s - bm)) { best = n; }
+  }
+  return best === 6 ? '6 p. et +' : best + ' p.';
+}
+
+function rsAnalyser(txt){
+  var t = rsPrep(txt);
+  var c = {type: null, pmin: null, pmax: null, smin: null, smax: null, dpe: null,
+           etMin: null, rdcSeul: false, sansRdc: false, communes: [], budget: false, mots: []};
+  var m;
+
+  var vMaison = /\b(maisons?|pavillons?|villas?|longeres?|corps de ferme)\b/.test(t);
+  var vAppt = /\b(appartements?|apparts?|studios?|duplex|lofts?|[tf]\s?\d)\b/.test(t);
+  if (vMaison && !vAppt) { c.type = 'maison'; }
+  if (vAppt && !vMaison) { c.type = 'appartement'; }
+
+  /* Pieces */
+  if (/\bstudios?\b/.test(t)) { c.pmin = 1; c.pmax = 1; }
+  if ((m = t.match(/(\d+)\s*(?:ou|a|-|\/)\s*(\d+)\s*pieces?/))) { c.pmin = +m[1]; c.pmax = +m[2]; }
+  else if ((m = t.match(/\b[tf]\s?(\d)\s*(?:ou|a|-|\/)\s*[tf]?\s?(\d)\b/))) { c.pmin = +m[1]; c.pmax = +m[2]; }
+  else if ((m = t.match(/(?:au moins|minimum|mini|min|a partir de|plus de)\s*(?:un |une )?(\d+)\s*pieces?/))) { c.pmin = +m[1]; }
+  else if ((m = t.match(/(\d+)\s*pieces?\s*(?:minimum|mini|min|et plus|ou plus|au moins)/))) { c.pmin = +m[1]; }
+  else if ((m = t.match(/\b[tf]\s?(\d)\s*(?:minimum|mini|min|et plus|ou plus)/))) { c.pmin = +m[1]; }
+  else if ((m = t.match(/(\d+)\s*pieces?/))) { c.pmin = +m[1]; c.pmax = +m[1]; }
+  else if ((m = t.match(/\b[tf]\s?(\d)\b/))) { c.pmin = +m[1]; c.pmax = +m[1]; }
+  else if ((m = t.match(/(?:au moins|minimum|mini|min)\s*(\d+)\s*chambres?/)) || (m = t.match(/(\d+)\s*chambres?\s*(?:minimum|mini|min|et plus|ou plus|au moins)/))) { c.pmin = +m[1] + 1; }
+  else if ((m = t.match(/(\d+)\s*chambres?/))) { c.pmin = +m[1] + 1; c.pmax = +m[1] + 1; }
+  if (c.pmin && c.pmin > 15) { c.pmin = null; c.pmax = null; }
+
+  /* Surface */
+  var N = '(\\d+(?:\\.\\d+)?)';
+  var fait = false;
+  m = t.match(new RegExp('(?:entre|de)\\s+' + N + '\\s*(?:m2\\s*)?(?:et|a|-)\\s*' + N + '\\s*m2'))
+      || t.match(new RegExp('\\s' + N + '\\s*(?:m2\\s*)?(?:a|-|\\/)\\s*' + N + '\\s*m2'));
+  if (m && +m[1] >= 10) {
+    c.smin = +m[1]; c.smax = +m[2]; fait = true;
+    if (c.smin > c.smax) { var k = c.smin; c.smin = c.smax; c.smax = k; }
+  }
+  if (!fait && ((m = t.match(new RegExp('(?:au moins|minimum|mini|min|plus de|superieure? a|a partir de)\\s*' + N + '\\s*m2')))
+           || (m = t.match(new RegExp(N + '\\s*m2\\s*(?:minimum|mini|min|et plus|ou plus|au moins)'))))) {
+    c.smin = +m[1]; fait = true;
+  }
+  if (!fait && ((m = t.match(new RegExp('(?:maximum|maxi|max|moins de|au plus|jusqu\'?a)\\s*' + N + '\\s*m2')))
+           || (m = t.match(new RegExp(N + '\\s*m2\\s*(?:maximum|maxi|max)'))))) {
+    c.smax = +m[1]; fait = true;
+  }
+  if (!fait && (m = t.match(new RegExp(N + '\\s*m2')))) {
+    c.smin = Math.round(+m[1] * 0.9); c.smax = Math.round(+m[1] * 1.1);
+  }
+
+  /* DPE */
+  var neg = /(pas de|hors|sans|pas en|aucune?|evite[rz]?)\s*(?:les\s*)?passoires?/.test(t) || /pas de [fg]\s*(?:ni|ou|et|\/)\s*[fg]\b/.test(t);
+  if (neg) { c.dpe = ['A','B','C','D','E']; }
+  else if (/passoires?/.test(t)) { c.dpe = ['F','G']; }
+  else if (/(a renover|travaux a prevoir|avec travaux|a rafraichir)/.test(t)) { c.dpe = ['E','F','G']; }
+  if ((m = t.match(/\b(?:dpe|classe|classes|etiquette|etiquettes|lettre|lettres|diagnostic)\b(.{0,45})/))) {
+    var seg = ' ' + m[1].replace(/\b(energie|energetique|energetiques|de|du|en|la|le|:)\b/g, ' ') + ' ';
+    var r2;
+    if ((r2 = seg.match(/\b([a-g])\s*(?:a|au|-|jusqu'?a|\/)\s*([a-g])\b/))) { c.dpe = rsLettres(r2[1], r2[2]); }
+    else if ((r2 = seg.match(/\b([a-g])\s*(?:ou mieux|et mieux|minimum|mini|min|maximum|max|au pire|et plus|ou plus)\b/))
+             || (r2 = seg.match(/(?:au moins|minimum|mini|min|au pire|maximum|max|jusqu'?a)\s*([a-g])\b/))) {
+      c.dpe = rsLettres('a', r2[1]);
+    }
+    else {
+      var toks = seg.replace(/[,;\/]/g, ' ').split(' ');
+      var lst = [];
+      for (var i = 0; i < toks.length; i++) {
+        var tk = toks[i];
+        if (tk === '') { continue; }
+        if (/^[a-g]$/.test(tk)) { if (tk === 'a' && lst.length) { break; } lst.push(tk.toUpperCase()); continue; }
+        if (tk === 'ou' || tk === 'et') { continue; }
+        break;
+      }
+      if (lst.length) { c.dpe = lst; }
+    }
+  }
+
+  /* Etage */
+  if (/(pas|hors|sauf|jamais|evite[rz]?|surtout pas)\s*(?:de |en |au |le |du )?rdc/.test(t)) { c.sansRdc = true; }
+  else if (/\brdc\b/.test(t)) { c.rdcSeul = true; }
+  if ((m = t.match(/(?:a partir du|au moins au|au moins|minimum|mini|min|au-dessus du|au dessus du)\s*(\d+)\s*etage/))
+      || (m = t.match(/(\d+)\s*etage\s*(?:minimum|mini|min|et plus|ou plus|et au-dessus|et au dessus)/))) { c.etMin = +m[1]; }
+  else if (/(etage eleve|etages eleves|dernier etage|haut etage)/.test(t)) { c.etMin = 3; }
+  if (c.etMin !== null) { c.sansRdc = false; c.rdcSeul = false; }
+
+  /* Communes de la carte */
+  var vues = {};
+  RS_SRC.forEach(function(r){
+    if (!r.c || vues[r.c]) { return; }
+    vues[r.c] = 1;
+    var n = rsNorm(r.c).replace(/-/g, ' ');
+    if (n.length >= 4 && t.replace(/-/g, ' ').indexOf(' ' + n + ' ') >= 0) { c.communes.push(r.c); }
+  });
+
+  if (/(\d+\s*(?:k|000)?\s*(?:euros?|eur|\u20ac))|budget|\bk\u20ac|\bmillions?\b/.test(t)) { c.budget = true; }
+
+  /* Pieces -> surface quand aucune surface n est donnee */
+  c.surfDePieces = false;
+  if (c.smin === null && c.smax === null && c.pmin) {
+    var mai = (c.type === 'maison');
+    c.smin = rsBande(c.pmin, mai)[0];
+    c.smax = c.pmax ? rsBande(c.pmax, mai)[1] : 9999;
+    c.surfDePieces = true;
+  }
+  return c;
+}
+
+function rsEtageNum(et){
+  if (!et) { return null; }
+  if (et === 'RDC') { return 0; }
+  var m = String(et).match(/(\d+)/);
+  return m ? +m[1] : null;
+}
+
+function rsCorrespond(r, c){
+  if (c.type && r.t !== c.type) { return false; }
+  if (c.smin !== null || c.smax !== null) {
+    if (!r.s) { return false; }
+    if (c.smin !== null && r.s < c.smin) { return false; }
+    if (c.smax !== null && r.s > c.smax) { return false; }
+  }
+  if (c.dpe && c.dpe.indexOf(r.d) < 0) { return false; }
+  if (c.communes.length && c.communes.indexOf(r.c) < 0) { return false; }
+  if (r.t === 'appartement' || !r.t) {
+    var e = rsEtageNum(r.et);
+    if (c.sansRdc && e === 0) { return false; }
+    if (c.rdcSeul && e !== null && e !== 0) { return false; }
+    if (c.etMin !== null && e !== null && e < c.etMin) { return false; }
+  }
+  return true;
+}
+
+function rsDateNum(dt){
+  if (!dt) { return 0; }
+  var p = dt.split('/');
+  return p.length === 3 ? +(p[2] + p[1] + p[0]) : 0;
+}
+
+function rsPuce(txt, ok){
+  return '<span class="rs-puce' + (ok ? '' : ' rs-off') + '">' + txt + '</span>';
+}
+
+function rsResume(c){
+  var h = '';
+  h += rsPuce(c.type === 'maison' ? 'Maison' : (c.type === 'appartement' ? 'Appartement' : 'Tous types'), !!c.type);
+  if (c.pmin) {
+    var p = c.pmax ? (c.pmin === c.pmax ? c.pmin + ' pièces' : c.pmin + ' à ' + c.pmax + ' pièces') : c.pmin + ' pièces et +';
+    h += rsPuce(p, true);
+  }
+  if (c.smin !== null || c.smax !== null) {
+    var s;
+    if (c.smax === null || c.smax >= 9999) { s = c.smin + ' m² et +'; }
+    else if (c.smin === null || c.smin === 0) { s = "jusqu'à " + c.smax + ' m²'; }
+    else { s = c.smin + ' à ' + c.smax + ' m²'; }
+    h += rsPuce(s + (c.surfDePieces ? ' (estimé d’après les pièces)' : ''), true);
+  } else { h += rsPuce('Surface libre', false); }
+  h += rsPuce(c.dpe ? 'DPE ' + c.dpe.join(', ') : 'Toutes lettres DPE', !!c.dpe);
+  if (c.sansRdc) { h += rsPuce('Pas de RDC', true); }
+  if (c.rdcSeul) { h += rsPuce('RDC', true); }
+  if (c.etMin !== null) { h += rsPuce('Étage ' + c.etMin + ' et +', true); }
+  if (c.communes.length) { h += rsPuce(c.communes.join(', '), true); }
+  if (c.budget) { h += rsPuce('Budget non utilisé : pas de prix dans les DPE', false); }
+  return h;
+}
+
+function rsLiens(r){
+  var st = 'display:inline-block;color:#fff;padding:3px 9px;border-radius:4px;font-size:10.5px;font-weight:700;text-decoration:none;';
+  var sMin = r.s ? Math.max(0, Math.floor(r.s - 2)) : 0;
+  var sMax = r.s ? Math.ceil(r.s + 2) : 0;
+  var slug = rsNorm(r.c).replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
+  var lbcType = r.t === 'maison' ? '&real_estate_type=1' : '&real_estate_type=2';
+  var lbcSurf = r.s ? '&square=' + sMin + '-' + sMax : '';
+  var lbcDpe = r.d ? '&energy_rate=' + r.d.toLowerCase() : '';
+  var lbcLoc = '&locations=' + encodeURIComponent(r.c + (r.cp ? '_' + r.cp : '') + '__' + r.la + '_' + r.lo + '_2000_2000');
+  var lbc = 'https://www.leboncoin.fr/recherche?category=9&text=' + encodeURIComponent(r.c) + lbcLoc + lbcType + lbcSurf + lbcDpe;
+  var biType = r.t === 'maison' ? 'maison' : (r.t === 'immeuble' ? 'immeuble' : 'appartement');
+  var bi = 'https://www.bienici.com/recherche/achat/' + slug + (r.cp ? '-' + r.cp : '') + '/' + biType +
+           '?surface-min=' + sMin + '&surface-max=' + sMax + (r.d ? '&energyClassification=' + r.d + '&classification-energetique=' + r.d : '');
+  var gm = 'https://www.google.com/maps/search/' + encodeURIComponent(r.a + ' ' + r.c);
+  return '<a target="_blank" rel="noopener" style="' + st + 'background:#FF6E14" href="' + lbc + '">LeBonCoin</a>' +
+         '<a target="_blank" rel="noopener" style="' + st + 'background:#2CB5A0" href="' + bi + '">Bienici</a>' +
+         '<a target="_blank" rel="noopener" style="' + st + 'background:#4285F4" href="' + gm + '">Google Maps</a>';
+}
+
+function rsChercher(){
+  var txt = document.getElementById('rs-txt').value;
+  var out = document.getElementById('rs-res');
+  var msg = document.getElementById('rs-msg');
+  msg.textContent = '';
+  if (!txt.replace(/\s/g, '')) { out.innerHTML = ''; return; }
+  var c = rsAnalyser(txt);
+  RS_RES = [];
+  RS_SRC.forEach(function(r){ if (rsCorrespond(r, c)) { RS_RES.push(r); } });
+  RS_RES.sort(function(a, b){ return rsDateNum(b.dt) - rsDateNum(a.dt); });
+  var h = '<div class="rs-crit"><div class="rs-lbl">Critères compris</div>' + rsResume(c) + '</div>';
+  h += '<div class="rs-tete"><b>' + RS_RES.length.toLocaleString('fr-FR') + '</b> bien(s) correspondant(s) dans les DPE ' + RS_PERIODE + ', du plus récent au plus ancien.';
+  if (RS_RES.length) { h += ' <button class="ann-btn" id="rs-carte">Voir sur la carte</button>'; }
+  h += '</div>';
+  if (!RS_RES.length) {
+    h += '<div class="rs-vide">Aucun bien ne correspond. Élargissez la surface ou les lettres DPE.</div>';
+  }
+  var max = Math.min(RS_RES.length, 200);
+  for (var i = 0; i < max; i++) {
+    var r = RS_RES[i];
+    var col = (typeof COL !== 'undefined' && COL[r.d]) ? COL[r.d] : '#888';
+    var tl = r.t === 'appartement' ? 'Appartement' : (r.t === 'maison' ? 'Maison' : (r.t === 'immeuble' ? 'Immeuble' : ''));
+    var det = [];
+    if (tl) { det.push(tl); }
+    if (r.s) { det.push(r.s + ' m²'); det.push('≈ ' + rsPiecesEstimees(r.s, r.t)); }
+    if (r.et) { det.push(esc(r.et)); }
+    if (r.co) { det.push(r.co + ' kWh/m²/an'); }
+    h += '<div class="rs-item">';
+    h += '<div class="list-dpe" style="background:' + col + '">' + (r.d || '?') + '</div>';
+    h += '<div class="rs-info"><div class="list-addr">' + esc(r.a) + '</div>';
+    h += '<div class="list-details">' + esc(r.c) + ' &middot; ' + det.join(' &middot; ') + '</div>';
+    h += '<div class="rs-act"><button class="rs-voir" data-i="' + i + '">Sur la carte</button>';
+    h += '<a class="rs-sv" target="_blank" href="' + svUrl(r.la, r.lo) + '">Street View</a>' + rsLiens(r) + '</div></div>';
+    h += '<div class="list-right">' + (r.dt ? '<div class="list-date">DPE du ' + r.dt + '</div>' : '') + '</div>';
+    h += '</div>';
+  }
+  if (RS_RES.length > max) { h += '<div class="rs-vide">Affichage limité aux ' + max + ' plus récents sur ' + RS_RES.length + '. Précisez la recherche.</div>'; }
+  out.innerHTML = h;
+  var bc = document.getElementById('rs-carte');
+  if (bc) { bc.addEventListener('click', function(){ rsSurCarte(-1); }); }
+}
+
+function rsPopup(r){
+  var tl = r.t === 'appartement' ? 'Appartement' : (r.t === 'maison' ? 'Maison' : (r.t || ''));
+  return '<div class="dp"><b>' + esc(r.a) + '</b><br>' + esc(r.c) + '<br>' + tl + (r.s ? ' &middot; ' + r.s + ' m² (≈ ' + rsPiecesEstimees(r.s, r.t) + ')' : '') +
+         (r.et ? ' &middot; ' + esc(r.et) : '') + '<br>DPE ' + (r.d || '?') + (r.dt ? ' du ' + r.dt : '') +
+         '<br><a href="' + svUrl(r.la, r.lo) + '" target="_blank">Street View</a><div style="margin-top:6px;display:flex;gap:4px;flex-wrap:wrap">' + rsLiens(r) + '</div></div>';
+}
+
+function rsSurCarte(idx){
+  rsLayer.clearLayers();
+  var pts = [];
+  var cible = null;
+  RS_RES.slice(0, 500).forEach(function(r, i){
+    var mk = L.circleMarker([r.la, r.lo], {radius: 9, color: '#fff', weight: 2, fillColor: '#00b4d8', fillOpacity: 0.95});
+    mk.bindPopup(rsPopup(r));
+    rsLayer.addLayer(mk);
+    pts.push([r.la, r.lo]);
+    if (i === idx) { cible = mk; }
+  });
+  if (!map.hasLayer(rsLayer)) { map.addLayer(rsLayer); }
+  if (map.hasLayer(cl)) { map.removeLayer(cl); }
+  document.getElementById('vtab-carte').click();
+  document.getElementById('rs-effacer').style.display = 'block';
+  setTimeout(function(){
+    map.invalidateSize();
+    if (cible) { map.setView(cible.getLatLng(), 18); cible.openPopup(); }
+    else if (pts.length) { map.fitBounds(pts, {padding: [40, 40], maxZoom: 17}); }
+  }, 250);
+}
+
+function rsMicro(){
+  var SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  var msg = document.getElementById('rs-msg');
+  var btn = document.getElementById('rs-micro');
+  if (!SR) {
+    msg.textContent = 'Dictée non disponible sur ce navigateur : utilisez Chrome, ou le micro du clavier sur téléphone.';
+    return;
+  }
+  if (rsEcoute && RS_REC) { RS_REC.stop(); return; }
+  var zone = document.getElementById('rs-txt');
+  var base = zone.value.replace(/\s+$/, '');
+  if (base) { base += ' '; }
+  RS_REC = new SR();
+  RS_REC.lang = 'fr-FR';
+  RS_REC.interimResults = true;
+  RS_REC.continuous = false;
+  RS_REC.onresult = function(e){
+    var s = '';
+    for (var i = 0; i < e.results.length; i++) { s += e.results[i][0].transcript; }
+    zone.value = base + s;
+  };
+  RS_REC.onerror = function(e){
+    if (e.error === 'not-allowed' || e.error === 'service-not-allowed') {
+      msg.textContent = 'Micro refusé : autorisez le micro pour ce site. La dictée ne fonctionne pas depuis la pièce jointe du mail, ouvrez le lien en ligne.';
+    } else if (e.error === 'no-speech') {
+      msg.textContent = "Je n'ai rien entendu, réessayez.";
+    } else if (e.error === 'network') {
+      msg.textContent = 'La dictée demande une connexion Internet.';
+    } else {
+      msg.textContent = 'Erreur micro : ' + e.error;
+    }
+  };
+  RS_REC.onend = function(){
+    rsEcoute = false;
+    btn.classList.remove('rs-on');
+    btn.innerHTML = '&#127908; Dicter';
+    if (zone.value.replace(/\s/g, '')) { rsChercher(); }
+  };
+  try { RS_REC.start(); } catch (err) { msg.textContent = 'Micro indisponible : ' + err.message; return; }
+  rsEcoute = true;
+  btn.classList.add('rs-on');
+  btn.innerHTML = '&#9632; Arrêter';
+  msg.textContent = 'Parlez, la recherche se lance quand vous vous arrêtez...';
+}
+
+function rsAfficherVue(){
+  ['vtab-carte', 'vtab-liste', 'vtab-ann'].forEach(function(id){ var b = document.getElementById(id); if (b) { b.classList.remove('ac'); } });
+  document.getElementById('vtab-rech').classList.add('ac');
+  ['map', 'list-view', 'ann-view', 'tsw', 'lg'].forEach(function(id){ var el = document.getElementById(id); if (el) { el.style.display = 'none'; } });
+  document.getElementById('rech-view').style.display = 'block';
+  document.getElementById('rs-effacer').style.display = 'none';
+}
+
+document.getElementById('vtab-rech').addEventListener('click', rsAfficherVue);
+['vtab-carte', 'vtab-liste', 'vtab-ann'].forEach(function(id){
+  var b = document.getElementById(id);
+  if (b) { b.addEventListener('click', function(){
+    document.getElementById('vtab-rech').classList.remove('ac');
+    document.getElementById('rech-view').style.display = 'none';
+    document.getElementById('rs-effacer').style.display = (id === 'vtab-carte' && rsLayer.getLayers().length) ? 'block' : 'none';
+  }); }
+});
+document.getElementById('rs-go').addEventListener('click', rsChercher);
+document.getElementById('rs-micro').addEventListener('click', rsMicro);
+document.getElementById('rs-txt').addEventListener('keydown', function(e){ if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); rsChercher(); } });
+document.getElementById('rs-ex').addEventListener('click', function(e){
+  var x = e.target.closest('.rs-exemple');
+  if (!x) { return; }
+  document.getElementById('rs-txt').value = x.textContent;
+  rsChercher();
+});
+document.getElementById('rs-res').addEventListener('click', function(e){
+  var b = e.target.closest('.rs-voir');
+  if (b) { rsSurCarte(parseInt(b.dataset.i, 10)); }
+});
+function rsEffacer(toutVider){
+  rsLayer.clearLayers();
+  if (map.hasLayer(rsLayer)) { map.removeLayer(rsLayer); }
+  if (!map.hasLayer(cl)) { map.addLayer(cl); }
+  document.getElementById('rs-effacer').style.display = 'none';
+  if (toutVider) {
+    RS_RES = [];
+    document.getElementById('rs-txt').value = '';
+    document.getElementById('rs-res').innerHTML = '';
+    document.getElementById('rs-msg').textContent = '';
+  }
+}
+document.getElementById('rs-effacer').addEventListener('click', function(){ rsEffacer(false); });
+document.getElementById('rs-clear').addEventListener('click', function(){ rsEffacer(true); });
+if (!(window.SpeechRecognition || window.webkitSpeechRecognition)) {
+  document.getElementById('rs-micro').title = 'Dictee non disponible sur ce navigateur';
+}
+
+function getFiltered(){var res=[];D.forEach(function(r,idx){var ok1;if(curDPE==='OLD'){ok1=(r.o===1)}else{ok1=(!r.o)&&(curDPE==='all'||r.d===curDPE)}var dtInt=parseD(r.dt);var ok2=(dtInt>=curDateFrom&&dtInt<=curDateTo);var sv=r.s||0;var ok3=(sv===0||(sv>=curSurfMin&&sv<=curSurfMax));var ok4=(curType==='all'||r.t===curType);var ok5=(!searchText||r.a.toLowerCase().indexOf(searchText)>=0);if(ok1&&ok2&&ok3&&ok4&&ok5)res.push({r:r,idx:idx})});res.sort(function(a,b){return parseD(b.r.dt)-parseD(a.r.dt)});return res}
+function applyFilters(){cl.clearLayers();var filtered=getFiltered();var nn=0;var nFG=0;filtered.forEach(function(item){cl.addLayer(am[item.idx]);nn++;if(item.r.d==='F'||item.r.d==='G')nFG++});document.getElementById('cnt').textContent=nn.toLocaleString('fr-FR');document.getElementById('pw').textContent=nFG+' passoires F/G';updateList(filtered)}
+function updateList(filtered){var container=document.getElementById('list-items');var countEl=document.getElementById('list-count');countEl.textContent=filtered.length+' resultats';var html='';var max=500;var shown=Math.min(filtered.length,max);for(var i=0;i<shown;i++){var r=filtered[i].r;var idx=filtered[i].idx;var ip=r.d==='F'||r.d==='G';var passTag=ip?'<span class="list-passoire">PASSOIRE</span>':'';var sf=r.s?r.s+' m2':'';var typeLabel=r.t==='appartement'?'Appt':r.t==='maison'?'Maison':r.t==='immeuble'?'Immeuble':'';var etInfo=r.et?(r.et+' '):'';var cbInfo=r.cb?('<div class="list-details" style="color:rgba(255,255,255,.55)">Ref. bat. : '+esc(r.cb)+'</div>'):'';html+='<div class="list-item" data-idx="'+idx+'">';html+='<div class="list-dpe" style="background:'+(r.o?'#8e44ad':COL[r.d])+'">'+r.d+'</div>';html+='<div class="list-info"><div class="list-addr">'+esc(r.a)+passTag+'</div>';html+='<div class="list-details">'+typeLabel+' '+etInfo+(r.co?r.co+' kWh/m2/an':'')+'</div>'+cbInfo+'</div>';html+='<div class="list-right">';if(sf)html+='<div class="list-surf">'+sf+'</div>';if(r.dt)html+='<div class="list-date">'+r.dt+'</div>';html+='</div></div>'}if(filtered.length>max)html+='<div class="list-count">Affichage limite a '+max+' sur '+filtered.length+'</div>';container.innerHTML=html}
+document.getElementById('list-items').addEventListener('click',function(e){var item=e.target.closest('.list-item');if(!item)return;var idx=parseInt(item.dataset.idx);var r=D[idx];document.getElementById('vtab-carte').click();map.setView([r.la,r.lo],18);setTimeout(function(){am[idx].openPopup()},500)});
+document.getElementById('vtab-carte').addEventListener('click',function(){document.getElementById('vtab-carte').classList.add('ac');document.getElementById('vtab-liste').classList.remove('ac');document.getElementById('vtab-ann').classList.remove('ac');document.getElementById('map').style.display='block';document.getElementById('list-view').style.display='none';document.getElementById('ann-view').style.display='none';document.getElementById('tsw').style.display='flex';document.getElementById('lg').style.display='block';map.invalidateSize()});
+document.getElementById('vtab-liste').addEventListener('click',function(){document.getElementById('vtab-liste').classList.add('ac');document.getElementById('vtab-carte').classList.remove('ac');document.getElementById('vtab-ann').classList.remove('ac');document.getElementById('map').style.display='none';document.getElementById('list-view').style.display='block';document.getElementById('ann-view').style.display='none';document.getElementById('tsw').style.display='none';document.getElementById('lg').style.display='none';applyFilters()});
+document.getElementById('vtab-ann').addEventListener('click',function(){document.getElementById('vtab-ann').classList.add('ac');document.getElementById('vtab-carte').classList.remove('ac');document.getElementById('vtab-liste').classList.remove('ac');document.getElementById('map').style.display='none';document.getElementById('list-view').style.display='none';document.getElementById('ann-view').style.display='block';document.getElementById('tsw').style.display='none';document.getElementById('lg').style.display='none';renderAnn()});
+document.getElementById('list-search').addEventListener('input',function(e){searchText=e.target.value.toLowerCase();applyFilters()});
+document.querySelectorAll('.tab').forEach(function(t){t.addEventListener('click',function(){document.querySelectorAll('.tab').forEach(function(x){x.classList.remove('ac')});t.classList.add('ac');document.querySelectorAll('.filter-bar').forEach(function(b){b.classList.remove('visible')});document.getElementById('bar-'+t.dataset.tab).classList.add('visible')})});
+document.getElementById('fl').addEventListener('click',function(e){var btn=e.target.closest('.fb');if(!btn)return;document.querySelectorAll('#fl .fb').forEach(function(b){b.classList.remove('ac')});btn.classList.add('ac');curDPE=btn.dataset.d;applyFilters()});
+document.getElementById('dt-apply').addEventListener('click',function(){document.querySelectorAll('.dq').forEach(function(b){b.classList.remove('ac')});curDateFrom=dateToInt(document.getElementById('dt-from').value)||0;curDateTo=dateToInt(document.getElementById('dt-to').value)||99999999;applyFilters()});
+document.getElementById('dt-reset').addEventListener('click',function(){document.getElementById('dt-from').value='2021-07-01';document.getElementById('dt-to').value='2026-12-31';document.querySelectorAll('.dq').forEach(function(b){b.classList.remove('ac')});curDateFrom=0;curDateTo=99999999;applyFilters()});
+document.getElementById('dq').addEventListener('click',function(e){var btn=e.target.closest('.dq');if(!btn)return;document.querySelectorAll('.dq').forEach(function(b){b.classList.remove('ac')});btn.classList.add('ac');document.getElementById('dt-from').value=btn.dataset.from;document.getElementById('dt-to').value=btn.dataset.to;curDateFrom=dateToInt(btn.dataset.from);curDateTo=dateToInt(btn.dataset.to);applyFilters()});
+var sMin=document.getElementById('surf-min');var sMax=document.getElementById('surf-max');var sMinV=document.getElementById('surf-min-val');var sMaxV=document.getElementById('surf-max-val');
+function updateSurfLabels(){sMinV.textContent=sMin.value;sMaxV.textContent=parseInt(sMax.value)>=300?'300+':sMax.value}
+sMin.addEventListener('input',function(){if(parseInt(sMin.value)>parseInt(sMax.value))sMax.value=sMin.value;updateSurfLabels()});sMax.addEventListener('input',function(){if(parseInt(sMax.value)<parseInt(sMin.value))sMin.value=sMax.value;updateSurfLabels()});
+document.getElementById('surf-apply').addEventListener('click',function(){document.querySelectorAll('.sp').forEach(function(b){b.classList.remove('ac')});curSurfMin=parseInt(sMin.value);curSurfMax=parseInt(sMax.value)>=300?9999:parseInt(sMax.value);applyFilters()});
+document.getElementById('surf-reset').addEventListener('click',function(){sMin.value=0;sMax.value=300;updateSurfLabels();document.querySelectorAll('.sp').forEach(function(b){b.classList.remove('ac')});curSurfMin=0;curSurfMax=9999;applyFilters()});
+document.getElementById('sp').addEventListener('click',function(e){var btn=e.target.closest('.sp');if(!btn)return;document.querySelectorAll('.sp').forEach(function(b){b.classList.remove('ac')});btn.classList.add('ac');var mn=parseInt(btn.dataset.min);var mx=parseInt(btn.dataset.max);sMin.value=mn;sMax.value=mx;updateSurfLabels();curSurfMin=mn;curSurfMax=mx>=300?9999:mx;applyFilters()});
+document.getElementById('tfl').addEventListener('click',function(e){var btn=e.target.closest('.tb');if(!btn)return;document.querySelectorAll('#tfl .tb').forEach(function(b){b.classList.remove('ac')});btn.classList.add('ac');curType=btn.dataset.type;applyFilters()});
+document.getElementById('export-btn').addEventListener('click',function(){
+var filtered=getFiltered();
+var csv='\uFEFFAdresse;Commune;Type;DPE;GES;Surface m2;Conso kWh/m2/an;GES kgCO2/m2/an;Periode;Date DPE;Etage;Porte\n';
+filtered.forEach(function(item){var r=item.r;
+csv+=r.a+';'+r.c+';'+r.t+';'+r.d+';'+r.g+';'+(r.s||'')+';'+(r.co||'')+';'+(r.gv||'')+';'+r.p+';'+r.dt+';'+r.et+';'+r.po+'\n'});
+var blob=new Blob([csv],{type:'text/csv;charset=utf-8;'});
+var url=URL.createObjectURL(blob);
+var a=document.createElement('a');a.href=url;a.download='export-dpe.csv';a.click()});
+applyFilters();map.addLayer(cl);
+</script></body></html>
